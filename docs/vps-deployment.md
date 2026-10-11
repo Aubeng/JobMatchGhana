@@ -1,5 +1,8 @@
 # Deploying to the Windows/IIS VPS (staging)
 
+> **On hold (2026-10-11):** deployment resumes once Slices 2–5 are built. Nothing here has been
+> run on the server yet, so review it against the finished app before starting.
+
 JobMatch runs on the shared Intellite VPS at **`https://jobmatch.intellite.net`** before it moves to
 Azure App Service (DL-012). This gives Meta a permanent HTTPS webhook URL, so there's no dev tunnel
 to keep alive.
@@ -41,11 +44,10 @@ Check from any machine:
 Resolve-DnsName jobmatch.intellite.net
 ```
 
-### 1.2 Patch SQL Server
-The instance is at **RTM (16.0.1000.6)**, with no updates since October 2022. Install the latest
-*Cumulative Update for SQL Server 2022* (Microsoft Update Catalog or the SQL Server "latest updates"
-page) before real participants' data goes on it. Restart the SQL service afterwards. That briefly
-affects the other sites' databases, so pick a quiet time.
+### 1.2 SQL Server patch level
+The instance reports **RTM (16.0.1000.6)**, meaning no updates since October 2022. The server is shared
+and managed, so patching is the provider's job. Ask them to apply the latest SQL Server 2022
+Cumulative Update, or confirm their patch schedule, before real participants' data goes on it.
 
 ### 1.3 .NET 8 Hosting Bundle
 Download **ASP.NET Core Runtime 8.0.x – Windows Hosting Bundle** from

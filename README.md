@@ -16,7 +16,7 @@ opportunities through NLP-driven skills elicitation. MSc Computer Science capsto
 | Slice 2 | Python FastAPI NLP service (intent + skill extraction) wired to the gateway | ⏳ pending |
 | Slice 3 | Embedding-based matching engine + utility-template notifications | ⏳ pending |
 | Slice 4 | Vue 3 admin SPA | ⏳ pending |
-| Staging | Windows/IIS VPS at `jobmatch.intellite.net` ([guide](docs/vps-deployment.md), DL-012) | 🛠️ scripts ready |
+| Staging | Windows/IIS VPS at `jobmatch.intellite.net` ([guide](docs/vps-deployment.md), DL-012) | ⏸️ on hold until slices are done (scripts written) |
 | Slice 5 | Hardening, seed taxonomy, Azure deployment | ⏳ pending |
 
 ## Solution layout

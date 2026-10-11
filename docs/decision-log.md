@@ -119,4 +119,7 @@ App Service application settings (consistent with DL-007).
 a release is switched. Mitigated by setting the app pool to `AlwaysRunning`, no idle time-out, and
 no periodic recycle, and by deploying at quiet times. (2) A shared server: isolated by a dedicated
 app pool, a host-name/SNI binding, a least-privilege DB login, and a Redis key prefix. (3) SQL
-Server was found unpatched (RTM); it must be updated before pilot participants' data is stored.
+Server was found unpatched (RTM). The server is shared and managed by the hosting provider, so
+patching is theirs; confirm the patch status with them before pilot participants' data is stored.
+**Status (2026-10-11):** paused. Deployment work resumes after Slices 2–5 are built; the scripts in
+`deploy/` are written but have not yet been run on the server.
