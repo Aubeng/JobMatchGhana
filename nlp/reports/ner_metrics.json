@@ -1,0 +1,155 @@
+{
+  "generated_utc": "2026-10-11T18:00:04+00:00",
+  "model": "BERT+CRF entity recogniser",
+  "base_model": "google-bert/bert-base-multilingual-cased",
+  "hyperparameters": {
+    "epochs": 10,
+    "encoder_lr": 3e-05,
+    "head_lr": 0.001,
+    "batch_size": 16,
+    "seed": 13,
+    "max_length": 64,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01,
+    "tagging": "word-level BIO (first subword), CRF with BIO-constrained transitions",
+    "selection": "best validation entity-level F1 (seqeval strict IOB2)"
+  },
+  "data": {
+    "train": {
+      "total": 1306,
+      "per_intent": {
+        "AVAILABILITY_STATE": 130,
+        "CONFIRMATION": 128,
+        "CORRECTION": 146,
+        "EXIT": 107,
+        "FEEDBACK_PROVIDE": 153,
+        "HELP_REQUEST": 132,
+        "LOCATION_SHARE": 140,
+        "SKILL_DECLARE": 215,
+        "TRADE_IDENTIFY": 155
+      }
+    },
+    "val": {
+      "total": 163,
+      "per_intent": {
+        "AVAILABILITY_STATE": 12,
+        "CONFIRMATION": 19,
+        "CORRECTION": 8,
+        "EXIT": 20,
+        "FEEDBACK_PROVIDE": 17,
+        "HELP_REQUEST": 17,
+        "LOCATION_SHARE": 17,
+        "SKILL_DECLARE": 33,
+        "TRADE_IDENTIFY": 20
+      }
+    },
+    "test": {
+      "total": 166,
+      "per_intent": {
+        "AVAILABILITY_STATE": 18,
+        "CONFIRMATION": 14,
+        "CORRECTION": 18,
+        "EXIT": 23,
+        "FEEDBACK_PROVIDE": 15,
+        "HELP_REQUEST": 12,
+        "LOCATION_SHARE": 24,
+        "SKILL_DECLARE": 22,
+        "TRADE_IDENTIFY": 20
+      }
+    }
+  },
+  "training_seconds": 1569.5,
+  "best_epoch": 7,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.8061,
+      "val_entity_f1": 0.7222
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6558,
+      "val_entity_f1": 0.7845
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.3081,
+      "val_entity_f1": 0.8444
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1865,
+      "val_entity_f1": 0.8393
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.1155,
+      "val_entity_f1": 0.8378
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.0769,
+      "val_entity_f1": 0.8267
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.0189,
+      "val_entity_f1": 0.8772
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.0163,
+      "val_entity_f1": 0.8634
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.024,
+      "val_entity_f1": 0.8684
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.0049,
+      "val_entity_f1": 0.8772
+    }
+  ],
+  "test": {
+    "entity_extraction_precision": 0.8421,
+    "entity_recall": 0.8649,
+    "entity_f1": 0.8533,
+    "per_label": {
+      "SKILL_ITEM": {
+        "precision": 0.76,
+        "recall": 0.8261,
+        "f1-score": 0.7917,
+        "support": 46.0
+      },
+      "TRADE_CATEGORY": {
+        "precision": 0.9167,
+        "recall": 0.9167,
+        "f1-score": 0.9167,
+        "support": 24.0
+      },
+      "LOCATION": {
+        "precision": 0.9143,
+        "recall": 0.9143,
+        "f1-score": 0.9143,
+        "support": 35.0
+      },
+      "EXPERIENCE_DURATION": {
+        "precision": 0.8,
+        "recall": 0.6667,
+        "f1-score": 0.7273,
+        "support": 6.0
+      }
+    }
+  },
+  "caveat": "Test utterances are synthetic and drawn from the same distribution as training data; this overstates real-world performance. Evaluate on annotated pilot messages for the study.",
+  "environment": {
+    "python": "3.12.5",
+    "torch": "2.14.1+cpu",
+    "transformers": "5.19.0",
+    "device": "cpu",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "threads": 15
+  }
+}

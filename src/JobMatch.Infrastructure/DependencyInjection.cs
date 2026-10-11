@@ -62,11 +62,17 @@ public static class DependencyInjection
         }
         else
         {
-            services.AddHttpClient<INluClient, HttpNluClient>((sp, http) =>
+            services.AddHttpClient<HttpNluClient>((sp, http) =>
             {
                 var opt = sp.GetRequiredService<IOptions<NluOptions>>().Value;
                 http.BaseAddress = new Uri(opt.BaseUrl);
+                http.Timeout = TimeSpan.FromSeconds(opt.TimeoutSeconds);
             });
+            // Service first; keyword stub if it's down or slow (graceful degradation).
+            services.AddTransient<INluClient>(sp => new FallbackNluClient(
+                sp.GetRequiredService<HttpNluClient>(),
+                new StubNluClient(),
+                sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FallbackNluClient>>()));
         }
 
         // --- Orchestrator (scoped: owns a DbContext per message) ---

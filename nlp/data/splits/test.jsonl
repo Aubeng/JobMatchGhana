@@ -1,0 +1,166 @@
+{"intent": "AVAILABILITY_STATE", "annotated": "full time", "source": "AVAILABILITY_STATE.txt:2"}
+{"intent": "AVAILABILITY_STATE", "annotated": "after 4pm", "source": "AVAILABILITY_STATE.txt:7"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i dey free weekends", "source": "AVAILABILITY_STATE.txt:20"}
+{"intent": "AVAILABILITY_STATE", "annotated": "mon to sat", "source": "AVAILABILITY_STATE.txt:23"}
+{"intent": "AVAILABILITY_STATE", "annotated": "any day", "source": "AVAILABILITY_STATE.txt:28"}
+{"intent": "AVAILABILITY_STATE", "annotated": "except friday", "source": "AVAILABILITY_STATE.txt:63"}
+{"intent": "AVAILABILITY_STATE", "annotated": "twice a week", "source": "AVAILABILITY_STATE.txt:69"}
+{"intent": "AVAILABILITY_STATE", "annotated": "like 6 hours", "source": "AVAILABILITY_STATE.txt:73"}
+{"intent": "AVAILABILITY_STATE", "annotated": "8 to 5", "source": "AVAILABILITY_STATE.txt:79"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i dey school so weekends and holidays", "source": "AVAILABILITY_STATE.txt:93"}
+{"intent": "AVAILABILITY_STATE", "annotated": "mornings only bcos i go school in the afternoon", "source": "AVAILABILITY_STATE.txt:95"}
+{"intent": "AVAILABILITY_STATE", "annotated": "when e no rain", "source": "AVAILABILITY_STATE.txt:99"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i can work shift", "source": "AVAILABILITY_STATE.txt:114"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i fit do overtime", "source": "AVAILABILITY_STATE.txt:119"}
+{"intent": "AVAILABILITY_STATE", "annotated": "not available now", "source": "AVAILABILITY_STATE.txt:121"}
+{"intent": "AVAILABILITY_STATE", "annotated": "tuesday and thursday", "source": "AVAILABILITY_STATE.txt:133"}
+{"intent": "AVAILABILITY_STATE", "annotated": "monday wednesday friday", "source": "AVAILABILITY_STATE.txt:135"}
+{"intent": "AVAILABILITY_STATE", "annotated": "7 days", "source": "AVAILABILITY_STATE.txt:141"}
+{"intent": "CONFIRMATION", "annotated": "yes please", "source": "CONFIRMATION.txt:5"}
+{"intent": "CONFIRMATION", "annotated": "yea", "source": "CONFIRMATION.txt:13"}
+{"intent": "CONFIRMATION", "annotated": "it is correct", "source": "CONFIRMATION.txt:24"}
+{"intent": "CONFIRMATION", "annotated": "exactly wat i said", "source": "CONFIRMATION.txt:38"}
+{"intent": "CONFIRMATION", "annotated": "okey", "source": "CONFIRMATION.txt:41"}
+{"intent": "CONFIRMATION", "annotated": "true true", "source": "CONFIRMATION.txt:69"}
+{"intent": "CONFIRMATION", "annotated": "its true", "source": "CONFIRMATION.txt:70"}
+{"intent": "CONFIRMATION", "annotated": "yes thats my work", "source": "CONFIRMATION.txt:72"}
+{"intent": "CONFIRMATION", "annotated": "i agree", "source": "CONFIRMATION.txt:110"}
+{"intent": "CONFIRMATION", "annotated": "go ahead", "source": "CONFIRMATION.txt:117"}
+{"intent": "CONFIRMATION", "annotated": "its ok so", "source": "CONFIRMATION.txt:131"}
+{"intent": "CONFIRMATION", "annotated": "that is it", "source": "CONFIRMATION.txt:134"}
+{"intent": "CONFIRMATION", "annotated": "correct [tema](LOCATION)", "source": "CONFIRMATION.txt:149"}
+{"intent": "CONFIRMATION", "annotated": "correct, [kaneshie](LOCATION) full time", "source": "CONFIRMATION.txt:162"}
+{"intent": "CORRECTION", "annotated": "no please", "source": "CORRECTION.txt:6"}
+{"intent": "CORRECTION", "annotated": "its not correct", "source": "CORRECTION.txt:22"}
+{"intent": "CORRECTION", "annotated": "no not dat one oo", "source": "CORRECTION.txt:31"}
+{"intent": "CORRECTION", "annotated": "no thats not my work", "source": "CORRECTION.txt:38"}
+{"intent": "CORRECTION", "annotated": "u got it wrong", "source": "CORRECTION.txt:44"}
+{"intent": "CORRECTION", "annotated": "u misunderstand me", "source": "CORRECTION.txt:46"}
+{"intent": "CORRECTION", "annotated": "let me change it", "source": "CORRECTION.txt:55"}
+{"intent": "CORRECTION", "annotated": "u made a mistake", "source": "CORRECTION.txt:61"}
+{"intent": "CORRECTION", "annotated": "no thats a mistake", "source": "CORRECTION.txt:62"}
+{"intent": "CORRECTION", "annotated": "my area is wrong", "source": "CORRECTION.txt:67"}
+{"intent": "CORRECTION", "annotated": "chale no", "source": "CORRECTION.txt:77"}
+{"intent": "CORRECTION", "annotated": "no i do [barbing](SKILL_ITEM) not [braids](SKILL_ITEM)", "source": "CORRECTION.txt:121"}
+{"intent": "CORRECTION", "annotated": "pls remove [tiling](SKILL_ITEM) from my skills", "source": "CORRECTION.txt:129"}
+{"intent": "CORRECTION", "annotated": "not [cleaning](SKILL_ITEM), [laundry](SKILL_ITEM)", "source": "CORRECTION.txt:141"}
+{"intent": "CORRECTION", "annotated": "no i dont do [babysitting](SKILL_ITEM)", "source": "CORRECTION.txt:142"}
+{"intent": "CORRECTION", "annotated": "not [5 yrs](EXPERIENCE_DURATION), [15 yrs](EXPERIENCE_DURATION)", "source": "CORRECTION.txt:151"}
+{"intent": "CORRECTION", "annotated": "no not [gardening](SKILL_ITEM) i do [security](SKILL_ITEM)", "source": "CORRECTION.txt:169"}
+{"intent": "CORRECTION", "annotated": "chale no, [mechanic](TRADE_CATEGORY) not [driver](TRADE_CATEGORY)", "source": "CORRECTION.txt:173"}
+{"intent": "EXIT", "annotated": "stop it", "source": "EXIT.txt:3"}
+{"intent": "EXIT", "annotated": "stop oo", "source": "EXIT.txt:7"}
+{"intent": "EXIT", "annotated": "abeg stop", "source": "EXIT.txt:9"}
+{"intent": "EXIT", "annotated": "lets continue later", "source": "EXIT.txt:31"}
+{"intent": "EXIT", "annotated": "maybe later", "source": "EXIT.txt:42"}
+{"intent": "EXIT", "annotated": "unsubcribe", "source": "EXIT.txt:48"}
+{"intent": "EXIT", "annotated": "delete my details", "source": "EXIT.txt:65"}
+{"intent": "EXIT", "annotated": "remove me from the list", "source": "EXIT.txt:73"}
+{"intent": "EXIT", "annotated": "take me out", "source": "EXIT.txt:74"}
+{"intent": "EXIT", "annotated": "dont send me anything again", "source": "EXIT.txt:80"}
+{"intent": "EXIT", "annotated": "stop sending me messages", "source": "EXIT.txt:81"}
+{"intent": "EXIT", "annotated": "stop sending me jobs", "source": "EXIT.txt:82"}
+{"intent": "EXIT", "annotated": "i want to quit", "source": "EXIT.txt:111"}
+{"intent": "EXIT", "annotated": "i want to exit", "source": "EXIT.txt:113"}
+{"intent": "EXIT", "annotated": "end this", "source": "EXIT.txt:116"}
+{"intent": "EXIT", "annotated": "close", "source": "EXIT.txt:118"}
+{"intent": "EXIT", "annotated": "i want to cancel", "source": "EXIT.txt:123"}
+{"intent": "EXIT", "annotated": "log me out", "source": "EXIT.txt:126"}
+{"intent": "EXIT", "annotated": "am done", "source": "EXIT.txt:132"}
+{"intent": "EXIT", "annotated": "that is all for now", "source": "EXIT.txt:136"}
+{"intent": "EXIT", "annotated": "dont call me", "source": "EXIT.txt:142"}
+{"intent": "EXIT", "annotated": "i cant continue", "source": "EXIT.txt:144"}
+{"intent": "EXIT", "annotated": "ttyl", "source": "EXIT.txt:151"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "very helpful", "source": "FEEDBACK_PROVIDE.txt:4"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "very good service", "source": "FEEDBACK_PROVIDE.txt:16"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "bad service", "source": "FEEDBACK_PROVIDE.txt:36"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "they didnt pick my call", "source": "FEEDBACK_PROVIDE.txt:74"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the number is not going", "source": "FEEDBACK_PROVIDE.txt:75"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "i went there but they dont need anybody again", "source": "FEEDBACK_PROVIDE.txt:78"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the salary is ok", "source": "FEEDBACK_PROVIDE.txt:85"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "they rejected me", "source": "FEEDBACK_PROVIDE.txt:100"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the [carpentry](TRADE_CATEGORY) job was nice", "source": "FEEDBACK_PROVIDE.txt:119"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "they want me to work sundays, i dont like", "source": "FEEDBACK_PROVIDE.txt:131"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "its ok", "source": "FEEDBACK_PROVIDE.txt:136"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "disappointed", "source": "FEEDBACK_PROVIDE.txt:145"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "not satisfied", "source": "FEEDBACK_PROVIDE.txt:149"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "good work", "source": "FEEDBACK_PROVIDE.txt:172"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the address was wrong", "source": "FEEDBACK_PROVIDE.txt:180"}
+{"intent": "HELP_REQUEST", "annotated": "helpp", "source": "HELP_REQUEST.txt:9"}
+{"intent": "HELP_REQUEST", "annotated": "how do i reply", "source": "HELP_REQUEST.txt:37"}
+{"intent": "HELP_REQUEST", "annotated": "repeat the question", "source": "HELP_REQUEST.txt:56"}
+{"intent": "HELP_REQUEST", "annotated": "ur message is not clear", "source": "HELP_REQUEST.txt:60"}
+{"intent": "HELP_REQUEST", "annotated": "who is this", "source": "HELP_REQUEST.txt:87"}
+{"intent": "HELP_REQUEST", "annotated": "i want to call someone", "source": "HELP_REQUEST.txt:97"}
+{"intent": "HELP_REQUEST", "annotated": "how do i add another skill", "source": "HELP_REQUEST.txt:105"}
+{"intent": "HELP_REQUEST", "annotated": "how do i remove a skill", "source": "HELP_REQUEST.txt:106"}
+{"intent": "HELP_REQUEST", "annotated": "how do i update my location", "source": "HELP_REQUEST.txt:107"}
+{"intent": "HELP_REQUEST", "annotated": "i cant read english well", "source": "HELP_REQUEST.txt:128"}
+{"intent": "HELP_REQUEST", "annotated": "can i send a picture", "source": "HELP_REQUEST.txt:134"}
+{"intent": "HELP_REQUEST", "annotated": "i cant see the options", "source": "HELP_REQUEST.txt:154"}
+{"intent": "LOCATION_SHARE", "annotated": "[teshie](LOCATION) pls", "source": "LOCATION_SHARE.txt:13"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay at [medie](LOCATION) close to [amasaman](LOCATION)", "source": "LOCATION_SHARE.txt:34"}
+{"intent": "LOCATION_SHARE", "annotated": "[ashaley botwe](LOCATION)", "source": "LOCATION_SHARE.txt:41"}
+{"intent": "LOCATION_SHARE", "annotated": "[osu](LOCATION)", "source": "LOCATION_SHARE.txt:43"}
+{"intent": "LOCATION_SHARE", "annotated": "[lartebiokorshie](LOCATION)", "source": "LOCATION_SHARE.txt:74"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [sakumono](LOCATION)", "source": "LOCATION_SHARE.txt:75"}
+{"intent": "LOCATION_SHARE", "annotated": "[lashibi](LOCATION)", "source": "LOCATION_SHARE.txt:76"}
+{"intent": "LOCATION_SHARE", "annotated": "i live at [baatsona](LOCATION)", "source": "LOCATION_SHARE.txt:77"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [community 1](LOCATION)", "source": "LOCATION_SHARE.txt:78"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [tema new town](LOCATION)", "source": "LOCATION_SHARE.txt:81"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [dodowa](LOCATION)", "source": "LOCATION_SHARE.txt:89"}
+{"intent": "LOCATION_SHARE", "annotated": "any place in [tema](LOCATION) or [ashaiman](LOCATION)", "source": "LOCATION_SHARE.txt:111"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [madina](LOCATION) but i can go [adenta](LOCATION) and [east legon](LOCATION) too", "source": "LOCATION_SHARE.txt:113"}
+{"intent": "LOCATION_SHARE", "annotated": "i prefer work around [osu](LOCATION) or [labadi](LOCATION)", "source": "LOCATION_SHARE.txt:115"}
+{"intent": "LOCATION_SHARE", "annotated": "not far from [odorkor](LOCATION) pls bcos of transport", "source": "LOCATION_SHARE.txt:117"}
+{"intent": "LOCATION_SHARE", "annotated": "i live at [teshie](LOCATION) but i work in [accra central](LOCATION)", "source": "LOCATION_SHARE.txt:122"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay near [tema motorway roundabout](LOCATION)", "source": "LOCATION_SHARE.txt:125"}
+{"intent": "LOCATION_SHARE", "annotated": "near [ashaiman market](LOCATION)", "source": "LOCATION_SHARE.txt:132"}
+{"intent": "LOCATION_SHARE", "annotated": "[ashaiman](LOCATION) and i dey free after 4pm", "source": "LOCATION_SHARE.txt:141"}
+{"intent": "LOCATION_SHARE", "annotated": "[kasoa](LOCATION) but i can do night shift", "source": "LOCATION_SHARE.txt:143"}
+{"intent": "LOCATION_SHARE", "annotated": "around [okponglo](LOCATION)", "source": "LOCATION_SHARE.txt:153"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [kinbu](LOCATION)", "source": "LOCATION_SHARE.txt:158"}
+{"intent": "LOCATION_SHARE", "annotated": "i dey [liberia camp](LOCATION)", "source": "LOCATION_SHARE.txt:169"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay in [ga east](LOCATION)", "source": "LOCATION_SHARE.txt:171"}
+{"intent": "SKILL_DECLARE", "annotated": "please i can [lay tiles](SKILL_ITEM) for floor and bathroom, wall too", "source": "SKILL_DECLARE.txt:9"}
+{"intent": "SKILL_DECLARE", "annotated": "roofs. i do [roofing](SKILL_ITEM) and i fit [repair leaking roof](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:10"}
+{"intent": "SKILL_DECLARE", "annotated": "[foundation work](SKILL_ITEM) and [blocklaying](SKILL_ITEM), [6 yrs](EXPERIENCE_DURATION) experience", "source": "SKILL_DECLARE.txt:21"}
+{"intent": "SKILL_DECLARE", "annotated": "i [fix roofing sheets](SKILL_ITEM), aluminium and the normal one", "source": "SKILL_DECLARE.txt:22"}
+{"intent": "SKILL_DECLARE", "annotated": "i do [fridge repair](SKILL_ITEM) and [fixing of fans](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:54"}
+{"intent": "SKILL_DECLARE", "annotated": "[prepaid meter](SKILL_ITEM) installation and [change over switch](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:64"}
+{"intent": "SKILL_DECLARE", "annotated": "container shop and kiosk, i [make kiosks](SKILL_ITEM) and [metal chairs](SKILL_ITEM) too", "source": "SKILL_DECLARE.txt:84"}
+{"intent": "SKILL_DECLARE", "annotated": "i be [mate](SKILL_ITEM), i [call passengers](SKILL_ITEM) and [collect fares](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:128"}
+{"intent": "SKILL_DECLARE", "annotated": "i [mend clothes](SKILL_ITEM) small small", "source": "SKILL_DECLARE.txt:155"}
+{"intent": "SKILL_DECLARE", "annotated": "am a [hairdresser](TRADE_CATEGORY), i do [relaxer](SKILL_ITEM) and [retouching](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:159"}
+{"intent": "SKILL_DECLARE", "annotated": "i [make wigs](SKILL_ITEM) and do [wig installation](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:164"}
+{"intent": "SKILL_DECLARE", "annotated": "[pedicure](SKILL_ITEM) and [menicure](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:169"}
+{"intent": "SKILL_DECLARE", "annotated": "i fix [eyelash](SKILL_ITEM) and [draw brows](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:173"}
+{"intent": "SKILL_DECLARE", "annotated": "i fit [pound fufu](SKILL_ITEM) paa, chop bar work", "source": "SKILL_DECLARE.txt:182"}
+{"intent": "SKILL_DECLARE", "annotated": "i dey [bake bread](SKILL_ITEM), [tea bread](SKILL_ITEM) and [sugar bread](SKILL_ITEM) wit the big oven", "source": "SKILL_DECLARE.txt:185"}
+{"intent": "SKILL_DECLARE", "annotated": "i [look after kids](SKILL_ITEM) and do [school runs](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:207"}
+{"intent": "SKILL_DECLARE", "annotated": "i [cut grass](SKILL_ITEM) and [weed compound](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:214"}
+{"intent": "SKILL_DECLARE", "annotated": "[oil palm](SKILL_ITEM) and [cashew](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:228"}
+{"intent": "SKILL_DECLARE", "annotated": "i [walk and sell](SKILL_ITEM) [pure water](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:249"}
+{"intent": "SKILL_DECLARE", "annotated": "i [sell phone](SKILL_ITEM) and [chagers](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:256"}
+{"intent": "SKILL_DECLARE", "annotated": "[over 15 years](EXPERIENCE_DURATION) chale", "source": "SKILL_DECLARE.txt:272"}
+{"intent": "SKILL_DECLARE", "annotated": "[since covid](EXPERIENCE_DURATION) time", "source": "SKILL_DECLARE.txt:284"}
+{"intent": "TRADE_IDENTIFY", "annotated": "im a [builder](TRADE_CATEGORY) chale", "source": "TRADE_IDENTIFY.txt:8"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[roofer](TRADE_CATEGORY) here", "source": "TRADE_IDENTIFY.txt:17"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [contruction worker](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:20"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[laborer](TRADE_CATEGORY) at building site in [kasoa](LOCATION)", "source": "TRADE_IDENTIFY.txt:21"}
+{"intent": "TRADE_IDENTIFY", "annotated": "hello, i be [technician](TRADE_CATEGORY), u know what i mean, any small small thing wey spoil i dey check am", "source": "TRADE_IDENTIFY.txt:48"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[plumber](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:52"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i dey do [welding](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:58"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [plumber](TRADE_CATEGORY) for [3 yrs](EXPERIENCE_DURATION)", "source": "TRADE_IDENTIFY.txt:65"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i am a [car mechanic](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:72"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[dressmaker](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:103"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[dress maker](TRADE_CATEGORY) at [dansoman](LOCATION)", "source": "TRADE_IDENTIFY.txt:112"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[taylor](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:113"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [hair dresser](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:116"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[waiter](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:138"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [bartender](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:140"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [waakye seller](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:144"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [housemaid](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:148"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [security guard](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:155"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[farma](TRADE_CATEGORY) at [dodowa](LOCATION)", "source": "TRADE_IDENTIFY.txt:172"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[trader](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:177"}

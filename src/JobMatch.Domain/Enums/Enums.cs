@@ -58,6 +58,8 @@ public enum Intent
     RefineSkill = 17,
     ProvideAvailability = 18,
     FinishSkills = 19,
+    // Named a trade ("I'm a carpenter") but no specific skill: the FSM probes for skills.
+    ProvideTrade = 20,
     // Anything the FSM could not map -> triggers a repair prompt (logged).
     Repair = 99
 }

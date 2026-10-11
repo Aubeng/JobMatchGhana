@@ -1,0 +1,45 @@
+{
+  "generated_utc": "2026-10-11T18:03:33+00:00",
+  "test_utterances": 166,
+  "intent_accuracy_end_to_end": 0.8855,
+  "skill_extraction": {
+    "model_only": {
+      "precision": 0.9062,
+      "recall": 1.0,
+      "f1": 0.9508,
+      "extracted": 32,
+      "gold": 29,
+      "correct": 29
+    },
+    "with_lexicon_backoff": {
+      "precision": 0.9062,
+      "recall": 1.0,
+      "f1": 0.9508,
+      "extracted": 32,
+      "gold": 29,
+      "correct": 29
+    }
+  },
+  "sd_targets": {
+    "entity_extraction_precision": 0.8,
+    "intent_accuracy": 0.85,
+    "response_latency_p95_seconds": 5.0
+  },
+  "nlu_latency_ms": {
+    "mean": 66.4,
+    "p50": 63.4,
+    "p95": 92.0,
+    "max": 124.4,
+    "threads": 4
+  },
+  "model_version": "intent@2026-10-11T17:33:39+00:00;ner@2026-10-11T18:00:04+00:00",
+  "caveat": "Synthetic test data from the training distribution: an upper bound. NLU latency is one component of the S&D end-to-end response latency.",
+  "environment": {
+    "python": "3.12.5",
+    "torch": "2.14.1+cpu",
+    "transformers": "5.19.0",
+    "device": "cpu",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "threads": 4
+  }
+}

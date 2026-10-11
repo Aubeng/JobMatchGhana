@@ -36,6 +36,12 @@ public class ConversationSession
     /// <summary>A skill candidate awaiting the worker's yes/no confirmation.</summary>
     public PendingSkill? PendingSkill { get; set; }
 
+    /// <summary>
+    /// Further skills from the same utterance ("I do roofing and make furniture"), confirmed
+    /// one at a time after <see cref="PendingSkill"/> so none is silently dropped.
+    /// </summary>
+    public List<PendingSkill> QueuedSkills { get; set; } = new();
+
     public int RepairCount { get; set; }
     public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedUtc { get; set; } = DateTimeOffset.UtcNow;
@@ -52,8 +58,27 @@ public class PendingSkill
 /// <summary>A skill candidate returned by the NLU service.</summary>
 public record SkillCandidate(string CanonicalName, double Confidence);
 
-/// <summary>Result of a <c>POST /nlu</c> call: intent + extracted skill candidates.</summary>
+/// <summary>A trade category recognised in an utterance, with a few of its skills to suggest.</summary>
+public record TradeCandidate(string CategoryId, string Name, double Confidence, IReadOnlyList<string> ExampleSkills);
+
+/// <summary>
+/// Result of a <c>POST /nlu</c> call: intent + extracted skill candidates, plus the richer
+/// Slice 2 analysis (trade, location, experience) and the telemetry the study logs per turn.
+/// </summary>
 public record NluResult(
     string Intent,
     double Confidence,
-    IReadOnlyList<SkillCandidate> Skills);
+    IReadOnlyList<SkillCandidate> Skills)
+{
+    public TradeCandidate? Trade { get; init; }
+    /// <summary>Resolved district (MMDA) for a mentioned location, e.g. "La Nkwantanang Madina".</summary>
+    public string? LocationDistrict { get; init; }
+    public double? ExperienceYears { get; init; }
+    /// <summary>Intent confidence under the S&D 0.75 threshold: the dialogue should clarify.</summary>
+    public bool BelowThreshold { get; init; }
+    /// <summary>Raw entity list as JSON, logged verbatim for post-hoc evaluation.</summary>
+    public string? EntitiesJson { get; init; }
+    /// <summary>Which models produced this result; "stub" / "stub-fallback" when the service wasn't used.</summary>
+    public string? ModelVersion { get; init; }
+    public double? LatencyMs { get; init; }
+}

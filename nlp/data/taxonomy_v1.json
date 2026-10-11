@@ -1,0 +1,231 @@
+{
+  "version": "1.0.0-draft",
+  "status": "DRAFT - drafted by Claude 2026-10-11 for researcher validation (deliverable D4). Verify every ISCO-08 code and synonym before the pilot.",
+  "source": "ILO ISCO-08 unit groups, contextualised to the Greater Accra informal sector / BOOST cohort trades (S&D report section 6.4).",
+  "notes": [
+    "Two levels: trade category -> skill item. 12 categories, ~10 skills each.",
+    "category.occupation_terms resolve TRADE_CATEGORY entities (\"mason\", \"I'm into catering\").",
+    "skill.synonyms resolve SKILL_ITEM entities (\"lay blocks\", \"blockwork\"). Lower-case; matching is fuzzy.",
+    "isco08 is the 4-digit ISCO-08 unit group that best fits the skill.",
+    "2026-10-11: +29 synonyms/terms proposed while drafting the utterances.",
+    "2026-10-11: removed \"till\", \"spot\", \"burkina\", \"makola\": generic words / place names that produced false skill matches."
+  ],
+  "categories": [
+    {
+      "id": "construction",
+      "name": "Construction & Building",
+      "isco08_major": "71",
+      "occupation_terms": ["mason", "masonry", "construction", "construction work", "building work", "builder", "site work", "labourer", "laborer", "steel bender", "iron bender", "tiler", "plasterer", "roofer", "painter", "site worker", "mason boy", "mason work"],
+      "skills": [
+        {"id": "construction.block_laying", "name": "Block laying", "isco08": "7112", "synonyms": ["lay blocks", "laying blocks", "block work", "blockwork", "blocklaying", "brick laying", "bricklaying", "lay bricks", "build walls", "molding blocks", "moulding blocks", "mould blocks"]},
+        {"id": "construction.plastering", "name": "Plastering", "isco08": "7123", "synonyms": ["plaster", "plaster walls", "plastering walls", "screeding", "screed", "rendering", "skimming", "skim coat"]},
+        {"id": "construction.concrete_work", "name": "Concrete work", "isco08": "7114", "synonyms": ["mix concrete", "mixing concrete", "concrete mixing", "casting", "cast concrete", "pour concrete", "foundation work", "decking", "slab casting", "lintel casting"]},
+        {"id": "construction.tiling", "name": "Tiling", "isco08": "7122", "synonyms": ["tiles", "lay tiles", "laying tiles", "fix tiles", "floor tiles", "wall tiles", "tile work", "terrazzo"]},
+        {"id": "construction.roofing", "name": "Roofing", "isco08": "7121", "synonyms": ["roof", "roofing sheets", "aluminium roofing", "fix roof", "roof repair", "roofing work", "fix roofing sheets", "leaking roof"]},
+        {"id": "construction.painting", "name": "Painting & decorating", "isco08": "7131", "synonyms": ["painting", "paint houses", "paint walls", "house painting", "wall painting", "decorating", "texcote", "texcoat", "spray walls"]},
+        {"id": "construction.steel_bending", "name": "Steel bending", "isco08": "7214", "synonyms": ["iron bending", "bend iron rods", "rebar", "iron rods", "tie iron rods", "binding rods", "steel fixing"]},
+        {"id": "construction.pop_ceiling", "name": "POP ceiling", "isco08": "7123", "synonyms": ["pop", "p.o.p", "plaster of paris", "ceiling", "ceiling work", "ceiling boards", "false ceiling", "gypsum ceiling"]},
+        {"id": "construction.site_labour", "name": "Construction labour", "isco08": "9313", "synonyms": ["site labour", "carry blocks", "carrying blocks", "carry cement", "head pan", "headpan", "digging foundation", "dig trench", "mason helper", "labourer work", "carry sand"]},
+        {"id": "construction.setting_out", "name": "Setting out & plan reading", "isco08": "7112", "synonyms": ["read building plans", "reading plans", "read drawings", "setting out", "set out a building", "building plan", "measure and set out"]}
+      ]
+    },
+    {
+      "id": "woodwork",
+      "name": "Carpentry & Woodwork",
+      "isco08_major": "75",
+      "occupation_terms": ["carpenter", "carpentry", "joiner", "joinery", "woodwork", "wood work", "furniture maker", "cabinet maker", "upholsterer", "wood carver"],
+      "skills": [
+        {"id": "woodwork.furniture_making", "name": "Furniture making", "isco08": "7522", "synonyms": ["make furniture", "making furniture", "furniture", "make chairs", "make tables", "make beds", "wardrobes", "wardrobe", "make cupboards"]},
+        {"id": "woodwork.roof_carpentry", "name": "Roof carpentry", "isco08": "7115", "synonyms": ["roofing carpentry", "roof trusses", "trusses", "rafters", "roof frame", "roofing wood", "fix rafters"]},
+        {"id": "woodwork.doors_windows", "name": "Door & window frames", "isco08": "7115", "synonyms": ["doors", "door frames", "fix doors", "hang doors", "windows", "window frames", "louvre blades", "door making"]},
+        {"id": "woodwork.formwork", "name": "Formwork (shuttering)", "isco08": "7115", "synonyms": ["formwork", "shuttering", "form work", "boarding for decking", "decking boards", "props"]},
+        {"id": "woodwork.kitchen_cabinets", "name": "Kitchen cabinets", "isco08": "7522", "synonyms": ["cabinets", "kitchen cabinet", "kitchen units", "cupboards", "fitted kitchen", "shelves"]},
+        {"id": "woodwork.wood_finishing", "name": "Wood finishing & polishing", "isco08": "7522", "synonyms": ["polishing", "polish furniture", "french polish", "varnish", "varnishing", "sanding", "spraying furniture", "lacquer", "vanish"]},
+        {"id": "woodwork.upholstery", "name": "Upholstery", "isco08": "7534", "synonyms": ["upholster", "sofa making", "make sofas", "sofa", "cushions", "chair covering", "couch"]},
+        {"id": "woodwork.wood_carving", "name": "Wood carving", "isco08": "7317", "synonyms": ["carving", "carve wood", "carvings", "sculpture", "stools", "drum making", "drums"]},
+        {"id": "woodwork.furniture_repair", "name": "Furniture repair", "isco08": "7522", "synonyms": ["repair furniture", "fix furniture", "fix chairs", "repair chairs", "fix broken table", "furniture repairs"]},
+        {"id": "woodwork.machine_operation", "name": "Woodwork machine operation", "isco08": "7523", "synonyms": ["planer", "planing machine", "saw machine", "sawmill", "circular saw", "wood machine", "use a router"]}
+      ]
+    },
+    {
+      "id": "electrical",
+      "name": "Electrical & Electronics",
+      "isco08_major": "74",
+      "occupation_terms": ["electrician", "electrical", "electrical work", "wireman", "electronics", "electronics repairer", "technician", "phone repairer", "phone technician", "solar technician", "light man", "electrician boy", "tv repairer"],
+      "skills": [
+        {"id": "electrical.house_wiring", "name": "House wiring", "isco08": "7411", "synonyms": ["wiring", "wire houses", "wire a house", "house wiring", "electrical installation", "domestic wiring", "rewiring", "wire buildings"]},
+        {"id": "electrical.conduit_installation", "name": "Conduit installation", "isco08": "7411", "synonyms": ["conduit", "conduits", "pipe for wiring", "chasing walls", "trunking", "surface wiring", "concealed wiring"]},
+        {"id": "electrical.fault_repair", "name": "Electrical fault finding", "isco08": "7411", "synonyms": ["fault finding", "electrical faults", "fix faults", "repair sockets", "fix sockets", "fix lights", "change bulbs", "fix switches", "light problem"]},
+        {"id": "electrical.meter_installation", "name": "Meter & distribution board installation", "isco08": "7411", "synonyms": ["meter", "prepaid meter", "ecg meter", "install meters", "distribution board", "db board", "breakers", "change over switch"]},
+        {"id": "electrical.solar_installation", "name": "Solar installation", "isco08": "7411", "synonyms": ["solar", "solar panels", "install solar", "solar system", "inverter", "inverters", "batteries for solar"]},
+        {"id": "electrical.appliance_repair", "name": "Appliance repair", "isco08": "7412", "synonyms": ["fix fridges", "fridge repair", "repair fan", "fix fans", "blender repair", "iron repair", "appliances", "repair cookers", "washing machine repair"]},
+        {"id": "electrical.generator_repair", "name": "Generator repair", "isco08": "7412", "synonyms": ["generator", "generators", "fix generators", "gen repair", "generator servicing", "repair generator"]},
+        {"id": "electrical.phone_repair", "name": "Phone repair", "isco08": "7422", "synonyms": ["phone repairs", "fix phones", "repair phones", "screen replacement", "change screens", "phone screen", "flashing phones", "unlock phones", "mobile phone repair"]},
+        {"id": "electrical.electronics_repair", "name": "Electronics repair (TV, radio)", "isco08": "7421", "synonyms": ["tv repair", "fix tv", "repair televisions", "radio repair", "sound system", "speakers", "amplifier", "decoder repair", "electronics"]},
+        {"id": "electrical.satellite_installation", "name": "Satellite & CCTV installation", "isco08": "7422", "synonyms": ["satellite dish", "dstv", "gotv", "dish installation", "decoder installation", "cctv", "security cameras", "install cameras"]}
+      ]
+    },
+    {
+      "id": "plumbing_metal",
+      "name": "Plumbing & Metalwork",
+      "isco08_major": "71",
+      "occupation_terms": ["plumber", "plumbing", "welder", "welding", "fabricator", "metal work", "metalwork", "steel work", "aluminium fabricator", "fitter mechanic"],
+      "skills": [
+        {"id": "plumbing_metal.pipe_fitting", "name": "Pipe fitting", "isco08": "7126", "synonyms": ["pipes", "fix pipes", "pipe work", "pipework", "pipe laying", "water pipes", "pvc pipes", "connect water", "burst pipe", "leaking pipe", "fix leaks", "fix burst pipes"]},
+        {"id": "plumbing_metal.sanitary_fitting", "name": "Toilet & sanitary fitting", "isco08": "7126", "synonyms": ["toilet", "fix toilets", "install toilet", "water closet", "wc", "wash hand basin", "sink", "shower", "bath tub", "bathroom fittings", "taps", "fix taps"]},
+        {"id": "plumbing_metal.tank_installation", "name": "Water tank & pump installation", "isco08": "7126", "synonyms": ["polytank", "poly tank", "water tank", "tank installation", "pumping machine", "water pump", "booster pump", "borehole pump", "overhead tank"]},
+        {"id": "plumbing_metal.drain_clearing", "name": "Drain & septic work", "isco08": "7126", "synonyms": ["drain", "drains", "unblock drains", "blocked drain", "choked toilet", "septic tank", "soakaway", "sewage"]},
+        {"id": "plumbing_metal.arc_welding", "name": "Arc welding", "isco08": "7212", "synonyms": ["welding", "weld", "electric welding", "arc weld", "weld metal", "joining metal"]},
+        {"id": "plumbing_metal.gas_welding", "name": "Gas welding & cutting", "isco08": "7212", "synonyms": ["gas welding", "gas cutting", "oxy acetylene", "cutting metal", "brazing"]},
+        {"id": "plumbing_metal.gate_fabrication", "name": "Gates & burglar-proof fabrication", "isco08": "7214", "synonyms": ["gates", "make gates", "metal gates", "burglar proof", "burglar-proof", "burglar bars", "railings", "metal doors", "security doors", "fabrication", "burgler proof"]},
+        {"id": "plumbing_metal.aluminium_fabrication", "name": "Aluminium windows & doors", "isco08": "7213", "synonyms": ["aluminium", "aluminum", "sliding windows", "aluminium windows", "glass doors", "glazing", "curtain wall", "aluminium fabrication"]},
+        {"id": "plumbing_metal.sheet_metal", "name": "Sheet metal work", "isco08": "7213", "synonyms": ["sheet metal", "metal sheets", "gutters", "make gutters", "coal pots", "metal containers", "tin smithing"]},
+        {"id": "plumbing_metal.metal_furniture", "name": "Metal furniture & structures", "isco08": "7214", "synonyms": ["metal chairs", "metal furniture", "steel structures", "metal frames", "kiosk", "make kiosks", "container shop", "trusses steel"]}
+      ]
+    },
+    {
+      "id": "vehicle_repair",
+      "name": "Vehicle Repair",
+      "isco08_major": "72",
+      "occupation_terms": ["mechanic", "fitter", "auto mechanic", "car mechanic", "vulcanizer", "vulcaniser", "panel beater", "sprayer", "auto electrician", "garage work", "apprentice fitter", "fitter man"],
+      "skills": [
+        {"id": "vehicle_repair.engine_repair", "name": "Engine repair", "isco08": "7231", "synonyms": ["engine", "engines", "fix engines", "engine work", "overhaul engine", "repair cars", "fix cars", "car repair", "gear box", "gearbox", "overhauling engine"]},
+        {"id": "vehicle_repair.servicing", "name": "Car servicing", "isco08": "7231", "synonyms": ["servicing", "service cars", "oil change", "change oil", "car service", "filters", "plugs", "tune up"]},
+        {"id": "vehicle_repair.brakes_suspension", "name": "Brakes & suspension", "isco08": "7231", "synonyms": ["brakes", "brake pads", "fix brakes", "suspension", "shocks", "shock absorbers", "ball joints", "alignment"]},
+        {"id": "vehicle_repair.auto_electrical", "name": "Auto electrical", "isco08": "7412", "synonyms": ["auto electrical", "car wiring", "car electrics", "car battery", "starter", "alternator", "car lights", "diagnosis machine", "scan cars"]},
+        {"id": "vehicle_repair.vulcanizing", "name": "Tyre repair (vulcanizing)", "isco08": "7231", "synonyms": ["vulcanizing", "vulcanising", "tyres", "tires", "fix tyres", "puncture", "flat tyre", "wheel balancing", "tyre change"]},
+        {"id": "vehicle_repair.panel_beating", "name": "Panel beating", "isco08": "7213", "synonyms": ["panel beating", "body work", "bodywork", "dents", "straighten body", "accident repair", "fix dents"]},
+        {"id": "vehicle_repair.spraying", "name": "Car spraying", "isco08": "7132", "synonyms": ["spray cars", "car spraying", "car painting", "paint cars", "spraying", "respray"]},
+        {"id": "vehicle_repair.motorbike_repair", "name": "Motorbike repair", "isco08": "7231", "synonyms": ["motorbike", "motor bike", "motorbikes", "okada repair", "fix motors", "motor repair", "tricycle repair", "pragya repair", "bicycle repair"]},
+        {"id": "vehicle_repair.car_ac", "name": "Car air-conditioning", "isco08": "7127", "synonyms": ["car ac", "car air condition", "ac gas", "car aircon", "fix ac in cars", "refrigeration", "ac repair"]},
+        {"id": "vehicle_repair.car_washing", "name": "Car washing", "isco08": "9122", "synonyms": ["car wash", "wash cars", "washing cars", "washing bay", "detailing", "car cleaning"]}
+      ]
+    },
+    {
+      "id": "transport",
+      "name": "Driving & Transport",
+      "isco08_major": "83",
+      "occupation_terms": ["driver", "driving", "taxi driver", "trotro driver", "uber driver", "bolt driver", "truck driver", "okada rider", "rider", "dispatch rider", "delivery rider", "mate", "driver mate", "conductor", "porter", "kayayo", "kayayei"],
+      "skills": [
+        {"id": "transport.taxi_driving", "name": "Taxi & ride-hailing driving", "isco08": "8322", "synonyms": ["taxi", "drive taxi", "uber", "bolt", "yango", "ride hailing", "drop off", "cab"]},
+        {"id": "transport.bus_driving", "name": "Trotro & bus driving", "isco08": "8331", "synonyms": ["trotro", "tro tro", "tro-tro", "bus", "drive bus", "sprinter", "mini bus", "commercial driving", "drive passengers"]},
+        {"id": "transport.truck_driving", "name": "Truck driving", "isco08": "8332", "synonyms": ["truck", "trucks", "tipper", "drive tipper", "articulator", "trailer", "heavy duty", "haulage", "cargo truck", "kia truck"]},
+        {"id": "transport.private_driving", "name": "Private & company driving", "isco08": "8322", "synonyms": ["private driver", "drive for a family", "company driver", "personal driver", "chauffeur", "drive salon car", "drive boss"]},
+        {"id": "transport.motorbike_riding", "name": "Motorbike riding (okada)", "isco08": "8321", "synonyms": ["okada", "ride motor", "ride motorbike", "motor riding", "motorbike riding", "ride okada"]},
+        {"id": "transport.delivery_riding", "name": "Delivery riding", "isco08": "8321", "synonyms": ["delivery", "deliveries", "dispatch", "dispatch riding", "deliver food", "deliver parcels", "glovo", "courier"]},
+        {"id": "transport.tricycle_riding", "name": "Tricycle riding (pragya, aboboyaa)", "isco08": "8321", "synonyms": ["pragya", "tricycle", "aboboyaa", "abobo yaa", "keke", "motor king", "drive pragya", "ride aboboyaa"]},
+        {"id": "transport.driver_mate", "name": "Driver's mate (conductor)", "isco08": "5112", "synonyms": ["mate", "driver mate", "bus conductor", "conductor", "call passengers", "collect fares", "loading passengers"]},
+        {"id": "transport.portering", "name": "Head portering (kayayo)", "isco08": "9621", "synonyms": ["kayayo", "kaya", "carry load", "carry loads", "head porter", "carry goods in market", "porter work"]},
+        {"id": "transport.loading", "name": "Loading & offloading", "isco08": "9333", "synonyms": ["loading", "offloading", "load trucks", "offload goods", "loading boy", "carry bags", "loading and offloading"]}
+      ]
+    },
+    {
+      "id": "textile_fashion",
+      "name": "Textile & Fashion",
+      "isco08_major": "75",
+      "occupation_terms": ["tailor", "seamstress", "dressmaker", "fashion designer", "fashion", "sewing", "weaver", "shoemaker", "cobbler", "bead maker", "dress maker"],
+      "skills": [
+        {"id": "textile_fashion.dressmaking", "name": "Dressmaking", "isco08": "7531", "synonyms": ["sew dresses", "dresses", "make dresses", "ladies wear", "gowns", "sewing for women", "sew for ladies"]},
+        {"id": "textile_fashion.tailoring", "name": "Tailoring (men's wear)", "isco08": "7531", "synonyms": ["sew shirts", "shirts", "trousers", "suits", "men's wear", "mens wear", "sew for men", "sew trousers"]},
+        {"id": "textile_fashion.kaba_slit", "name": "Kaba & slit", "isco08": "7531", "synonyms": ["kaba", "kaba and slit", "slit", "sew kaba", "traditional wear", "kente outfit", "african wear", "ankara"]},
+        {"id": "textile_fashion.alterations", "name": "Alterations & mending", "isco08": "7531", "synonyms": ["alterations", "amend clothes", "adjust clothes", "mending", "patch clothes", "fix zips", "repair clothes", "mend clothes"]},
+        {"id": "textile_fashion.pattern_cutting", "name": "Pattern cutting", "isco08": "7532", "synonyms": ["patterns", "pattern drafting", "cutting", "cut cloth", "measurements", "take measurements", "designing styles"]},
+        {"id": "textile_fashion.embroidery", "name": "Embroidery", "isco08": "7533", "synonyms": ["embroider", "embroidery machine", "machine embroidery", "design on cloth", "stitching designs"]},
+        {"id": "textile_fashion.kente_weaving", "name": "Kente & smock weaving", "isco08": "7318", "synonyms": ["kente", "weave kente", "weaving", "smock", "fugu", "batakari", "loom"]},
+        {"id": "textile_fashion.batik_tiedye", "name": "Batik & tie-dye", "isco08": "7318", "synonyms": ["batik", "tie and dye", "tie-dye", "tie dye", "dyeing", "dye cloth", "adinkra printing", "screen printing"]},
+        {"id": "textile_fashion.shoe_making", "name": "Shoe making & repair", "isco08": "7536", "synonyms": ["shoes", "make shoes", "sandals", "slippers", "shoe repair", "mend shoes", "cobbling", "leather work", "leatherwork", "bags", "make bags"]},
+        {"id": "textile_fashion.beadwork", "name": "Bead making & jewellery", "isco08": "7317", "synonyms": ["beads", "bead making", "beadwork", "bracelets", "necklaces", "waist beads", "jewellery", "jewelry"]}
+      ]
+    },
+    {
+      "id": "hair_beauty",
+      "name": "Hair & Beauty",
+      "isco08_major": "51",
+      "occupation_terms": ["hairdresser", "hairdressing", "barber", "beautician", "beauty", "stylist", "hair stylist", "nail tech", "makeup artist", "salon", "hair dresser", "make up artist"],
+      "skills": [
+        {"id": "hair_beauty.hairdressing", "name": "Hairdressing & styling", "isco08": "5141", "synonyms": ["hair", "do hair", "style hair", "hair styling", "relaxer", "retouching", "perming", "setting hair", "hair treatment", "wash hair"]},
+        {"id": "hair_beauty.braiding", "name": "Braiding", "isco08": "5141", "synonyms": ["braids", "braid hair", "braiding hair", "cornrows", "twists", "knotless", "attachment", "plaiting", "weave on"]},
+        {"id": "hair_beauty.barbering", "name": "Barbering", "isco08": "5141", "synonyms": ["barbing", "barber", "cut hair", "haircut", "hair cut", "shave", "shaving", "lining", "fade", "low cut"]},
+        {"id": "hair_beauty.wig_making", "name": "Wig making & installation", "isco08": "5141", "synonyms": ["wigs", "make wigs", "wig installation", "frontal", "closure", "lace wig", "revamp wigs", "sew in"]},
+        {"id": "hair_beauty.locs", "name": "Locs (dreadlocks)", "isco08": "5141", "synonyms": ["locs", "dreadlocks", "dreads", "retwist", "start locs", "sister locs"]},
+        {"id": "hair_beauty.nails", "name": "Manicure, pedicure & nails", "isco08": "5142", "synonyms": ["nails", "fix nails", "acrylic nails", "manicure", "pedicure", "gel polish", "nail art", "press on nails"]},
+        {"id": "hair_beauty.makeup", "name": "Make-up", "isco08": "5142", "synonyms": ["makeup", "make up", "make-up", "face beat", "bridal makeup", "do makeup"]},
+        {"id": "hair_beauty.lashes_brows", "name": "Lashes & brows", "isco08": "5142", "synonyms": ["lashes", "eyelashes", "lash extensions", "brows", "eyebrows", "microblading", "brow tint", "draw brows"]},
+        {"id": "hair_beauty.skin_care", "name": "Skin care & massage", "isco08": "5142", "synonyms": ["facials", "facial", "skin care", "massage", "body scrub", "spa", "waxing"]},
+        {"id": "hair_beauty.salon_assistant", "name": "Salon assistant", "isco08": "5141", "synonyms": ["salon assistant", "salon apprentice", "help in salon", "wash and set", "assist in salon", "wash n set"]}
+      ]
+    },
+    {
+      "id": "food_catering",
+      "name": "Food & Catering",
+      "isco08_major": "51",
+      "occupation_terms": ["cook", "chef", "caterer", "catering", "baker", "food seller", "chop bar", "waiter", "waitress", "bartender", "kitchen staff", "waakye seller"],
+      "skills": [
+        {"id": "food_catering.cooking", "name": "Cooking (local dishes)", "isco08": "5120", "synonyms": ["cook", "cooking", "cook food", "local dishes", "jollof", "fufu", "banku", "light soup", "groundnut soup", "stew", "pound fufu"]},
+        {"id": "food_catering.event_catering", "name": "Event catering", "isco08": "5120", "synonyms": ["catering", "cater for events", "events", "parties", "weddings", "funerals", "outdoor catering", "buffet"]},
+        {"id": "food_catering.baking", "name": "Baking (bread)", "isco08": "7512", "synonyms": ["bake", "baking", "bread", "bake bread", "tea bread", "sugar bread", "bakery", "oven"]},
+        {"id": "food_catering.pastries", "name": "Pastries & cakes", "isco08": "7512", "synonyms": ["cakes", "bake cakes", "pastries", "meat pie", "meatpie", "doughnuts", "pie", "chips", "small chops", "cake decorating"]},
+        {"id": "food_catering.street_food", "name": "Street food & chop bar", "isco08": "5212", "synonyms": ["chop bar", "waakye", "kenkey", "sell food", "food vending", "fried rice", "indomie", "kelewele", "koko", "hausa koko", "rice and stew", "red red"]},
+        {"id": "food_catering.waiting", "name": "Waiting & serving", "isco08": "5131", "synonyms": ["serve food", "serving", "waitering", "waitress work", "serve customers", "restaurant service", "table service"]},
+        {"id": "food_catering.bartending", "name": "Bartending", "isco08": "5132", "synonyms": ["bar", "bar tender", "serve drinks", "mix drinks", "cocktails", "drinking spot"]},
+        {"id": "food_catering.kitchen_assistant", "name": "Kitchen assistant", "isco08": "9412", "synonyms": ["kitchen helper", "kitchen assistant", "wash plates", "washing dishes", "dish washing", "cut vegetables", "food prep", "help in kitchen", "cutting vegetables"]},
+        {"id": "food_catering.drinks_making", "name": "Juice & local drinks", "isco08": "7514", "synonyms": ["juice", "make juice", "sobolo", "asaana", "pito", "smoothies", "yogurt", "ice cream", "brukina", "fula"]},
+        {"id": "food_catering.grilling", "name": "Grilling (kebab, tilapia)", "isco08": "9411", "synonyms": ["grill", "grilling", "kebab", "khebab", "chichinga", "grilled tilapia", "roast plantain", "roasting", "barbecue", "suya"]}
+      ]
+    },
+    {
+      "id": "domestic_services",
+      "name": "Domestic, Cleaning & Security",
+      "isco08_major": "91",
+      "occupation_terms": ["house help", "housemaid", "maid", "domestic worker", "cleaner", "nanny", "caregiver", "security", "security guard", "watchman", "gardener", "steward", "houseboy", "house girl"],
+      "skills": [
+        {"id": "domestic_services.house_cleaning", "name": "House cleaning", "isco08": "9111", "synonyms": ["clean", "cleaning", "clean houses", "house cleaning", "sweep", "sweeping", "mop", "mopping", "dusting", "house keeping", "housekeeping"]},
+        {"id": "domestic_services.laundry", "name": "Laundry & ironing", "isco08": "9121", "synonyms": ["laundry", "wash clothes", "washing clothes", "ironing", "iron clothes", "dry cleaning", "launder"]},
+        {"id": "domestic_services.child_care", "name": "Child care (nanny)", "isco08": "5311", "synonyms": ["nanny", "babysit", "babysitting", "take care of children", "look after kids", "care for babies", "child minding", "school runs"]},
+        {"id": "domestic_services.elderly_care", "name": "Elderly & home care", "isco08": "5322", "synonyms": ["care for the elderly", "old people", "caregiving", "caregiver", "home care", "patient care", "care for sick", "take care of old people"]},
+        {"id": "domestic_services.household_cooking", "name": "Cooking for a household", "isco08": "5120", "synonyms": ["cook for family", "cook for a family", "family cook", "house cook", "cook at home", "steward cooking"]},
+        {"id": "domestic_services.office_cleaning", "name": "Office & commercial cleaning", "isco08": "9112", "synonyms": ["office cleaning", "clean offices", "janitor", "cleaning company", "clean shops", "cleaning hotels", "toilet cleaning"]},
+        {"id": "domestic_services.gardening", "name": "Gardening & compound care", "isco08": "9214", "synonyms": ["gardening", "garden", "lawn", "mow lawn", "cut grass", "weeding compound", "compound", "flowers", "landscaping"]},
+        {"id": "domestic_services.security_guard", "name": "Security guarding", "isco08": "5414", "synonyms": ["security", "guard", "security guard", "watchman", "night watch", "gate man", "guard houses", "patrol"]},
+        {"id": "domestic_services.fumigation", "name": "Fumigation & pest control", "isco08": "7544", "synonyms": ["fumigation", "fumigate", "pest control", "spray mosquitoes", "insecticide", "termites"]},
+        {"id": "domestic_services.errands", "name": "Errands & house help", "isco08": "9111", "synonyms": ["errands", "run errands", "house help", "market shopping", "help at home", "general house work"]}
+      ]
+    },
+    {
+      "id": "agriculture",
+      "name": "Agriculture & Agro-processing",
+      "isco08_major": "61",
+      "occupation_terms": ["farmer", "farming", "farm hand", "farm worker", "agriculture", "poultry farmer", "fish farmer", "livestock farmer", "agro processing", "agric"],
+      "skills": [
+        {"id": "agriculture.crop_farming", "name": "Crop farming", "isco08": "6111", "synonyms": ["farm", "crops", "maize", "cassava", "yam", "plantain", "rice farming", "corn", "food crops", "planting"]},
+        {"id": "agriculture.vegetable_farming", "name": "Vegetable farming", "isco08": "6113", "synonyms": ["vegetables", "tomatoes", "pepper", "okro", "okra", "garden eggs", "onions", "cabbage", "lettuce", "irrigation"]},
+        {"id": "agriculture.tree_crops", "name": "Cocoa & tree crops", "isco08": "6112", "synonyms": ["cocoa", "cocoa farm", "palm", "oil palm", "cashew", "mango", "citrus", "orange farm", "coconut"]},
+        {"id": "agriculture.poultry", "name": "Poultry keeping", "isco08": "6122", "synonyms": ["poultry", "chickens", "fowls", "birds", "layers", "broilers", "eggs", "feed birds", "guinea fowl"]},
+        {"id": "agriculture.livestock", "name": "Livestock rearing", "isco08": "6121", "synonyms": ["livestock", "goats", "sheep", "pigs", "cattle", "cows", "rabbits", "grasscutter", "herding"]},
+        {"id": "agriculture.fish_farming", "name": "Fish farming & fishing", "isco08": "6221", "synonyms": ["fish farming", "fish pond", "tilapia farming", "catfish", "fishing", "fisherman", "net mending", "canoe"]},
+        {"id": "agriculture.farm_labour", "name": "Farm labour", "isco08": "9211", "synonyms": ["weeding", "weed", "harvesting", "harvest", "clear land", "land clearing", "cutlass work", "farm labour", "planting for people", "spraying farm"]},
+        {"id": "agriculture.tractor_operation", "name": "Tractor & farm machinery", "isco08": "8341", "synonyms": ["tractor", "drive tractor", "ploughing", "plowing", "farm machine", "harvester", "power tiller"]},
+        {"id": "agriculture.agro_processing", "name": "Agro-processing (gari, palm oil, shea)", "isco08": "7514", "synonyms": ["gari", "gari processing", "palm oil", "process palm oil", "shea butter", "shito", "groundnut paste", "smoke fish", "fish smoking", "cassava processing", "smoking fish"]},
+        {"id": "agriculture.nursery", "name": "Nursery & seedlings", "isco08": "6113", "synonyms": ["nursery", "seedlings", "raise seedlings", "potted plants", "flower nursery", "grafting"]}
+      ]
+    },
+    {
+      "id": "trading_sales",
+      "name": "Trading & Sales",
+      "isco08_major": "52",
+      "occupation_terms": ["trader", "trading", "seller", "sales", "salesperson", "sales girl", "sales boy", "shop attendant", "hawker", "market woman", "vendor", "cashier", "mobile money agent", "storekeeper", "momo agent", "sales person"],
+      "skills": [
+        {"id": "trading_sales.market_trading", "name": "Market trading", "isco08": "5211", "synonyms": ["market", "sell in market", "market stall", "trading", "trade", "buy and sell", "selling foodstuff", "sell foodstuffs"]},
+        {"id": "trading_sales.shop_keeping", "name": "Shop keeping (provisions)", "isco08": "5221", "synonyms": ["shop", "provisions", "provision shop", "kiosk", "run a shop", "container shop", "mini mart", "store"]},
+        {"id": "trading_sales.street_hawking", "name": "Street hawking", "isco08": "9520", "synonyms": ["hawking", "hawk", "sell on the street", "sell in traffic", "selling in traffic", "street selling", "pure water", "sachet water", "walk and sell"]},
+        {"id": "trading_sales.shop_assistant", "name": "Shop sales assistant", "isco08": "5223", "synonyms": ["sales girl", "sales boy", "shop attendant", "sales assistant", "attend to customers", "work in a shop", "boutique"]},
+        {"id": "trading_sales.mobile_money", "name": "Mobile money agent", "isco08": "4211", "synonyms": ["mobile money", "momo", "momo agent", "momo vendor", "cash in", "cash out", "airtime", "sell credit", "sim registration"]},
+        {"id": "trading_sales.cashier", "name": "Cashier", "isco08": "5230", "synonyms": ["cashier", "cash register", "pos", "receive payments", "count money", "receive payment"]},
+        {"id": "trading_sales.phone_accessories", "name": "Phone & accessories sales", "isco08": "5223", "synonyms": ["sell phones", "phone accessories", "chargers", "earphones", "phone shop", "gadgets"]},
+        {"id": "trading_sales.sales_marketing", "name": "Sales & marketing", "isco08": "3322", "synonyms": ["marketing", "sales rep", "sales representative", "market products", "door to door", "promote products", "find customers", "social media sales", "online selling", "sell online"]},
+        {"id": "trading_sales.customer_service", "name": "Customer service", "isco08": "4222", "synonyms": ["customer service", "customer care", "receptionist", "front desk", "call centre", "answer calls", "attend to clients"]},
+        {"id": "trading_sales.storekeeping", "name": "Storekeeping & inventory", "isco08": "4321", "synonyms": ["storekeeper", "store keeping", "warehouse", "stock taking", "inventory", "stock keeping", "record stock", "ware house"]}
+      ]
+    }
+  ]
+}

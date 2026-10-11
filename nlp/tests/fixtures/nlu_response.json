@@ -1,0 +1,138 @@
+{
+  "intent": "SKILL_DECLARE",
+  "confidence": 0.92,
+  "below_threshold": false,
+  "intent_ranking": [
+    {
+      "intent": "SKILL_DECLARE",
+      "confidence": 0.92
+    },
+    {
+      "intent": "TRADE_IDENTIFY",
+      "confidence": 0.01
+    },
+    {
+      "intent": "LOCATION_SHARE",
+      "confidence": 0.01
+    }
+  ],
+  "entities": [
+    {
+      "label": "TRADE_CATEGORY",
+      "text": "mason",
+      "start": 5,
+      "end": 10,
+      "confidence": 0.97,
+      "source": "model",
+      "resolved": {
+        "type": "category",
+        "id": "construction",
+        "name": "Construction & Building",
+        "match_score": 1.0
+      }
+    },
+    {
+      "label": "SKILL_ITEM",
+      "text": "lay blocks",
+      "start": 14,
+      "end": 24,
+      "confidence": 0.97,
+      "source": "model",
+      "resolved": {
+        "type": "skill",
+        "id": "construction.block_laying",
+        "name": "Block laying",
+        "match_score": 1.0
+      }
+    },
+    {
+      "label": "SKILL_ITEM",
+      "text": "plastring",
+      "start": 29,
+      "end": 38,
+      "confidence": 0.97,
+      "source": "model",
+      "resolved": {
+        "type": "skill",
+        "id": "construction.plastering",
+        "name": "Plastering",
+        "match_score": 0.947
+      }
+    },
+    {
+      "label": "EXPERIENCE_DURATION",
+      "text": "5 yrs",
+      "start": 43,
+      "end": 48,
+      "confidence": 0.97,
+      "source": "model",
+      "resolved": {
+        "type": "duration",
+        "years": 5.0
+      }
+    },
+    {
+      "label": "LOCATION",
+      "text": "madina",
+      "start": 52,
+      "end": 58,
+      "confidence": 0.97,
+      "source": "model",
+      "resolved": {
+        "type": "location",
+        "district": "La Nkwantanang Madina",
+        "region": "Greater Accra",
+        "locality": "Madina",
+        "match_score": 1.0
+      }
+    }
+  ],
+  "skills": [
+    {
+      "canonical_name": "Block laying",
+      "skill_id": "construction.block_laying",
+      "category_id": "construction",
+      "category": "Construction & Building",
+      "isco08": "7112",
+      "confidence": 0.97,
+      "source_text": "lay blocks",
+      "source": "model"
+    },
+    {
+      "canonical_name": "Plastering",
+      "skill_id": "construction.plastering",
+      "category_id": "construction",
+      "category": "Construction & Building",
+      "isco08": "7123",
+      "confidence": 0.9186,
+      "source_text": "plastring",
+      "source": "model"
+    }
+  ],
+  "trade_category": {
+    "category_id": "construction",
+    "name": "Construction & Building",
+    "confidence": 0.97,
+    "via": "trade",
+    "example_skills": [
+      "Block laying",
+      "Plastering",
+      "Concrete work"
+    ]
+  },
+  "location": {
+    "district": "La Nkwantanang Madina",
+    "region": "Greater Accra",
+    "locality": "Madina",
+    "confidence": 0.97,
+    "source_text": "madina"
+  },
+  "experience": {
+    "text": "5 yrs",
+    "years": 5.0,
+    "confidence": 0.97
+  },
+  "model_version": "intent@2026-10-11T00:00:00+00:00;ner@2026-10-11T00:00:00+00:00",
+  "latency_ms": 84.2,
+  "taxonomy_version": "1.0.0-draft"
+}

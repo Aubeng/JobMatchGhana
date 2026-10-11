@@ -12,9 +12,10 @@ namespace JobMatch.Infrastructure.Orchestration;
 /// Slice 1 orchestrator: replaces the Phase 1 echo with the deterministic FSM + Redis
 /// sessions. Responsibilities (the FSM itself stays pure):
 ///   1. Idempotency — dedupe on <c>MessageLog.WaMessageId</c> (at-least-once delivery).
-///   2. Load/create the Redis session and run one FSM step (calling the NLU stub when needed).
+///   2. Load/create the Redis session and run one FSM step (calling NLU on every post-consent turn).
 ///   3. Persist worker profile + confirmed skills once consent is given (consent gate).
-///   4. Instrument every turn: FSM state, detected intent, NLU confidence, repair flag.
+///   4. Instrument every turn: FSM state, detected intent, NLU confidence, repair flag,
+///      plus the NLU service's own intent/entities/model version (Slice 2).
 ///   5. Send outbound replies and mark the inbound message read.
 /// </summary>
 public class FsmConversationOrchestrator : IConversationOrchestrator
@@ -85,7 +86,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         var stateBefore = session.State;
 
         NluResult? nlu = null;
-        if (ConversationFsm.RequiresNlu(session, message.Text))
+        if (ConversationFsm.ShouldAnalyze(session, message.Text))
             nlu = await _nlu.AnalyzeAsync(message.Text, session.State.ToString(), ct);
 
         var result = ConversationFsm.Step(session, message.Text, nlu);
@@ -95,6 +96,14 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         inboundLog.SessionState = stateBefore;
         inboundLog.NluConfidence = result.NluConfidence;
         inboundLog.IsRepair = result.IsRepair;
+        if (nlu is not null)
+        {
+            inboundLog.NluIntent = nlu.Intent;
+            inboundLog.NluIntentConfidence = nlu.Confidence;
+            inboundLog.NluEntitiesJson = nlu.EntitiesJson;
+            inboundLog.NluModelVersion = nlu.ModelVersion;
+            inboundLog.NluLatencyMs = nlu.LatencyMs;
+        }
 
         // 4) Sync worker + skills (only after consent — consent gate).
         await SyncWorkerAsync(result, message, ct);

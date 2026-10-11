@@ -1,0 +1,18 @@
+# JobMatch Ghana NLU service (Slice 2). Pinned versions used to train and test the v1 models.
+# CPU-only torch:  pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1+cpu
+transformers==5.19.0
+tokenizers==0.23.3
+sentencepiece==0.2.2
+accelerate==1.15.0
+numpy==2.5.4
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.0
+RapidFuzz==3.14.6
+scikit-learn==1.9.1
+seqeval==1.2.2
+
+# tests
+pytest==9.1.1
+httpx==0.28.1

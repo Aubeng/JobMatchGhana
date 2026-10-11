@@ -1,0 +1,8 @@
+[project]
+name = "jobmatch-nlp"
+version = "2.0.0"
+description = "JobMatch Ghana NLU service: XLM-RoBERTa intent classifier + BERT+CRF entity recogniser"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

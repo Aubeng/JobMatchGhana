@@ -1,0 +1,162 @@
+# CONFIRMATION — synthetic draft by Claude (2026-10-11), pending researcher validation
+yes
+yes oo
+yes ooo
+yes please
+yes pls
+yes sir
+yes madam
+yes boss
+yes chale
+yess
+yesss
+yea
+yeah
+yeah thats it
+yep
+yup
+ya
+yah
+correct
+correct oo
+very correct
+its correct
+it is correct
+thats correct
+dat is correct
+correct boss
+correct sir
+corect
+corrrect
+that's right
+thats right
+dats right
+right
+yes right
+exactly
+exactly so
+exactly wat i said
+ok
+okay
+okey
+okk
+oky
+ok boss
+ok thats fine
+ok correct
+ok yes
+alright
+alryt
+fine
+its fine
+thats fine by me
+sure
+sure boss
+sure sure
+sure thing
+of course
+ofcourse
+yoo
+yoo boss
+yoo chale
+yoo thats it
+ampa
+ampa oo
+ampa paa
+ampa boss
+yes ampa
+true
+true true
+its true
+that is true
+yes thats my work
+yes dat be my work
+thats my work paa
+yes thats what i do
+thats wat i do
+yes that one
+that one
+dat one
+that one oo
+yes dat one
+thats the one
+yes thats the one i mean
+u got it
+you got it right
+u are right
+you are correct
+ur right
+spot on
+perfect
+perfect thank u
+good
+yes good
+all good
+everything is correct
+everything correct
+all correct
+all is correct
+all of it is correct
+all dey correct
+everything dey correct
+e correct
+e dey correct
+e be so
+na so
+na so e be
+na im
+yes na im
+na dat one
+i agree
+i agree with that
+i confirm
+confirmed
+yes i confirm
+confirm
+please confirm it
+go ahead
+yes go ahead
+u can go ahead
+proceed
+yes proceed
+continue
+yes continue
+save it
+yes save it
+ok save am
+no problem
+no wahala
+yes no wahala
+its ok like that
+its ok so
+leave it like that
+keep it like that
+that is it
+thats it
+dats it
+yes yes
+yes yes yes
+yes pls continue
+yes that is exactly my work
+mmm yes
+hmm ok
+eii yes
+yes thank you
+yes thanks
+ok thank u
+yes [madina](LOCATION) is correct
+yes i stay at [kasoa](LOCATION)
+correct [tema](LOCATION)
+yes [ashaiman](LOCATION) is my area
+thats right am in [dansoman](LOCATION)
+yes [carpenter](TRADE_CATEGORY) is correct
+yes am a [mason](TRADE_CATEGORY)
+yes [block laying](SKILL_ITEM) is my work
+correct i do [tiling](SKILL_ITEM)
+yes [plumbing](TRADE_CATEGORY) thats me
+yes [braiding](SKILL_ITEM) is correct
+yes [10 years](EXPERIENCE_DURATION) correct
+yes [5 yrs](EXPERIENCE_DURATION) thats right
+yes [welding](SKILL_ITEM) and [kasoa](LOCATION) correct
+ampa [electrician](TRADE_CATEGORY) in [adenta](LOCATION)
+correct, [kaneshie](LOCATION) full time

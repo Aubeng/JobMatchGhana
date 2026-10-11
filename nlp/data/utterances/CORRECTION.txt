@@ -1,0 +1,173 @@
+# CORRECTION — synthetic draft by Claude (2026-10-11), pending researcher validation
+no
+noo
+nooo
+no oo
+no please
+no pls
+no sir
+no boss
+nope
+nah
+naa
+wrong
+wrong oo
+its wrong
+that is wrong
+thats wrong
+dat be wrong
+rong
+wrong one
+not correct
+its not correct
+that is not correct
+dat is not correct
+incorrect
+not right
+thats not right
+not that one
+not dat one
+no not that
+no not dat one oo
+no be so
+no be so oo
+e no be so
+e no correct
+no be dat
+no be that one
+no thats not my work
+dat no be my work
+thats not wat i said
+that is not what i said
+i didnt say that
+i no talk dat one
+u got it wrong
+you got it wrong
+u misunderstand me
+u no hear me well
+no you dont understand me
+not exactly
+not really
+no change it
+pls change it
+change am
+i want to change it
+let me change it
+no let me correct it
+i want to correct something
+small mistake there
+there is a mistake
+mistake
+u made a mistake
+no thats a mistake
+no its not like that
+no some is wrong
+the area is wrong
+the location is wrong
+my area is wrong
+the work is wrong
+the skill is wrong
+the time is wrong
+no i dont do that work
+i dont do that
+no i dont know that one
+no i cant do that
+no abeg
+abeg no
+chale no
+chale thats wrong
+ah no
+eii no
+mba
+daabi
+dabi
+no not full time
+not full time oo
+no its part time
+no only weekends
+no i said mornings
+no i said [tiling](SKILL_ITEM) not [plastering](SKILL_ITEM)
+not [plastering](SKILL_ITEM), [tiling](SKILL_ITEM)
+i said [tiles](SKILL_ITEM) not [painting](SKILL_ITEM)
+no i do [roofing](SKILL_ITEM) not [ceiling](SKILL_ITEM)
+change my area to [tema](LOCATION)
+change my location to [kasoa](LOCATION)
+pls change my area to [madina](LOCATION)
+no am in [ashaiman](LOCATION)
+no i stay [teshie](LOCATION)
+not [madina](LOCATION), [adenta](LOCATION)
+no i said [dome](LOCATION) not [dansoman](LOCATION)
+wrong area, i dey [kaneshie](LOCATION)
+no be [tema](LOCATION), na [ashaiman](LOCATION)
+i dont stay at [osu](LOCATION), am at [nima](LOCATION)
+my area is [spintex](LOCATION) not [nungua](LOCATION)
+no i live in [kasoa](LOCATION) not [weija](LOCATION)
+the place is [lapaz](LOCATION) not [achimota](LOCATION)
+change it to [amasaman](LOCATION) pls
+no its [east legon](LOCATION)
+not [accra](LOCATION) oo, [tema community 4](LOCATION)
+no [dodowa](LOCATION) not [dome](LOCATION)
+i dont do [welding](SKILL_ITEM) oo
+i no dey do [welding](SKILL_ITEM)
+no i dont do [plumbing](TRADE_CATEGORY)
+my work is [carpentry](TRADE_CATEGORY) not [masonry](TRADE_CATEGORY)
+am not a [mason](TRADE_CATEGORY) am a [carpenter](TRADE_CATEGORY)
+no am a [tailor](TRADE_CATEGORY) not [hairdresser](TRADE_CATEGORY)
+no i be [electrician](TRADE_CATEGORY) not [plumber](TRADE_CATEGORY)
+wrong, am a [mechanic](TRADE_CATEGORY)
+no i be [driver](TRADE_CATEGORY)
+not [cook](TRADE_CATEGORY), [caterer](TRADE_CATEGORY)
+no my trade is [hairdressing](TRADE_CATEGORY)
+no i do [barbing](SKILL_ITEM) not [braids](SKILL_ITEM)
+not [wigs](SKILL_ITEM) oo, [nails](SKILL_ITEM)
+no i said [braid hair](SKILL_ITEM)
+i dont do [makeup](SKILL_ITEM), only [lashes](SKILL_ITEM)
+no i [lay blocks](SKILL_ITEM) i dont [plaster](SKILL_ITEM)
+no its [block laying](SKILL_ITEM) not [concrete work](SKILL_ITEM)
+change [painting](SKILL_ITEM) to [pop ceiling](SKILL_ITEM)
+remove [roofing](SKILL_ITEM) i dont do it
+pls remove [tiling](SKILL_ITEM) from my skills
+add [house wiring](SKILL_ITEM) not [solar](SKILL_ITEM)
+no i [fix phones](SKILL_ITEM) not [tv repair](SKILL_ITEM)
+no i dont [fix fridges](SKILL_ITEM)
+not [kaba and slit](SKILL_ITEM), i sew [shirts](SKILL_ITEM)
+no i do [alterations](SKILL_ITEM) only
+wrong skill, i do [panel beating](SKILL_ITEM)
+no not [servicing](SKILL_ITEM), [fix brakes](SKILL_ITEM)
+i dont [drive taxi](SKILL_ITEM) i drive [trotro](SKILL_ITEM)
+no i do [okada](SKILL_ITEM) not [delivery](SKILL_ITEM)
+no i sell in [market](SKILL_ITEM) not [shop](SKILL_ITEM)
+no i be [momo agent](SKILL_ITEM)
+not [cleaning](SKILL_ITEM), [laundry](SKILL_ITEM)
+no i dont do [babysitting](SKILL_ITEM)
+no i do [cakes](SKILL_ITEM) not [cooking](SKILL_ITEM)
+i said [waakye](SKILL_ITEM) not [kenkey](SKILL_ITEM)
+no [make furniture](SKILL_ITEM) not [doors](SKILL_ITEM)
+no i dont do [cabinets](SKILL_ITEM) oo
+no i do [poultry](SKILL_ITEM) not [vegetables](SKILL_ITEM)
+not [gates](SKILL_ITEM), i do [aluminium](SKILL_ITEM) windows
+no its [gas welding](SKILL_ITEM)
+no [10 years](EXPERIENCE_DURATION) not [2 years](EXPERIENCE_DURATION)
+not [5 yrs](EXPERIENCE_DURATION), [15 yrs](EXPERIENCE_DURATION)
+no i said [three years](EXPERIENCE_DURATION)
+wrong experience, its [since 2015](EXPERIENCE_DURATION)
+change my experience to [8 years](EXPERIENCE_DURATION)
+no i have done it [6 months](EXPERIENCE_DURATION) only
+no be [20 years](EXPERIENCE_DURATION) oo, [12 years](EXPERIENCE_DURATION)
+no its [one year](EXPERIENCE_DURATION) not [one month](EXPERIENCE_DURATION)
+no not [carpenter](TRADE_CATEGORY) in [madina](LOCATION), [mason](TRADE_CATEGORY) in [adenta](LOCATION)
+no am a [welder](TRADE_CATEGORY) and i stay [ashaiman](LOCATION)
+the work is correct but the area is [kasoa](LOCATION) not [mallam](LOCATION)
+skill ok but change area to [tema new town](LOCATION)
+area correct but i do [tiling](SKILL_ITEM) not [plastering](SKILL_ITEM)
+no [tailor](TRADE_CATEGORY) for [7 years](EXPERIENCE_DURATION), not [3](EXPERIENCE_DURATION)
+wrong, i did [braids](SKILL_ITEM) for [4 years](EXPERIENCE_DURATION)
+not full time, and my area is [dansoman](LOCATION)
+no i said [kwabenya](LOCATION) not [kwashieman](LOCATION)
+pls i stay at [odorkor](LOCATION) not [darkuman](LOCATION)
+no i want work in [spintex](LOCATION) not [tema](LOCATION)
+no not [gardening](SKILL_ITEM) i do [security](SKILL_ITEM)
+mba, i be [cleaner](TRADE_CATEGORY)
+daabi, am in [adabraka](LOCATION)
+ehn no, i do [steel bending](SKILL_ITEM)
+chale no, [mechanic](TRADE_CATEGORY) not [driver](TRADE_CATEGORY)

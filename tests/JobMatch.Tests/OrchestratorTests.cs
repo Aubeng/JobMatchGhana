@@ -105,6 +105,34 @@ public class OrchestratorTests
     }
 
     [Fact]
+    public async Task Nlu_telemetry_is_logged_after_consent_and_never_before()
+    {
+        var h = new Harness();
+        const string wa = "233240000005";
+
+        await h.SendAsync(wa, "hi", "wamid.T1");                 // pre-consent: not analysed
+        await h.SendAsync(wa, "1", "wamid.T2");                  // the consent turn itself: not analysed
+        await h.SendAsync(wa, "1", "wamid.T3");                  // menu digit: not analysed
+        await h.SendAsync(wa, "Kofi", "wamid.T4");               // post-consent free text: analysed
+        await h.SendAsync(wa, "Madina", "wamid.T5");
+        await h.SendAsync(wa, "I can lay blocks", "wamid.T6");
+
+        await using var db = h.NewContext();
+        var logs = await db.MessageLogs.Where(m => m.Direction == MessageDirection.Inbound)
+            .ToDictionaryAsync(m => m.WaMessageId!);
+
+        logs["wamid.T1"].NluModelVersion.Should().BeNull();
+        logs["wamid.T2"].NluModelVersion.Should().BeNull();
+        logs["wamid.T3"].NluModelVersion.Should().BeNull();
+        logs["wamid.T4"].NluModelVersion.Should().Be(StubNluClient.ModelVersion);
+
+        var skillTurn = logs["wamid.T6"];
+        skillTurn.NluIntent.Should().Be("provide_skill");
+        skillTurn.NluIntentConfidence.Should().BeGreaterThan(0);
+        skillTurn.IntentDetected.Should().Be(Intent.ProvideSkill);  // the FSM's own decision, kept separately
+    }
+
+    [Fact]
     public async Task Opt_out_marks_worker_inactive()
     {
         var h = new Harness();

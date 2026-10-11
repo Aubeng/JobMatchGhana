@@ -1,0 +1,284 @@
+# SKILL_DECLARE — synthetic draft by Claude (2026-10-11), pending researcher validation
+# --- construction ---
+i [lay block](SKILL_ITEM) and i do [plastring](SKILL_ITEM) too
+am a [mason](TRADE_CATEGORY), i [lay blocks](SKILL_ITEM) and [build walls](SKILL_ITEM)
+[tiling](SKILL_ITEM) and [pop](SKILL_ITEM)
+i sabi [screeding](SKILL_ITEM) paa, my floors dey smooth
+i dey do [block work](SKILL_ITEM) for [8 years](EXPERIENCE_DURATION) now
+[mixing of concrete](SKILL_ITEM) and [carrying blocks](SKILL_ITEM), any site work at all
+please i can [lay tiles](SKILL_ITEM) for floor and bathroom, wall too
+roofs. i do [roofing](SKILL_ITEM) and i fit [repair leaking roof](SKILL_ITEM)
+house [paintin](SKILL_ITEM) and [texcote](SKILL_ITEM) wit nice colours
+chale i be [steel bender](TRADE_CATEGORY), i [tie iron rods](SKILL_ITEM) for decking and columns
+[p.o.p](SKILL_ITEM)
+i knw [plaster of paris](SKILL_ITEM) ceiling and [gypsum ceiling](SKILL_ITEM) work
+i can [read building plan](SKILL_ITEM) and do [seting out](SKILL_ITEM) for new site
+last time i was doing [slab casting](SKILL_ITEM) and [lintel casting](SKILL_ITEM) for one big storey building at [Kasoa](LOCATION)
+[moulding blocks](SKILL_ITEM)
+mostly i [carry cement](SKILL_ITEM) and [dig trench](SKILL_ITEM) for the masons
+skimming. i do [skim coat](SKILL_ITEM) and [painting of walls](SKILL_ITEM) small small
+am into [terazzo](SKILL_ITEM) and [floor tiles](SKILL_ITEM)
+[foundation work](SKILL_ITEM) and [blocklaying](SKILL_ITEM), [6 yrs](EXPERIENCE_DURATION) experience
+i [fix roofing sheets](SKILL_ITEM), aluminium and the normal one
+[bending of iron rods](SKILL_ITEM) is my work
+# --- woodwork ---
+am a [carpenter](TRADE_CATEGORY), i [make furniture](SKILL_ITEM) of all kinds
+we do [roof trusses](SKILL_ITEM) and i [fix rafters](SKILL_ITEM) for new buildings
+[wardrobes](SKILL_ITEM) n [kitchen cabinets](SKILL_ITEM)
+i can [hang doors](SKILL_ITEM) and make [window frames](SKILL_ITEM)
+i dey do [shuttering](SKILL_ITEM) for decking, [formwork](SKILL_ITEM) like that
+[polishing](SKILL_ITEM)
+i [vanish](SKILL_ITEM) and [spray furniture](SKILL_ITEM) too
+i make [sofas](SKILL_ITEM) and [cushions](SKILL_ITEM), any design u want
+[upholstry](SKILL_ITEM)
+i sabi [carve wood](SKILL_ITEM), i make [stools](SKILL_ITEM) and [drums](SKILL_ITEM)
+when chair break or table shake, i [repair chairs](SKILL_ITEM) and [fix broken tables](SKILL_ITEM)
+i can use [planing machine](SKILL_ITEM) and [circular saw](SKILL_ITEM) wel
+[making of beds](SKILL_ITEM) and [cupboards](SKILL_ITEM)
+i worked at [sawmill](SKILL_ITEM) for some time, i know the machines
+door making ehn, i do [door making](SKILL_ITEM) for [4 years](EXPERIENCE_DURATION)
+[sanding](SKILL_ITEM) and [french polish](SKILL_ITEM)
+please i [make tables](SKILL_ITEM) and [make chairs](SKILL_ITEM) for schools and churches
+i do [joinery](TRADE_CATEGORY), [louvre blades](SKILL_ITEM) and [door frames](SKILL_ITEM)
+i fit do [fitted kitchen](SKILL_ITEM) and [shelves](SKILL_ITEM)
+wood carving, mostly [sculpture](SKILL_ITEM)
+[furniture repairs](SKILL_ITEM) at [Kaneshie](LOCATION)
+# --- electrical ---
+i do [house wirring](SKILL_ITEM)
+am an [electrician](TRADE_CATEGORY), i [wire houses](SKILL_ITEM) and [install meters](SKILL_ITEM)
+[rewiring](SKILL_ITEM) and [fault findin](SKILL_ITEM)
+i [fix sockets](SKILL_ITEM), [change bulbs](SKILL_ITEM), anything light problem pls call me
+i sabi [concealed wiring](SKILL_ITEM) and [trunking](SKILL_ITEM)
+[solar pannels](SKILL_ITEM) and [inverters](SKILL_ITEM)
+i [install solar](SKILL_ITEM) for houses, been doing it [3 years](EXPERIENCE_DURATION)
+i do [fridge repair](SKILL_ITEM) and [fixing of fans](SKILL_ITEM)
+[gen servicing](SKILL_ITEM)
+i dey [repair generator](SKILL_ITEM) and [repair cookers](SKILL_ITEM) for people for my area
+[phone repairs](SKILL_ITEM)
+i [change screens](SKILL_ITEM) and i do [flashing phones](SKILL_ITEM)
+am a [phone technician](TRADE_CATEGORY), [screen replacement](SKILL_ITEM) and [unlock phones](SKILL_ITEM)
+i [fix tv](SKILL_ITEM) and [amplifier](SKILL_ITEM), all electronics
+[dstv](SKILL_ITEM) and [gotv](SKILL_ITEM) installation
+i [install cameras](SKILL_ITEM), [cctv](SKILL_ITEM) for shops and houses
+i can fix [db board](SKILL_ITEM) and [breakers](SKILL_ITEM)
+[prepaid meter](SKILL_ITEM) installation and [change over switch](SKILL_ITEM)
+i do [chasing walls](SKILL_ITEM) for [conduits](SKILL_ITEM)
+i repair [washing machine](SKILL_ITEM) and [blenders](SKILL_ITEM), even pressing iron
+[satelite dish](SKILL_ITEM) mounting at [Spintex](LOCATION) side
+# --- plumbing & metal ---
+am a [plumber](TRADE_CATEGORY), i [fix burst pipes](SKILL_ITEM)
+[fixing of leaking pipe](SKILL_ITEM)
+i do [pipe work](SKILL_ITEM) and [instal toilet](SKILL_ITEM)
+i [fix taps](SKILL_ITEM), [sink](SKILL_ITEM), [shower](SKILL_ITEM) all
+i can [connect water](SKILL_ITEM) to the house and set up [polytank](SKILL_ITEM)
+[water pump](SKILL_ITEM) and [overhead tank](SKILL_ITEM) installation
+if toilet choke i fit [unblock drains](SKILL_ITEM) and [choked toilet](SKILL_ITEM) wahala
+[septic tank](SKILL_ITEM) and [soakaway](SKILL_ITEM)
+i be [welder](TRADE_CATEGORY), [electric welding](SKILL_ITEM) and [gas cutting](SKILL_ITEM)
+[welding](SKILL_ITEM)
+i [make gates](SKILL_ITEM) and [burglar proof](SKILL_ITEM)
+[burgler proof](SKILL_ITEM) and [railings](SKILL_ITEM), [7 years](EXPERIENCE_DURATION) in the work
+i do [aluminium windows](SKILL_ITEM) and [glass doors](SKILL_ITEM)
+[sliding window](SKILL_ITEM)
+i [make gutters](SKILL_ITEM) and [coal pots](SKILL_ITEM)
+container shop and kiosk, i [make kiosks](SKILL_ITEM) and [metal chairs](SKILL_ITEM) too
+i dey do [brazing](SKILL_ITEM) and [oxy acetylene](SKILL_ITEM)
+[pvc pipes](SKILL_ITEM) laying for new buildings at [Ashaiman](LOCATION)
+i can [weld metal](SKILL_ITEM) and do [steel structures](SKILL_ITEM)
+[booster pump](SKILL_ITEM) and [borehole pump](SKILL_ITEM)
+[wc](SKILL_ITEM) and [wash hand basin](SKILL_ITEM) fitting
+# --- vehicle repair ---
+am a [fitter](TRADE_CATEGORY), i [fix engines](SKILL_ITEM)
+[gear box](SKILL_ITEM) and [engine work](SKILL_ITEM)
+i do [oil change](SKILL_ITEM) and full [sevicing](SKILL_ITEM) for any car
+i [fix brakes](SKILL_ITEM), [shock absorbers](SKILL_ITEM) and [ball joints](SKILL_ITEM)
+[auto electrical](SKILL_ITEM)
+i do [car wiring](SKILL_ITEM), [alternator](SKILL_ITEM) and [starter](SKILL_ITEM)
+i can [scan cars](SKILL_ITEM) with [diagnosis machine](SKILL_ITEM)
+[vulcanising](SKILL_ITEM)
+i [fix tyre](SKILL_ITEM) and do [wheel balancing](SKILL_ITEM)
+i dey mend [puncture](SKILL_ITEM) by the roadside
+[panel beating](SKILL_ITEM) and [spraying](SKILL_ITEM)
+i [fix dents](SKILL_ITEM) after accident
+i [spray cars](SKILL_ITEM), [5 yrs](EXPERIENCE_DURATION) now
+[motorbike repairs](SKILL_ITEM)
+i [fix motors](SKILL_ITEM) and do [tricycle repair](SKILL_ITEM)
+i do [car ac](SKILL_ITEM), [ac gas](SKILL_ITEM) refil
+[washing of cars](SKILL_ITEM)
+i work at [washing bay](SKILL_ITEM), i do [detailing](SKILL_ITEM)
+[overhauling engine](SKILL_ITEM) at [Abossey Okai](LOCATION)
+i [repair cars](SKILL_ITEM) both petrol and diesel, toyota nissan all
+[brake pads](SKILL_ITEM) and [alignment](SKILL_ITEM)
+# --- transport ---
+[taxi](SKILL_ITEM)
+am a [driver](TRADE_CATEGORY), i do [uber](SKILL_ITEM) and [bolt](SKILL_ITEM)
+i drive [trotro](SKILL_ITEM) from [Madina](LOCATION) to circle
+[yango](SKILL_ITEM) and [bolt](SKILL_ITEM) both
+i [drive tiper](SKILL_ITEM) and [cargo truck](SKILL_ITEM)
+[heavy duty](SKILL_ITEM) driving, [articulator](SKILL_ITEM)
+i can be a [private driver](SKILL_ITEM) or [company driver](SKILL_ITEM)
+i [drive for a family](SKILL_ITEM) before as [chauffeur](SKILL_ITEM)
+i [ride okada](SKILL_ITEM), i know accra roads well
+[dispatch](SKILL_ITEM)
+i [deliver food](SKILL_ITEM) with [glovo](SKILL_ITEM)
+i do [deliveries](SKILL_ITEM) and [courier](SKILL_ITEM) work
+i [ride aboboyaa](SKILL_ITEM), carry rubbish and goods
+[pragya](SKILL_ITEM)
+i drive [motor king](SKILL_ITEM) and [keke](SKILL_ITEM)
+i be [mate](SKILL_ITEM), i [call passengers](SKILL_ITEM) and [collect fares](SKILL_ITEM)
+[kaya](SKILL_ITEM) work
+i [carry loads](SKILL_ITEM) for people in [Makola](LOCATION)
+[loading and offloading](SKILL_ITEM)
+i [load trucks](SKILL_ITEM) and [offload goods](SKILL_ITEM)
+i do [commercial driving](SKILL_ITEM), [10 yrs](EXPERIENCE_DURATION) wit no accident
+# --- textile & fashion ---
+i [sew dreses](SKILL_ITEM) for ladies, any style u bring i fit do am
+am a [seamstress](TRADE_CATEGORY), i do [kaba and slit](SKILL_ITEM)
+[gowns](SKILL_ITEM) and [ladies wears](SKILL_ITEM)
+i be [tailor](TRADE_CATEGORY), i [sew shirts](SKILL_ITEM) and [trousers](SKILL_ITEM)
+[suits](SKILL_ITEM) pls
+i do [african wear](SKILL_ITEM) and [ankara](SKILL_ITEM) styles
+if ur dress too big i do [adjusting of clothes](SKILL_ITEM) and [fix zips](SKILL_ITEM) also
+i can [take measurements](SKILL_ITEM) and [cut cloth](SKILL_ITEM)
+[pattern drafting](SKILL_ITEM)
+i do [machine embroidery](SKILL_ITEM)
+[embroidry](SKILL_ITEM) on shirts
+i [weave kente](SKILL_ITEM) since i was small, my father taught me on the loom
+[smock](SKILL_ITEM) and [batakari](SKILL_ITEM)
+i dey do [tie n dye](SKILL_ITEM) and [batik](SKILL_ITEM) for school uniforms and church cloth
+[screen printing](SKILL_ITEM)
+i [make shoe](SKILL_ITEM) and [slipers](SKILL_ITEM)
+[shoe repair](SKILL_ITEM) at [Kantamanto](LOCATION)
+i do [leather work](SKILL_ITEM), bags and belts
+[waist beads](SKILL_ITEM) and [necklace](SKILL_ITEM)
+i do [bead making](SKILL_ITEM) for [2 years](EXPERIENCE_DURATION)
+i [mend clothes](SKILL_ITEM) small small
+# --- hair & beauty ---
+[braiding](SKILL_ITEM)
+i do [knotless](SKILL_ITEM), [conrows](SKILL_ITEM), all the latest styles chale
+am a [hairdresser](TRADE_CATEGORY), i do [relaxer](SKILL_ITEM) and [retouching](SKILL_ITEM)
+[wash n set](SKILL_ITEM)
+i dey [braid](SKILL_ITEM) and do [twist](SKILL_ITEM) for kids and adults
+i be [barber](TRADE_CATEGORY), i [cut hair](SKILL_ITEM) and [shave](SKILL_ITEM)
+[low cut](SKILL_ITEM), [fade](SKILL_ITEM), [lining](SKILL_ITEM) anything
+i [make wigs](SKILL_ITEM) and do [wig installation](SKILL_ITEM)
+[frontal](SKILL_ITEM) and [closure](SKILL_ITEM)
+i [revamp wig](SKILL_ITEM) wey old make e look new again
+[dreads](SKILL_ITEM)
+i do [retwist](SKILL_ITEM) and [start locs](SKILL_ITEM)
+[pedicure](SKILL_ITEM) and [menicure](SKILL_ITEM)
+i fix [acrylic nails](SKILL_ITEM), [gel polish](SKILL_ITEM) and [press on](SKILL_ITEM)
+i do [make up](SKILL_ITEM) for brides, birthdays, photo shoot, anytime u call me i dey come
+[bridal makeup](SKILL_ITEM) and [face beat](SKILL_ITEM) for events
+i fix [eyelash](SKILL_ITEM) and [draw brows](SKILL_ITEM)
+i do [facials](SKILL_ITEM) and [massage](SKILL_ITEM)
+[waxing](SKILL_ITEM) and [body scrub](SKILL_ITEM)
+i [assist in salon](SKILL_ITEM) at [Dansoman](LOCATION)
+i do [hair styling](SKILL_ITEM) for [9 years](EXPERIENCE_DURATION)
+# --- food & catering ---
+[cooking](SKILL_ITEM)
+am a [cook](TRADE_CATEGORY), i do [jollof](SKILL_ITEM) and [fried rice](SKILL_ITEM)
+[banku](SKILL_ITEM) and [light soup](SKILL_ITEM)
+i fit [pound fufu](SKILL_ITEM) paa, chop bar work
+i do [outdoor catering](SKILL_ITEM) for [weddings](SKILL_ITEM) and [funerals](SKILL_ITEM)
+[catering](SKILL_ITEM)
+i dey [bake bread](SKILL_ITEM), [tea bread](SKILL_ITEM) and [sugar bread](SKILL_ITEM) wit the big oven
+[baking of cakes](SKILL_ITEM)
+i do [meat pie](SKILL_ITEM), [doughnuts](SKILL_ITEM) and [small chops](SKILL_ITEM)
+[cake decorating](SKILL_ITEM)
+morning time i sell [waakye](SKILL_ITEM), evening [kenkey](SKILL_ITEM) with fish and pepper
+[hausa koko](SKILL_ITEM) and [kelewel](SKILL_ITEM)
+i [serve customers](SKILL_ITEM) in restaurant and hotel
+[waitering](SKILL_ITEM)
+i can [mix drink](SKILL_ITEM) and [cocktail](SKILL_ITEM) at bar
+for kitchen i do [washing plates](SKILL_ITEM) and [cut vegetables](SKILL_ITEM)
+i make [sobolo](SKILL_ITEM), [asaana](SKILL_ITEM) n [brukina](SKILL_ITEM) to sell
+[smoothies](SKILL_ITEM) and [yogurt](SKILL_ITEM)
+i do [khebab](SKILL_ITEM) and [grilled tilapia](SKILL_ITEM) at [Osu](LOCATION)
+[roast plantain](SKILL_ITEM)
+i do [chichinga](SKILL_ITEM) by roadside for [3 yrs](EXPERIENCE_DURATION) now
+# --- domestic services ---
+i [clean house](SKILL_ITEM)
+i do [house keepin](SKILL_ITEM)
+[sweeping](SKILL_ITEM), [moping](SKILL_ITEM) and dusting
+i [wash clothes](SKILL_ITEM) wit hand and [ironing](SKILL_ITEM) too
+[laundry](SKILL_ITEM)
+i can [babysit](SKILL_ITEM), i like children paa
+i [look after kids](SKILL_ITEM) and do [school runs](SKILL_ITEM)
+am a [nanny](TRADE_CATEGORY), [take care of children](SKILL_ITEM)
+i [take care of old people](SKILL_ITEM), bathing them and giving medicine
+[home care](SKILL_ITEM) and [patient care](SKILL_ITEM)
+i was [cooking for a family](SKILL_ITEM) at [Tema](LOCATION) for [2 yrs](EXPERIENCE_DURATION)
+[office cleaning](SKILL_ITEM)
+i [clean offices](SKILL_ITEM) and [clean shops](SKILL_ITEM)
+i [cut grass](SKILL_ITEM) and [weed compound](SKILL_ITEM)
+[landscapping](SKILL_ITEM)
+am a [gardener](TRADE_CATEGORY), i [mow lawn](SKILL_ITEM) and do [flowers](SKILL_ITEM)
+i be [security](TRADE_CATEGORY), [night watch](SKILL_ITEM)
+[security guard](SKILL_ITEM) for [4 yrs](EXPERIENCE_DURATION) at [East Legon](LOCATION)
+i do [fumigation](SKILL_ITEM) and [pest control](SKILL_ITEM) for houses and offices
+i [run errands](SKILL_ITEM) and do [market shopping](SKILL_ITEM)
+[general house work](SKILL_ITEM)
+# --- agriculture ---
+i dey grow [maize](SKILL_ITEM) and [cassava](SKILL_ITEM) for my village before i come accra
+am a [farmer](TRADE_CATEGORY), i do [yam](SKILL_ITEM) and [plantain](SKILL_ITEM)
+[tomatoe](SKILL_ITEM) and [pepper](SKILL_ITEM)
+i grow [okro](SKILL_ITEM) and [garden eggs](SKILL_ITEM)
+i do [cocoa farm](SKILL_ITEM)
+[oil palm](SKILL_ITEM) and [cashew](SKILL_ITEM)
+i keep [layers](SKILL_ITEM) and [broilers](SKILL_ITEM), about 500 birds
+[poutry](SKILL_ITEM)
+i [feed birds](SKILL_ITEM) and pick [eggs](SKILL_ITEM)
+i rear [goats](SKILL_ITEM), [sheeps](SKILL_ITEM) and [rabbit](SKILL_ITEM)
+i do [fish pond](SKILL_ITEM), [catfish](SKILL_ITEM)
+[fishing](SKILL_ITEM) and [net mending](SKILL_ITEM) at [Teshie](LOCATION)
+any farm work, [clearing of land](SKILL_ITEM), [harvesting](SKILL_ITEM), planting, i go do
+[weeding](SKILL_ITEM) and [cutlass work](SKILL_ITEM)
+i [drive tractor](SKILL_ITEM) for [ploughing](SKILL_ITEM)
+[gari processing](SKILL_ITEM)
+my mother and i [process palm oil](SKILL_ITEM) and make [shito](SKILL_ITEM)
+[shea butter](SKILL_ITEM) and [smoking fish](SKILL_ITEM)
+i [raise seedlings](SKILL_ITEM)
+[grafting](SKILL_ITEM) and [potted plants](SKILL_ITEM) for [5 years](EXPERIENCE_DURATION)
+# --- trading & sales ---
+i [sell in market](SKILL_ITEM)
+am a [trader](TRADE_CATEGORY), i [buy and sell](SKILL_ITEM)
+[selling foodstuff](SKILL_ITEM)
+i [run a shop](SKILL_ITEM), [provisions](SKILL_ITEM)
+i [sell in traffic](SKILL_ITEM) at circle, small small things
+i [walk and sell](SKILL_ITEM) [pure water](SKILL_ITEM)
+i [attend to customers](SKILL_ITEM) in [boutique](SKILL_ITEM)
+[shop attendant](SKILL_ITEM)
+i do [momo](SKILL_ITEM) business
+[cash in](SKILL_ITEM) and [cash out](SKILL_ITEM), [sell credit](SKILL_ITEM) too
+am a [mobile money agent](TRADE_CATEGORY), i do [sim registration](SKILL_ITEM)
+i can [receive payment](SKILL_ITEM) and use [pos](SKILL_ITEM) machine, count money well
+i [sell phone](SKILL_ITEM) and [chagers](SKILL_ITEM)
+[phone accessories](SKILL_ITEM) at [Circle](LOCATION)
+i do [door to door](SKILL_ITEM) sales and [market products](SKILL_ITEM) for companies
+i [sell online](SKILL_ITEM) on whatsapp and tiktok
+[customer care](SKILL_ITEM) and [answer calls](SKILL_ITEM)
+i was [receptionist](SKILL_ITEM) at one hotel for [1 year](EXPERIENCE_DURATION)
+[stock taking](SKILL_ITEM) and [record stock](SKILL_ITEM)
+i do [store keeping](SKILL_ITEM) in [ware house](SKILL_ITEM)
+# --- experience only ---
+[5 years](EXPERIENCE_DURATION)
+about [two yrs](EXPERIENCE_DURATION) now
+[since 2016](EXPERIENCE_DURATION)
+[3 months](EXPERIENCE_DURATION)
+i have been doing it for [10 years](EXPERIENCE_DURATION)
+[since i left school](EXPERIENCE_DURATION)
+[one year](EXPERIENCE_DURATION) plus
+[over 15 years](EXPERIENCE_DURATION) chale
+[6 months](EXPERIENCE_DURATION) only
+[since 2020](EXPERIENCE_DURATION)
+like [7yrs](EXPERIENCE_DURATION)
+[twenty years](EXPERIENCE_DURATION) oo
+[4 yrs](EXPERIENCE_DURATION) and some months
+[since 2011](EXPERIENCE_DURATION) ehn
+almost [a year](EXPERIENCE_DURATION)
+[8 months](EXPERIENCE_DURATION) pls
+i dey do am [since 2009](EXPERIENCE_DURATION)
+[since childhood](EXPERIENCE_DURATION)
+abt [3 years](EXPERIENCE_DURATION)
+[since covid](EXPERIENCE_DURATION) time

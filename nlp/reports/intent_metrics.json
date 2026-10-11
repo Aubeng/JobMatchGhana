@@ -1,0 +1,300 @@
+{
+  "generated_utc": "2026-10-11T17:33:39+00:00",
+  "model": "XLM-RoBERTa intent classifier",
+  "base_model": "FacebookAI/xlm-roberta-base",
+  "hyperparameters": {
+    "epochs": 8,
+    "lr": 3e-05,
+    "batch_size": 16,
+    "seed": 13,
+    "max_length": 64,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01,
+    "selection": "best validation macro-F1"
+  },
+  "data": {
+    "train": {
+      "total": 1306,
+      "per_intent": {
+        "AVAILABILITY_STATE": 130,
+        "CONFIRMATION": 128,
+        "CORRECTION": 146,
+        "EXIT": 107,
+        "FEEDBACK_PROVIDE": 153,
+        "HELP_REQUEST": 132,
+        "LOCATION_SHARE": 140,
+        "SKILL_DECLARE": 215,
+        "TRADE_IDENTIFY": 155
+      }
+    },
+    "val": {
+      "total": 163,
+      "per_intent": {
+        "AVAILABILITY_STATE": 12,
+        "CONFIRMATION": 19,
+        "CORRECTION": 8,
+        "EXIT": 20,
+        "FEEDBACK_PROVIDE": 17,
+        "HELP_REQUEST": 17,
+        "LOCATION_SHARE": 17,
+        "SKILL_DECLARE": 33,
+        "TRADE_IDENTIFY": 20
+      }
+    },
+    "test": {
+      "total": 166,
+      "per_intent": {
+        "AVAILABILITY_STATE": 18,
+        "CONFIRMATION": 14,
+        "CORRECTION": 18,
+        "EXIT": 23,
+        "FEEDBACK_PROVIDE": 15,
+        "HELP_REQUEST": 12,
+        "LOCATION_SHARE": 24,
+        "SKILL_DECLARE": 22,
+        "TRADE_IDENTIFY": 20
+      }
+    }
+  },
+  "training_seconds": 1717.5,
+  "best_epoch": 4,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.1943,
+      "val_accuracy": 0.227,
+      "val_macro_f1": 0.1794
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5916,
+      "val_accuracy": 0.7485,
+      "val_macro_f1": 0.723
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.7812,
+      "val_accuracy": 0.8282,
+      "val_macro_f1": 0.8284
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.4852,
+      "val_accuracy": 0.8896,
+      "val_macro_f1": 0.8848
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.3083,
+      "val_accuracy": 0.8466,
+      "val_macro_f1": 0.8491
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.2266,
+      "val_accuracy": 0.8712,
+      "val_macro_f1": 0.8671
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.1705,
+      "val_accuracy": 0.8834,
+      "val_macro_f1": 0.881
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.1231,
+      "val_accuracy": 0.8834,
+      "val_macro_f1": 0.8803
+    }
+  ],
+  "test": {
+    "accuracy": 0.8855,
+    "macro_f1": 0.8892,
+    "meets_sd_target_0_85": true,
+    "below_confidence_threshold": {
+      "threshold": 0.75,
+      "count": 15,
+      "of": 166
+    },
+    "per_intent": {
+      "SKILL_DECLARE": {
+        "precision": 1.0,
+        "recall": 0.9091,
+        "f1-score": 0.9524,
+        "support": 22.0
+      },
+      "TRADE_IDENTIFY": {
+        "precision": 0.9474,
+        "recall": 0.9,
+        "f1-score": 0.9231,
+        "support": 20.0
+      },
+      "LOCATION_SHARE": {
+        "precision": 0.8696,
+        "recall": 0.8333,
+        "f1-score": 0.8511,
+        "support": 24.0
+      },
+      "AVAILABILITY_STATE": {
+        "precision": 0.9412,
+        "recall": 0.8889,
+        "f1-score": 0.9143,
+        "support": 18.0
+      },
+      "CONFIRMATION": {
+        "precision": 0.8235,
+        "recall": 1.0,
+        "f1-score": 0.9032,
+        "support": 14.0
+      },
+      "CORRECTION": {
+        "precision": 0.7083,
+        "recall": 0.9444,
+        "f1-score": 0.8095,
+        "support": 18.0
+      },
+      "HELP_REQUEST": {
+        "precision": 0.8571,
+        "recall": 1.0,
+        "f1-score": 0.9231,
+        "support": 12.0
+      },
+      "FEEDBACK_PROVIDE": {
+        "precision": 0.9286,
+        "recall": 0.8667,
+        "f1-score": 0.8966,
+        "support": 15.0
+      },
+      "EXIT": {
+        "precision": 0.9444,
+        "recall": 0.7391,
+        "f1-score": 0.8293,
+        "support": 23.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "SKILL_DECLARE",
+        "TRADE_IDENTIFY",
+        "LOCATION_SHARE",
+        "AVAILABILITY_STATE",
+        "CONFIRMATION",
+        "CORRECTION",
+        "HELP_REQUEST",
+        "FEEDBACK_PROVIDE",
+        "EXIT"
+      ],
+      "rows_gold_cols_pred": [
+        [
+          20,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          18,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          20,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          16,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          14,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          17,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          12,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          13,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          4,
+          0,
+          0,
+          17
+        ]
+      ]
+    }
+  },
+  "caveat": "Test utterances are synthetic and drawn from the same distribution as training data; this overstates real-world accuracy. Evaluate on annotated pilot messages for the study.",
+  "environment": {
+    "python": "3.12.5",
+    "torch": "2.14.1+cpu",
+    "transformers": "5.19.0",
+    "device": "cpu",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "threads": 15
+  }
+}

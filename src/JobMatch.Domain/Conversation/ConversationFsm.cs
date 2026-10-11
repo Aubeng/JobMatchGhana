@@ -55,6 +55,7 @@ public static class ConversationFsm
         {
             session.State = ConversationState.OptedOut;
             session.PendingSkill = null;
+            session.QueuedSkills.Clear();
             return new FsmStepResult
             {
                 Session = session,
@@ -72,6 +73,7 @@ public static class ConversationFsm
             {
                 session.State = ConversationState.SkillsElicitation;
                 session.PendingSkill = null;
+                session.QueuedSkills.Clear();
                 return Reply(session, Intent.UpdateSkills,
                     "Let's update your skills. Tell me a skill in your own words, or type *done* when finished.");
             }
@@ -109,6 +111,20 @@ public static class ConversationFsm
            && GlobalCommands.TryParse(rawText) is null
            && !IsDone(rawText)
            && !(session.PendingSkill is not null && (IsYes(rawText) || IsNo(rawText)));
+
+    /// <summary>
+    /// Whether to run NLU on this turn at all. Beyond the turns the FSM needs it for, every
+    /// free-text turn after consent is analysed so its predicted intent and entities are logged
+    /// (the intent-accuracy metric is computed post hoc on real pilot messages). Never before
+    /// consent: no profiling without consent (DL-010). Bare menu digits ("1", "2") are skipped:
+    /// the FSM resolves them deterministically and the models are not trained on them.
+    /// </summary>
+    public static bool ShouldAnalyze(ConversationSession session, string rawText)
+        => RequiresNlu(session, rawText)
+           || (session.ConsentGiven
+               && session.State is not ConversationState.OptedOut
+               && !string.IsNullOrWhiteSpace(rawText)
+               && !rawText.Trim().All(char.IsDigit));
 
     // ---- State handlers ---------------------------------------------------
 
@@ -195,6 +211,7 @@ public static class ConversationFsm
                     "Tell me one thing you can do.", isRepair: true);
 
             session.PendingSkill = null;
+            session.QueuedSkills.Clear();
             session.State = ConversationState.Availability;
             return Reply(session, Intent.FinishSkills,
                 "Thanks! When are you available to work?\n1. Full-time\n2. Part-time\n3. Weekends only");
@@ -208,21 +225,23 @@ public static class ConversationFsm
                 var confirmed = session.PendingSkill;
                 if (!session.ConfirmedSkills.Contains(confirmed.CanonicalName, StringComparer.OrdinalIgnoreCase))
                     session.ConfirmedSkills.Add(confirmed.CanonicalName);
-                session.PendingSkill = null;
+                var next = NextQueued(session);
                 return new FsmStepResult
                 {
                     Session = session,
                     Intent = Intent.ConfirmSkill,
                     NewlyConfirmedSkill = confirmed,
-                    Replies = new[] { new OutboundMessage(
-                        $"Got it ✅ (*{confirmed.CanonicalName}*). Tell me another skill, or type *done*.") }
+                    Replies = new[] { new OutboundMessage(next is null
+                        ? $"Got it ✅ (*{confirmed.CanonicalName}*). Tell me another skill, or type *done*."
+                        : $"Got it ✅ (*{confirmed.CanonicalName}*).\n\nYou also said: *{next.CanonicalName}*. Is that right?\n1. Yes\n2. No") }
                 };
             }
             if (IsNo(text))
             {
-                session.PendingSkill = null;
-                return Reply(session, Intent.RefineSkill,
-                    "No problem. Tell me the skill again in different words.");
+                var next = NextQueued(session);
+                return Reply(session, Intent.RefineSkill, next is null
+                    ? "No problem. Tell me the skill again in different words."
+                    : $"No problem. Did you mean: *{next.CanonicalName}*?\n1. Yes\n2. No");
             }
             // Neither confirm nor a new utterance we understood -> repair.
             return ReplyKeepState(session, Intent.Repair,
@@ -230,8 +249,26 @@ public static class ConversationFsm
                 "or type *done*.", isRepair: true);
         }
 
-        // A fresh utterance: consult the NLU result for a skill candidate.
-        var top = BestCandidate(nlu);
+        // A fresh utterance: consult the NLU result for skill candidates (best first).
+        var candidates = Candidates(session, nlu);
+        var top = candidates.FirstOrDefault();
+        if (top is null && nlu?.Trade is { } trade && trade.Confidence >= MinSkillConfidence)
+        {
+            // A trade but no specific skill ("I'm a carpenter"): probe for skills within the
+            // trade (S&D S2 ELICIT_SKILLS) instead of treating it as a failed turn.
+            var examples = trade.ExampleSkills.Count > 0
+                ? $"For example: {string.Join(", ", trade.ExampleSkills.Select(s => s.ToLowerInvariant()))}.\n"
+                : string.Empty;
+            return new FsmStepResult
+            {
+                Session = session,
+                Intent = Intent.ProvideTrade,
+                NluConfidence = trade.Confidence,
+                Replies = new[] { new OutboundMessage(
+                    $"You work in *{trade.Name}* 👍\nWhat work can you do in this trade? {examples}" +
+                    "Tell me in your own words, or type *done*.") }
+            };
+        }
         if (top is null)
         {
             return ReplyKeepState(session, Intent.Repair,
@@ -240,12 +277,11 @@ public static class ConversationFsm
                 nluConfidence: nlu?.Confidence);
         }
 
-        session.PendingSkill = new PendingSkill
-        {
-            CanonicalName = top.CanonicalName,
-            SourceUtterance = text,
-            Confidence = top.Confidence
-        };
+        var pending = candidates
+            .Select(c => new PendingSkill { CanonicalName = c.CanonicalName, SourceUtterance = text, Confidence = c.Confidence })
+            .ToList();
+        session.PendingSkill = pending[0];
+        session.QueuedSkills = pending.Skip(1).ToList();
         return new FsmStepResult
         {
             Session = session,
@@ -307,14 +343,31 @@ public static class ConversationFsm
 
     // ---- Helpers ----------------------------------------------------------
 
-    private static SkillCandidate? BestCandidate(NluResult? nlu)
+    /// <summary>Usable skill candidates, best first: confident enough, not yet confirmed, no repeats.</summary>
+    private static List<SkillCandidate> Candidates(ConversationSession session, NluResult? nlu)
     {
-        if (nlu is null || nlu.Skills.Count == 0) return null;
-        SkillCandidate? best = null;
-        foreach (var c in nlu.Skills)
-            if (c.Confidence >= MinSkillConfidence && (best is null || c.Confidence > best.Confidence))
-                best = c;
-        return best;
+        if (nlu is null) return new List<SkillCandidate>();
+        return nlu.Skills
+            .Where(c => c.Confidence >= MinSkillConfidence)
+            .Where(c => !session.ConfirmedSkills.Contains(c.CanonicalName, StringComparer.OrdinalIgnoreCase))
+            .OrderByDescending(c => c.Confidence)
+            .DistinctBy(c => c.CanonicalName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    /// <summary>Promote the next queued candidate (if any) to pending, and return it.</summary>
+    private static PendingSkill? NextQueued(ConversationSession session)
+    {
+        session.PendingSkill = null;
+        while (session.QueuedSkills.Count > 0)
+        {
+            var next = session.QueuedSkills[0];
+            session.QueuedSkills.RemoveAt(0);
+            if (session.ConfirmedSkills.Contains(next.CanonicalName, StringComparer.OrdinalIgnoreCase)) continue;
+            session.PendingSkill = next;
+            return next;
+        }
+        return null;
     }
 
     private static FsmStepResult Reply(ConversationSession session, Intent intent, string text) => new()

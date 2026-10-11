@@ -36,5 +36,7 @@ public class NluOptions
     public string BaseUrl { get; set; } = "http://localhost:8000";
     /// <summary>When true, use the built-in stub instead of calling the service (Slice 1 default).</summary>
     public bool UseStub { get; set; } = true;
+    /// <summary>Per-request timeout. On timeout or error the gateway falls back to the keyword stub.</summary>
+    public double TimeoutSeconds { get; set; } = 5;
     public double MatchThreshold { get; set; } = 0.55;
 }

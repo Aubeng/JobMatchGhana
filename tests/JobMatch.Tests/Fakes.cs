@@ -41,6 +41,12 @@ public sealed class InMemorySessionStore : ISessionStore
             SourceUtterance = s.PendingSkill.SourceUtterance,
             Confidence = s.PendingSkill.Confidence
         },
+        QueuedSkills = s.QueuedSkills.Select(q => new PendingSkill
+        {
+            CanonicalName = q.CanonicalName,
+            SourceUtterance = q.SourceUtterance,
+            Confidence = q.Confidence
+        }).ToList(),
         RepairCount = s.RepairCount,
         CreatedUtc = s.CreatedUtc,
         UpdatedUtc = s.UpdatedUtc

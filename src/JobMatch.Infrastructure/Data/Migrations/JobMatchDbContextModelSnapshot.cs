@@ -160,6 +160,23 @@ namespace JobMatch.Infrastructure.Data.Migrations
                     b.Property<double?>("NluConfidence")
                         .HasColumnType("float");
 
+                    b.Property<string>("NluEntitiesJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NluIntent")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<double?>("NluIntentConfidence")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("NluLatencyMs")
+                        .HasColumnType("float");
+
+                    b.Property<string>("NluModelVersion")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<int?>("SessionState")
                         .HasColumnType("int");
 

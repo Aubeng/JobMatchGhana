@@ -25,6 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Shared HTTP contract with the Python NLU service (also read by nlp/tests). -->
+    <None Include="..\..\nlp\tests\fixtures\nlu_response.json" Link="Fixtures\nlu_response.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\JobMatch.Api\JobMatch.Api.csproj" />
     <ProjectReference Include="..\..\src\JobMatch.Infrastructure\JobMatch.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\JobMatch.Domain\JobMatch.Domain.csproj" />

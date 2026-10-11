@@ -13,7 +13,7 @@ opportunities through NLP-driven skills elicitation. MSc Computer Science capsto
 |-------|-------|-------|
 | Phase 1 | Webhook + HMAC + bounded queue + `BackgroundService` + EF model + idempotency | ✅ built |
 | Slice 1 | Deterministic FSM + Redis sessions replacing the echo orchestrator (NLP stubbed) | ✅ built |
-| Slice 2 | Python FastAPI NLP service (intent + skill extraction) wired to the gateway | ⏳ pending |
+| Slice 2 | NLU service: fine-tuned XLM-R intents + BERT+CRF entities, taxonomy/district resolution ([nlp/](nlp/README.md), DL-013/014) | ✅ built (data pending researcher validation) |
 | Slice 3 | Embedding-based matching engine + utility-template notifications | ⏳ pending |
 | Slice 4 | Vue 3 admin SPA | ⏳ pending |
 | Staging | Windows/IIS VPS at `jobmatch.intellite.net` ([guide](docs/vps-deployment.md), DL-012) | ⏸️ on hold until slices are done (scripts written) |
@@ -27,9 +27,10 @@ src/
   JobMatch.Infrastructure  EF Core (SQL Server), Redis session store, WhatsApp + NLU clients, orchestrator
   JobMatch.Api             Webhook endpoints, signature validation, bounded queue, background consumer
 tests/
-  JobMatch.Tests           Signature, FSM, idempotency, and full webhook-pipeline tests
+  JobMatch.Tests           Signature, FSM, idempotency, NLU contract, and full webhook-pipeline tests
+nlp/                       Python NLU service (FastAPI): models, D4 taxonomy + D5 training data, pytest
 docs/
-  decision-log.md               DL-001 … DL-012
+  decision-log.md               DL-001 … DL-014
   whatsapp-cloud-api-setup.md   Meta setup, diagnostics, troubleshooting, daily checklist
   vps-deployment.md             Windows/IIS VPS staging: server setup, releases, rollback
 deploy/
@@ -48,7 +49,7 @@ The conversation brain is split deliberately:
 
 ```
 NEW → CONSENT → LANGUAGE → PROFILE(name, location)
-    → SKILLS_ELICITATION (loop: utterance → NLU extract → confirm/refine)
+    → SKILLS_ELICITATION (loop: utterance → NLU extract → confirm/refine; a bare trade → probe its skills)
     → AVAILABILITY → ACTIVE
 ```
 
@@ -60,6 +61,7 @@ Unrecognised input → a logged repair prompt (a research metric).
 - .NET 8 SDK (the repo pins it via `global.json`)
 - SQL Server 2022 (or LocalDB) — for persistence
 - Redis — for conversation sessions
+- Python 3.11+ — only to run the real NLU service (`nlp/`); without it the gateway uses the keyword stub
 
 ## Configure secrets (local)
 
@@ -82,10 +84,18 @@ Connection strings default to `localhost`; override `ConnectionStrings:SqlServer
 
 ```bash
 dotnet build
-dotnet test                                   # 29 tests: signature, FSM, idempotency, pipeline
+dotnet test                                   # 37 tests: signature, FSM, idempotency, NLU contract, pipeline
 dotnet ef database update \                   # apply migrations to SQL Server
   --project src/JobMatch.Infrastructure --startup-project src/JobMatch.Api
 dotnet run --project src/JobMatch.Api         # webhook on /webhook, health on /health
+```
+
+To use the real NLU models instead of the keyword stub, train and start the service
+([nlp/README.md](nlp/README.md)), then run the gateway with `Nlu:UseStub=false`:
+
+```bash
+cd nlp && .venv/Scripts/python -m uvicorn jobmatch_nlp.app:app --host 127.0.0.1 --port 8000
+dotnet run --project src/JobMatch.Api -- --Nlu:UseStub=false
 ```
 
 ## Local end-to-end demo (no WhatsApp account needed)
@@ -100,4 +110,6 @@ With `WhatsApp:AppSecret` set locally, POST a signed payload to `/webhook` and w
 - Every Meta POST is signature-validated over the raw body (DL-003).
 - At-least-once delivery is deduped idempotently (DL-004).
 - No worker profile is persisted before explicit consent; opt-out deactivates the worker (DL-010).
-- Every turn is instrumented (state, intent, NLU confidence, repair flag) for the evaluation dataset (DL-009).
+- Every turn is instrumented (state, intent, NLU confidence, repair flag) for the evaluation dataset (DL-009);
+  post-consent turns also log the NLU's own intent, entities, model version and latency (DL-014).
+- If the NLU service is down or slow, the turn degrades to the keyword stub instead of failing (DL-013).

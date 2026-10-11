@@ -172,6 +172,106 @@ public class FsmTransitionTests
     }
 
     [Fact]
+    public void Trade_without_a_skill_probes_for_skills_in_that_trade()
+    {
+        var s = NewSession();
+        s.State = ConversationState.SkillsElicitation;
+        var nlu = new NluResult("TRADE_IDENTIFY", 0.94, Array.Empty<SkillCandidate>())
+        {
+            Trade = new TradeCandidate("woodwork", "Carpentry & Woodwork", 0.91,
+                new[] { "Furniture making", "Roof carpentry", "Door & window frames" })
+        };
+
+        var r = ConversationFsm.Step(s, "am a carpenter", nlu);
+
+        r.Intent.Should().Be(Intent.ProvideTrade);
+        r.IsRepair.Should().BeFalse();             // progress, not a failed turn
+        r.NluConfidence.Should().Be(0.91);
+        r.Replies.Single().Text.Should().Contain("Carpentry & Woodwork").And.Contain("furniture making");
+        s.State.Should().Be(ConversationState.SkillsElicitation);
+        s.PendingSkill.Should().BeNull();
+        s.RepairCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void A_specific_skill_wins_over_the_trade()
+    {
+        var s = NewSession();
+        s.State = ConversationState.SkillsElicitation;
+        var nlu = Skill("Roof carpentry", 0.9) with
+        {
+            Trade = new TradeCandidate("woodwork", "Carpentry & Woodwork", 0.9, Array.Empty<string>())
+        };
+
+        ConversationFsm.Step(s, "carpenter, i do roofing", nlu).Intent.Should().Be(Intent.ProvideSkill);
+        s.PendingSkill!.CanonicalName.Should().Be("Roof carpentry");
+    }
+
+    [Fact]
+    public void Every_skill_in_one_message_is_confirmed_in_turn()
+    {
+        var s = NewSession();
+        s.State = ConversationState.SkillsElicitation;
+        var nlu = new NluResult("SKILL_DECLARE", 0.97, new[]
+        {
+            new SkillCandidate("Furniture making", 0.88),
+            new SkillCandidate("Roofing", 0.95),
+            new SkillCandidate("Roofing", 0.60),        // duplicate mention
+            new SkillCandidate("Tiling", 0.30)          // below MinSkillConfidence
+        });
+        const string utterance = "i do roofing and make furniture";
+
+        ConversationFsm.Step(s, utterance, nlu).Replies.Single().Text.Should().Contain("*Roofing*");
+
+        var r1 = ConversationFsm.Step(s, "yes");
+        r1.NewlyConfirmedSkill!.CanonicalName.Should().Be("Roofing");
+        r1.Replies.Single().Text.Should().Contain("You also said: *Furniture making*");
+
+        var r2 = ConversationFsm.Step(s, "1");
+        r2.NewlyConfirmedSkill!.CanonicalName.Should().Be("Furniture making");
+        r2.NewlyConfirmedSkill.SourceUtterance.Should().Be(utterance);   // research data kept per skill
+        r2.Replies.Single().Text.Should().Contain("Tell me another skill");
+
+        s.ConfirmedSkills.Should().Equal("Roofing", "Furniture making");
+        s.PendingSkill.Should().BeNull();
+        s.QueuedSkills.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Rejecting_a_candidate_moves_to_the_next_queued_one()
+    {
+        var s = NewSession();
+        s.State = ConversationState.SkillsElicitation;
+        var nlu = new NluResult("SKILL_DECLARE", 0.9, new[]
+            { new SkillCandidate("Roofing", 0.9), new SkillCandidate("Roof carpentry", 0.8) });
+
+        ConversationFsm.Step(s, "i do roofs", nlu);
+        var r = ConversationFsm.Step(s, "no");
+
+        r.Intent.Should().Be(Intent.RefineSkill);
+        r.Replies.Single().Text.Should().Contain("*Roof carpentry*");
+        s.PendingSkill!.CanonicalName.Should().Be("Roof carpentry");
+        s.ConfirmedSkills.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ShouldAnalyze_every_post_consent_turn_but_never_before_consent()
+    {
+        var s = NewSession();
+        s.State = ConversationState.Consent;
+        ConversationFsm.ShouldAnalyze(s, "yes i agree").Should().BeFalse();  // consent gate (DL-010)
+
+        s.ConsentGiven = true;
+        s.State = ConversationState.ProfileLocation;
+        ConversationFsm.ShouldAnalyze(s, "i stay at madina").Should().BeTrue();
+        ConversationFsm.ShouldAnalyze(s, "  ").Should().BeFalse();
+        ConversationFsm.ShouldAnalyze(s, " 2 ").Should().BeFalse();             // menu digit
+
+        s.State = ConversationState.OptedOut;
+        ConversationFsm.ShouldAnalyze(s, "hello").Should().BeFalse();
+    }
+
+    [Fact]
     public void Whole_message_match_avoids_false_stop_command()
     {
         var s = NewSession();

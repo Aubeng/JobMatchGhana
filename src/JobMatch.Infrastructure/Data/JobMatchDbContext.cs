@@ -76,6 +76,8 @@ public class JobMatchDbContext : DbContext
             e.Property(m => m.WaMessageId).HasMaxLength(128);
             e.Property(m => m.WaId).HasMaxLength(32).IsRequired();
             e.Property(m => m.MessageType).HasMaxLength(32);
+            e.Property(m => m.NluIntent).HasMaxLength(32);
+            e.Property(m => m.NluModelVersion).HasMaxLength(128);
             e.HasIndex(m => m.WaId);
             e.HasIndex(m => m.Timestamp);
         });

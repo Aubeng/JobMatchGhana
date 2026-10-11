@@ -1,0 +1,163 @@
+{"intent": "AVAILABILITY_STATE", "annotated": "only weekends", "source": "AVAILABILITY_STATE.txt:3"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i can start monday", "source": "AVAILABILITY_STATE.txt:4"}
+{"intent": "AVAILABILITY_STATE", "annotated": "mornings only bcos i go school", "source": "AVAILABILITY_STATE.txt:5"}
+{"intent": "AVAILABILITY_STATE", "annotated": "saturday and sunday only", "source": "AVAILABILITY_STATE.txt:19"}
+{"intent": "AVAILABILITY_STATE", "annotated": "nights", "source": "AVAILABILITY_STATE.txt:39"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i can do 5 days", "source": "AVAILABILITY_STATE.txt:71"}
+{"intent": "AVAILABILITY_STATE", "annotated": "evenings bcos i do another work in the day", "source": "AVAILABILITY_STATE.txt:96"}
+{"intent": "AVAILABILITY_STATE", "annotated": "i dey look after my mother so afternoons", "source": "AVAILABILITY_STATE.txt:98"}
+{"intent": "AVAILABILITY_STATE", "annotated": "permanent work", "source": "AVAILABILITY_STATE.txt:105"}
+{"intent": "AVAILABILITY_STATE", "annotated": "rotation ok", "source": "AVAILABILITY_STATE.txt:115"}
+{"intent": "AVAILABILITY_STATE", "annotated": "fridays and saturdays", "source": "AVAILABILITY_STATE.txt:138"}
+{"intent": "AVAILABILITY_STATE", "annotated": "any day oo", "source": "AVAILABILITY_STATE.txt:157"}
+{"intent": "CONFIRMATION", "annotated": "yes boss", "source": "CONFIRMATION.txt:9"}
+{"intent": "CONFIRMATION", "annotated": "thats right", "source": "CONFIRMATION.txt:32"}
+{"intent": "CONFIRMATION", "annotated": "ok", "source": "CONFIRMATION.txt:39"}
+{"intent": "CONFIRMATION", "annotated": "oky", "source": "CONFIRMATION.txt:43"}
+{"intent": "CONFIRMATION", "annotated": "fine", "source": "CONFIRMATION.txt:50"}
+{"intent": "CONFIRMATION", "annotated": "sure", "source": "CONFIRMATION.txt:53"}
+{"intent": "CONFIRMATION", "annotated": "ampa paa", "source": "CONFIRMATION.txt:65"}
+{"intent": "CONFIRMATION", "annotated": "yes ampa", "source": "CONFIRMATION.txt:67"}
+{"intent": "CONFIRMATION", "annotated": "dat one", "source": "CONFIRMATION.txt:79"}
+{"intent": "CONFIRMATION", "annotated": "that one oo", "source": "CONFIRMATION.txt:80"}
+{"intent": "CONFIRMATION", "annotated": "thats the one", "source": "CONFIRMATION.txt:82"}
+{"intent": "CONFIRMATION", "annotated": "everything is correct", "source": "CONFIRMATION.txt:95"}
+{"intent": "CONFIRMATION", "annotated": "na so", "source": "CONFIRMATION.txt:105"}
+{"intent": "CONFIRMATION", "annotated": "na so e be", "source": "CONFIRMATION.txt:106"}
+{"intent": "CONFIRMATION", "annotated": "confirm", "source": "CONFIRMATION.txt:115"}
+{"intent": "CONFIRMATION", "annotated": "u can go ahead", "source": "CONFIRMATION.txt:119"}
+{"intent": "CONFIRMATION", "annotated": "keep it like that", "source": "CONFIRMATION.txt:133"}
+{"intent": "CONFIRMATION", "annotated": "mmm yes", "source": "CONFIRMATION.txt:141"}
+{"intent": "CONFIRMATION", "annotated": "ok thank u", "source": "CONFIRMATION.txt:146"}
+{"intent": "CORRECTION", "annotated": "pls change it", "source": "CORRECTION.txt:52"}
+{"intent": "CORRECTION", "annotated": "chale thats wrong", "source": "CORRECTION.txt:78"}
+{"intent": "CORRECTION", "annotated": "change my area to [tema](LOCATION)", "source": "CORRECTION.txt:93"}
+{"intent": "CORRECTION", "annotated": "no i be [electrician](TRADE_CATEGORY) not [plumber](TRADE_CATEGORY)", "source": "CORRECTION.txt:116"}
+{"intent": "CORRECTION", "annotated": "not [cook](TRADE_CATEGORY), [caterer](TRADE_CATEGORY)", "source": "CORRECTION.txt:119"}
+{"intent": "CORRECTION", "annotated": "no its [one year](EXPERIENCE_DURATION) not [one month](EXPERIENCE_DURATION)", "source": "CORRECTION.txt:157"}
+{"intent": "CORRECTION", "annotated": "skill ok but change area to [tema new town](LOCATION)", "source": "CORRECTION.txt:161"}
+{"intent": "CORRECTION", "annotated": "wrong, i did [braids](SKILL_ITEM) for [4 years](EXPERIENCE_DURATION)", "source": "CORRECTION.txt:164"}
+{"intent": "EXIT", "annotated": "stop", "source": "EXIT.txt:2"}
+{"intent": "EXIT", "annotated": "please stop", "source": "EXIT.txt:5"}
+{"intent": "EXIT", "annotated": "stp", "source": "EXIT.txt:11"}
+{"intent": "EXIT", "annotated": "bye for now", "source": "EXIT.txt:15"}
+{"intent": "EXIT", "annotated": "goodbye", "source": "EXIT.txt:17"}
+{"intent": "EXIT", "annotated": "later pls", "source": "EXIT.txt:25"}
+{"intent": "EXIT", "annotated": "i will continue later", "source": "EXIT.txt:30"}
+{"intent": "EXIT", "annotated": "lets do it another time", "source": "EXIT.txt:32"}
+{"intent": "EXIT", "annotated": "pause", "source": "EXIT.txt:43"}
+{"intent": "EXIT", "annotated": "unsubscribe", "source": "EXIT.txt:47"}
+{"intent": "EXIT", "annotated": "opt out", "source": "EXIT.txt:50"}
+{"intent": "EXIT", "annotated": "i no dey want am again", "source": "EXIT.txt:55"}
+{"intent": "EXIT", "annotated": "i dont need it again", "source": "EXIT.txt:56"}
+{"intent": "EXIT", "annotated": "i am not interested", "source": "EXIT.txt:60"}
+{"intent": "EXIT", "annotated": "no more interest", "source": "EXIT.txt:62"}
+{"intent": "EXIT", "annotated": "leave me alone", "source": "EXIT.txt:91"}
+{"intent": "EXIT", "annotated": "i quit", "source": "EXIT.txt:110"}
+{"intent": "EXIT", "annotated": "close it", "source": "EXIT.txt:119"}
+{"intent": "EXIT", "annotated": "i dey go", "source": "EXIT.txt:128"}
+{"intent": "EXIT", "annotated": "gn", "source": "EXIT.txt:147"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "thank you this is helpful", "source": "FEEDBACK_PROVIDE.txt:2"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "it was helpful", "source": "FEEDBACK_PROVIDE.txt:5"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "this thing no dey work", "source": "FEEDBACK_PROVIDE.txt:38"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "1 star", "source": "FEEDBACK_PROVIDE.txt:46"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "rate u 5", "source": "FEEDBACK_PROVIDE.txt:54"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "i will rate it 3", "source": "FEEDBACK_PROVIDE.txt:56"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the job in [tema](LOCATION) is too far from me", "source": "FEEDBACK_PROVIDE.txt:66"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "transport to [spintex](LOCATION) is too much", "source": "FEEDBACK_PROVIDE.txt:68"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the job matches my skill well", "source": "FEEDBACK_PROVIDE.txt:106"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the match was bad", "source": "FEEDBACK_PROVIDE.txt:114"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "u sent me [tiling](SKILL_ITEM) job but i do [plastering](SKILL_ITEM)", "source": "FEEDBACK_PROVIDE.txt:117"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "the [mason](TRADE_CATEGORY) work was nice but the pay small", "source": "FEEDBACK_PROVIDE.txt:123"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "u people should send more jobs", "source": "FEEDBACK_PROVIDE.txt:150"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "send more jobs near me", "source": "FEEDBACK_PROVIDE.txt:151"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "it is easy to use", "source": "FEEDBACK_PROVIDE.txt:158"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "ayekoo", "source": "FEEDBACK_PROVIDE.txt:170"}
+{"intent": "FEEDBACK_PROVIDE", "annotated": "very bad", "source": "FEEDBACK_PROVIDE.txt:174"}
+{"intent": "HELP_REQUEST", "annotated": "i dont undastand", "source": "HELP_REQUEST.txt:16"}
+{"intent": "HELP_REQUEST", "annotated": "i no understand anything", "source": "HELP_REQUEST.txt:19"}
+{"intent": "HELP_REQUEST", "annotated": "wat shd i write here", "source": "HELP_REQUEST.txt:33"}
+{"intent": "HELP_REQUEST", "annotated": "wat u mean", "source": "HELP_REQUEST.txt:44"}
+{"intent": "HELP_REQUEST", "annotated": "say it again", "source": "HELP_REQUEST.txt:54"}
+{"intent": "HELP_REQUEST", "annotated": "wat is this app", "source": "HELP_REQUEST.txt:71"}
+{"intent": "HELP_REQUEST", "annotated": "is this free", "source": "HELP_REQUEST.txt:76"}
+{"intent": "HELP_REQUEST", "annotated": "is this a scam", "source": "HELP_REQUEST.txt:82"}
+{"intent": "HELP_REQUEST", "annotated": "is it legit", "source": "HELP_REQUEST.txt:84"}
+{"intent": "HELP_REQUEST", "annotated": "connect me to an agent", "source": "HELP_REQUEST.txt:100"}
+{"intent": "HELP_REQUEST", "annotated": "how do i contact the employer", "source": "HELP_REQUEST.txt:115"}
+{"intent": "HELP_REQUEST", "annotated": "what do i do now", "source": "HELP_REQUEST.txt:122"}
+{"intent": "HELP_REQUEST", "annotated": "now what", "source": "HELP_REQUEST.txt:123"}
+{"intent": "HELP_REQUEST", "annotated": "i dont know what to do", "source": "HELP_REQUEST.txt:124"}
+{"intent": "HELP_REQUEST", "annotated": "can i send voice note", "source": "HELP_REQUEST.txt:130"}
+{"intent": "HELP_REQUEST", "annotated": "why do u need my location", "source": "HELP_REQUEST.txt:138"}
+{"intent": "HELP_REQUEST", "annotated": "how long does this take", "source": "HELP_REQUEST.txt:145"}
+{"intent": "LOCATION_SHARE", "annotated": "[Adenta](LOCATION)", "source": "LOCATION_SHARE.txt:8"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay at [sowutuom](LOCATION)", "source": "LOCATION_SHARE.txt:26"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [asylum down](LOCATION)", "source": "LOCATION_SHARE.txt:46"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [kotobabi](LOCATION)", "source": "LOCATION_SHARE.txt:53"}
+{"intent": "LOCATION_SHARE", "annotated": "near [tema harbour](LOCATION)", "source": "LOCATION_SHARE.txt:82"}
+{"intent": "LOCATION_SHARE", "annotated": "[afienya](LOCATION)", "source": "LOCATION_SHARE.txt:84"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay at [cape coast](LOCATION)", "source": "LOCATION_SHARE.txt:96"}
+{"intent": "LOCATION_SHARE", "annotated": "[madinah](LOCATION)", "source": "LOCATION_SHARE.txt:100"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [teshi](LOCATION)", "source": "LOCATION_SHARE.txt:101"}
+{"intent": "LOCATION_SHARE", "annotated": "i live at [dansoma](LOCATION)", "source": "LOCATION_SHARE.txt:103"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay [madina](LOCATION), i fit work full time", "source": "LOCATION_SHARE.txt:134"}
+{"intent": "LOCATION_SHARE", "annotated": "i stay for [anyaa](LOCATION) close to [awoshie](LOCATION)", "source": "LOCATION_SHARE.txt:147"}
+{"intent": "LOCATION_SHARE", "annotated": "i live at [tuba](LOCATION) junction", "source": "LOCATION_SHARE.txt:149"}
+{"intent": "LOCATION_SHARE", "annotated": "[jamestown](LOCATION) pls", "source": "LOCATION_SHARE.txt:160"}
+{"intent": "LOCATION_SHARE", "annotated": "near [ridge](LOCATION)", "source": "LOCATION_SHARE.txt:161"}
+{"intent": "LOCATION_SHARE", "annotated": "[suame](LOCATION)", "source": "LOCATION_SHARE.txt:166"}
+{"intent": "LOCATION_SHARE", "annotated": "any where in [ga south](LOCATION)", "source": "LOCATION_SHARE.txt:175"}
+{"intent": "SKILL_DECLARE", "annotated": "house [paintin](SKILL_ITEM) and [texcote](SKILL_ITEM) wit nice colours", "source": "SKILL_DECLARE.txt:11"}
+{"intent": "SKILL_DECLARE", "annotated": "skimming. i do [skim coat](SKILL_ITEM) and [painting of walls](SKILL_ITEM) small small", "source": "SKILL_DECLARE.txt:19"}
+{"intent": "SKILL_DECLARE", "annotated": "i [install solar](SKILL_ITEM) for houses, been doing it [3 years](EXPERIENCE_DURATION)", "source": "SKILL_DECLARE.txt:53"}
+{"intent": "SKILL_DECLARE", "annotated": "am a [phone technician](TRADE_CATEGORY), [screen replacement](SKILL_ITEM) and [unlock phones](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:59"}
+{"intent": "SKILL_DECLARE", "annotated": "i [fix tv](SKILL_ITEM) and [amplifier](SKILL_ITEM), all electronics", "source": "SKILL_DECLARE.txt:60"}
+{"intent": "SKILL_DECLARE", "annotated": "[sliding window](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:82"}
+{"intent": "SKILL_DECLARE", "annotated": "[booster pump](SKILL_ITEM) and [borehole pump](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:88"}
+{"intent": "SKILL_DECLARE", "annotated": "am a [fitter](TRADE_CATEGORY), i [fix engines](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:91"}
+{"intent": "SKILL_DECLARE", "annotated": "i work at [washing bay](SKILL_ITEM), i do [detailing](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:108"}
+{"intent": "SKILL_DECLARE", "annotated": "[overhauling engine](SKILL_ITEM) at [Abossey Okai](LOCATION)", "source": "SKILL_DECLARE.txt:109"}
+{"intent": "SKILL_DECLARE", "annotated": "i [drive tiper](SKILL_ITEM) and [cargo truck](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:117"}
+{"intent": "SKILL_DECLARE", "annotated": "[heavy duty](SKILL_ITEM) driving, [articulator](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:118"}
+{"intent": "SKILL_DECLARE", "annotated": "i can be a [private driver](SKILL_ITEM) or [company driver](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:119"}
+{"intent": "SKILL_DECLARE", "annotated": "i [ride okada](SKILL_ITEM), i know accra roads well", "source": "SKILL_DECLARE.txt:121"}
+{"intent": "SKILL_DECLARE", "annotated": "i do [african wear](SKILL_ITEM) and [ankara](SKILL_ITEM) styles", "source": "SKILL_DECLARE.txt:140"}
+{"intent": "SKILL_DECLARE", "annotated": "i can [take measurements](SKILL_ITEM) and [cut cloth](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:142"}
+{"intent": "SKILL_DECLARE", "annotated": "[smock](SKILL_ITEM) and [batakari](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:147"}
+{"intent": "SKILL_DECLARE", "annotated": "[waist beads](SKILL_ITEM) and [necklace](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:153"}
+{"intent": "SKILL_DECLARE", "annotated": "[hausa koko](SKILL_ITEM) and [kelewel](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:190"}
+{"intent": "SKILL_DECLARE", "annotated": "i do [chichinga](SKILL_ITEM) by roadside for [3 yrs](EXPERIENCE_DURATION) now", "source": "SKILL_DECLARE.txt:199"}
+{"intent": "SKILL_DECLARE", "annotated": "[sweeping](SKILL_ITEM), [moping](SKILL_ITEM) and dusting", "source": "SKILL_DECLARE.txt:203"}
+{"intent": "SKILL_DECLARE", "annotated": "[office cleaning](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:212"}
+{"intent": "SKILL_DECLARE", "annotated": "[tomatoe](SKILL_ITEM) and [pepper](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:225"}
+{"intent": "SKILL_DECLARE", "annotated": "i do [cocoa farm](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:227"}
+{"intent": "SKILL_DECLARE", "annotated": "any farm work, [clearing of land](SKILL_ITEM), [harvesting](SKILL_ITEM), planting, i go do", "source": "SKILL_DECLARE.txt:235"}
+{"intent": "SKILL_DECLARE", "annotated": "am a [mobile money agent](TRADE_CATEGORY), i do [sim registration](SKILL_ITEM)", "source": "SKILL_DECLARE.txt:254"}
+{"intent": "SKILL_DECLARE", "annotated": "about [two yrs](EXPERIENCE_DURATION) now", "source": "SKILL_DECLARE.txt:266"}
+{"intent": "SKILL_DECLARE", "annotated": "[3 months](EXPERIENCE_DURATION)", "source": "SKILL_DECLARE.txt:268"}
+{"intent": "SKILL_DECLARE", "annotated": "[since i left school](EXPERIENCE_DURATION)", "source": "SKILL_DECLARE.txt:270"}
+{"intent": "SKILL_DECLARE", "annotated": "[one year](EXPERIENCE_DURATION) plus", "source": "SKILL_DECLARE.txt:271"}
+{"intent": "SKILL_DECLARE", "annotated": "[6 months](EXPERIENCE_DURATION) only", "source": "SKILL_DECLARE.txt:273"}
+{"intent": "SKILL_DECLARE", "annotated": "[since 2020](EXPERIENCE_DURATION)", "source": "SKILL_DECLARE.txt:274"}
+{"intent": "SKILL_DECLARE", "annotated": "i dey do am [since 2009](EXPERIENCE_DURATION)", "source": "SKILL_DECLARE.txt:281"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[mason work](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:4"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i work as [labourer](TRADE_CATEGORY) for site", "source": "TRADE_IDENTIFY.txt:10"}
+{"intent": "TRADE_IDENTIFY", "annotated": "my work be [wood work](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:29"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [wood carver](TRADE_CATEGORY) oo", "source": "TRADE_IDENTIFY.txt:34"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[capenter](TRADE_CATEGORY) at [madina](LOCATION)", "source": "TRADE_IDENTIFY.txt:35"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[electronics](TRADE_CATEGORY) repair", "source": "TRADE_IDENTIFY.txt:43"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i am [electronics repairer](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:44"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[fitter mechanic](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:62"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[welder](TRADE_CATEGORY) at [abossey okai](LOCATION)", "source": "TRADE_IDENTIFY.txt:64"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[mechanic](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:67"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[mechanik](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:80"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [trotro driver](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:87"}
+{"intent": "TRADE_IDENTIFY", "annotated": "chale my work be [porter](TRADE_CATEGORY) for the station, i carry load for people", "source": "TRADE_IDENTIFY.txt:97"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [conductor](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:98"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i do [hairdressing](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:117"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [food seller](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:136"}
+{"intent": "TRADE_IDENTIFY", "annotated": "am a [houseboy](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:159"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i be [farm hand](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:165"}
+{"intent": "TRADE_IDENTIFY", "annotated": "i dey do [agro processing](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:171"}
+{"intent": "TRADE_IDENTIFY", "annotated": "[tradder](TRADE_CATEGORY)", "source": "TRADE_IDENTIFY.txt:193"}

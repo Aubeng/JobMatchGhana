@@ -31,3 +31,7 @@ dist/
 # OS
 Thumbs.db
 .DS_Store
+
+# NLU service (Slice 2): trained weights are large and reproducible from data + scripts
+nlp/models/
+nlp/data/review/

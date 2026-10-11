@@ -123,3 +123,47 @@ Server was found unpatched (RTM). The server is shared and managed by the hostin
 patching is theirs; confirm the patch status with them before pilot participants' data is stored.
 **Status (2026-10-11):** paused. Deployment work resumes after Slices 2–5 are built; the scripts in
 `deploy/` are written but have not yet been run on the server.
+
+---
+
+## DL-013 — NLU service: fine-tuned XLM-RoBERTa intents + BERT+CRF entities, as specified (Slice 2)
+**Decision:** Implement L4 as the S&D report specifies: a fine-tuned XLM-RoBERTa classifier for the
+9 intents (0.75 confidence threshold) and a BERT+CRF recogniser for the 4 entity types. Entity spans
+are resolved to the ILO-aligned taxonomy (D4) and to official districts by exact-then-fuzzy matching.
+It is a stateless FastAPI service (`nlp/`) that the gateway calls over HTTP; CPU-only training and
+inference. The paraphrase-MiniLM-L6-v2 embeddings in the brief belong to the L5 matching engine
+(Slice 3), not to L4.
+**Alternatives:** Embedding nearest-neighbour intents with taxonomy lookup and no fine-tuning (cheaper,
+but departs from the submitted design); a staged baseline-then-fine-tune approach; a hosted LLM
+(non-deterministic, costly, and harder to evaluate).
+**Rationale:** Matches the design examiners approved (SQ2). The research question concerns
+transformer-based NLU on informal Ghanaian English. A word-level CRF with BIO-constrained
+transitions always yields well-formed spans. Fuzzy resolution handles WhatsApp spelling variation.
+CPU suffices for about 1.6k short utterances.
+**Data (D4/D5):** taxonomy v1 (12 categories, 120 skills, ISCO-08), a locality → district gazetteer,
+and 1,635 annotated utterances (150–270 per intent) were **drafted by Claude as synthetic data
+pending researcher validation**: source (i) in Design §6.3.1. See `nlp/docs/data-review-checklist.md`.
+Splits are assigned by text hash, so the test set stays fixed as data grows. Test scores on
+synthetic data are an upper bound; the study metrics must be measured on annotated pilot messages.
+**Graceful degradation:** if the service errors or times out (`Nlu:TimeoutSeconds`, 5s), the gateway
+uses the keyword stub for that turn and logs it as `stub-fallback`.
+**v1 results (synthetic test split, n=166; upper bounds):** intent accuracy 88.6% (target ≥85%);
+skill extraction precision 90.6% on resolved skills (target ≥80%); entity span F1 0.853; NLU
+latency p95 92 ms. Entity confidence uses CRF marginals. Emission softmax was uncalibrated, but
+even the marginals don't separate right from wrong spans on synthetic data (see `nlp/README.md`).
+**Dialogue changes that came with it:** a bare trade ("I'm a carpenter") now prompts for skills in
+that trade instead of counting as a repair (S2 ELICIT_SKILLS). Every skill in one message is queued
+and confirmed in turn: the one-pending-skill design silently dropped the second skill of "I do
+roofing and make furniture". Bare menu digits are not sent to NLU.
+
+## DL-014 — Log the NLU's own prediction separately from the FSM's decision
+**Decision:** `MessageLog` gains `NluIntent`, `NluIntentConfidence`, `NluEntitiesJson`, `NluModelVersion`
+and `NluLatencyMs` (migration `AddNluTelemetry`). Every free-text turn **after consent** is analysed
+and logged, not only the turns where the FSM needs NLU. `IntentDetected` keeps the FSM's own
+decision.
+**Alternatives:** Call NLU only where the FSM consumes it (no accuracy data for other turns);
+overwrite `IntentDetected` with the NLU label (loses the dialogue decision).
+**Rationale:** The S&D metrics "Intent Recognition Accuracy" and "Entity Extraction Precision" need
+the model's raw prediction for every message, so pilot messages can be annotated afterwards and
+compared. The model version makes results attributable to a specific model (v1 synthetic vs v2
+pilot-trained, D11). The consent gate (DL-010) is kept: nothing is sent for analysis before consent.

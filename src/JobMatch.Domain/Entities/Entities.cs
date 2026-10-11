@@ -132,5 +132,17 @@ public class MessageLog
     /// <summary>True when this turn produced a repair/fallback prompt (research metric).</summary>
     public bool IsRepair { get; set; }
 
+    // ---- NLU telemetry (Slice 2). Null when the turn wasn't analysed (e.g. before consent). ----
+    /// <summary>The NLU service's predicted intent (one of the 9 S&D intents), before the FSM acts.</summary>
+    public string? NluIntent { get; set; }
+    /// <summary>Confidence of <see cref="NluIntent"/> (softmax probability).</summary>
+    public double? NluIntentConfidence { get; set; }
+    /// <summary>Extracted entities with their resolutions, as returned by the service (JSON).</summary>
+    public string? NluEntitiesJson { get; set; }
+    /// <summary>Model versions that produced the analysis, or "stub" / "stub-fallback".</summary>
+    public string? NluModelVersion { get; set; }
+    /// <summary>NLU service inference time in milliseconds.</summary>
+    public double? NluLatencyMs { get; set; }
+
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
 }
