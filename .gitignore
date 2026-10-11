@@ -1,0 +1,33 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Release packages built by deploy/Publish.ps1
+artifacts/
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Secrets — never commit
+appsettings.*.Local.json
+secrets.json
+*.env
+
+# Python (NLP service, Slice 2)
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Node (Admin SPA, Slice 4)
+node_modules/
+dist/
+
+# OS
+Thumbs.db
+.DS_Store
