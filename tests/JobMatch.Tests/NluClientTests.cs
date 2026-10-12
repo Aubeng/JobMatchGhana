@@ -45,12 +45,12 @@ public class NluClientTests
         var handler = new RecordingHandler(HttpStatusCode.OK, FixtureJson);
         var client = new HttpNluClient(new HttpClient(handler) { BaseAddress = new Uri("http://localhost:8000") });
 
-        var r = await client.AnalyzeAsync("i can lay blocks", "SkillsElicitation", CancellationToken.None);
+        var r = await client.AnalyzeAsync("i can lay blocks", "ElicitSkills", CancellationToken.None);
 
         handler.Uri!.AbsolutePath.Should().Be("/nlu");
         using var sent = JsonDocument.Parse(handler.Body!);
         sent.RootElement.GetProperty("utterance").GetString().Should().Be("i can lay blocks");
-        sent.RootElement.GetProperty("state").GetString().Should().Be("SkillsElicitation");
+        sent.RootElement.GetProperty("state").GetString().Should().Be("ElicitSkills");
         r.Skills.Should().HaveCount(2);
     }
 
@@ -59,19 +59,21 @@ public class NluClientTests
     {
         var down = new HttpNluClient(new HttpClient(new RecordingHandler(HttpStatusCode.ServiceUnavailable, "{}"))
             { BaseAddress = new Uri("http://localhost:8000") });
-        var client = new FallbackNluClient(down, new StubNluClient(), NullLogger<FallbackNluClient>.Instance);
+        var client = new FallbackNluClient(down, new StubNluClient(TestCatalog.Instance), NullLogger<FallbackNluClient>.Instance);
 
-        var r = await client.AnalyzeAsync("I am a plumber", "SkillsElicitation", CancellationToken.None);
+        var r = await client.AnalyzeAsync("I am a plumber, i fix burst pipes in tema", "ElicitTrade", CancellationToken.None);
 
         r.ModelVersion.Should().Be(FallbackNluClient.FallbackVersion);
-        r.Skills.Should().ContainSingle(s => s.CanonicalName == "Plumbing");
+        r.Skills.Should().ContainSingle(s => s.CanonicalName == "Pipe fitting");
+        r.Trade!.CategoryId.Should().Be("plumbing_metal");
+        r.LocationDistrict.Should().Be("Tema");
     }
 
     [Fact]
     public async Task Does_not_swallow_caller_cancellation()
     {
         var primary = new ThrowingNluClient();
-        var client = new FallbackNluClient(primary, new StubNluClient(), NullLogger<FallbackNluClient>.Instance);
+        var client = new FallbackNluClient(primary, new StubNluClient(TestCatalog.Instance), NullLogger<FallbackNluClient>.Instance);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 

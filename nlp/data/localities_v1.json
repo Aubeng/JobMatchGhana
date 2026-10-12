@@ -6,6 +6,8 @@
     "(MMDA) names in ghana_districts.json, which resolve LOCATION entities to district level (S&D S4).",
     "District names themselves (e.g. \"Ashaiman\", \"Adentan\") are matched directly and need no entry here."
   ],
+  "location_menu": ["Accra Central", "Madina", "Adenta", "Dome", "Kaneshie", "Dansoman", "Teshie", "Tema", "Ashaiman", "Kasoa"],
+  "location_menu_note": "The 10 areas offered as a WhatsApp list in S4 (10 rows max); each label is a locality name or alias. Anything else is typed and resolved to its district.",
   "localities": [
     {"name": "Accra Central", "aliases": ["accra", "town", "central accra", "kantamanto", "makola", "james town", "jamestown", "ussher town", "tudu", "korle bu", "agbogbloshie", "kinbu"], "district": "Accra", "region": "Greater Accra"},
     {"name": "Osu", "aliases": ["osu", "adabraka", "ridge", "kokomlemle", "asylum down"], "district": "Korle Klottey", "region": "Greater Accra"},

@@ -13,6 +13,7 @@ opportunities through NLP-driven skills elicitation. MSc Computer Science capsto
 |-------|-------|-------|
 | Phase 1 | Webhook + HMAC + bounded queue + `BackgroundService` + EF model + idempotency | ✅ built |
 | Slice 1 | Deterministic FSM + Redis sessions replacing the echo orchestrator (NLP stubbed) | ✅ built |
+| Slice 2b | Dialogue aligned with the S&D HSM: S0–S5, buttons/lists, 3-strike handoff, update/delete ([design](docs/conversation-design.md), DL-015) | ✅ built |
 | Slice 2 | NLU service: fine-tuned XLM-R intents + BERT+CRF entities, taxonomy/district resolution ([nlp/](nlp/README.md), DL-013/014) | ✅ built (data pending researcher validation) |
 | Slice 3 | Embedding-based matching engine + utility-template notifications | ⏳ pending |
 | Slice 4 | Vue 3 admin SPA | ⏳ pending |
@@ -30,7 +31,7 @@ tests/
   JobMatch.Tests           Signature, FSM, idempotency, NLU contract, and full webhook-pipeline tests
 nlp/                       Python NLU service (FastAPI): models, D4 taxonomy + D5 training data, pytest
 docs/
-  decision-log.md               DL-001 … DL-014
+  decision-log.md               DL-001 … DL-015
   whatsapp-cloud-api-setup.md   Meta setup, diagnostics, troubleshooting, daily checklist
   vps-deployment.md             Windows/IIS VPS staging: server setup, releases, rollback
 deploy/
@@ -47,14 +48,17 @@ The conversation brain is split deliberately:
 
 ## Conversation flow
 
+The S&D hierarchical state machine (DL-015; full design in [docs/conversation-design.md](docs/conversation-design.md)):
+
 ```
-NEW → CONSENT → LANGUAGE → PROFILE(name, location)
-    → SKILLS_ELICITATION (loop: utterance → NLU extract → confirm/refine; a bare trade → probe its skills)
-    → AVAILABILITY → ACTIVE
+S0 WELCOME (consent) → S1 ELICIT_TRADE → S2 ELICIT_SKILLS → S3 ELICIT_EXPERIENCE (years, availability)
+   → S4 ELICIT_LOCATION (district) → S5 CONFIRM_PROFILE → profile saved   [S6 match / S7 feedback: Slice 3]
 ```
 
-Global commands in any state: `help`, `stop` (opt-out), `skills` (update), `matches`.
-Unrecognised input → a logged repair prompt (a research metric).
+- Buttons and lists everywhere, with free text understood by the NLU. Slots given early are skipped.
+- Below 0.75 confidence the bot asks back. 3 failed turns in a state → human handoff.
+- From the summary, any slot can be changed; the profile is saved only when confirmed.
+- Commands in any state: `help`, `stop`, `update`, `skills`, `matches`, `delete` (removes all data).
 
 ## Prerequisites
 
@@ -84,7 +88,7 @@ Connection strings default to `localhost`; override `ConnectionStrings:SqlServer
 
 ```bash
 dotnet build
-dotnet test                                   # 37 tests: signature, FSM, idempotency, NLU contract, pipeline
+dotnet test                                   # 63 tests: signature, FSM, idempotency, NLU contract, pipeline
 dotnet ef database update \                   # apply migrations to SQL Server
   --project src/JobMatch.Infrastructure --startup-project src/JobMatch.Api
 dotnet run --project src/JobMatch.Api         # webhook on /webhook, health on /health

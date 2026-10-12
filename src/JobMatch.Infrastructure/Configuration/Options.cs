@@ -23,8 +23,11 @@ public class RedisOptions
     public const string SectionName = "Redis";
 
     public string ConnectionString { get; set; } = "localhost:6379";
-    /// <summary>Conversation session TTL. Aligns with WhatsApp's 24h service window.</summary>
-    public int SessionTtlHours { get; set; } = 24;
+    /// <summary>
+    /// Conversation session TTL. FR-09: an unfinished profile survives at least 72h, so a
+    /// worker can resume without re-entering anything (sliding: refreshed on every message).
+    /// </summary>
+    public int SessionTtlHours { get; set; } = 72;
     public string KeyPrefix { get; set; } = "jobmatch:session:";
 }
 
@@ -39,4 +42,17 @@ public class NluOptions
     /// <summary>Per-request timeout. On timeout or error the gateway falls back to the keyword stub.</summary>
     public double TimeoutSeconds { get; set; } = 5;
     public double MatchThreshold { get; set; } = 0.55;
+}
+
+/// <summary>Where the dialogue's reference data (taxonomy, localities, districts) is read from.</summary>
+public class DialogueOptions
+{
+    public const string SectionName = "Dialogue";
+
+    /// <summary>Folder holding taxonomy_v1.json, localities_v1.json and ghana_districts.json.
+    /// Relative paths resolve against the app's base directory. Default: the copies the API
+    /// build places in <c>Data/</c>.</summary>
+    public string DataPath { get; set; } = "Data";
+
+    public string ResolvedDataPath => Path.IsPathRooted(DataPath) ? DataPath : Path.Combine(AppContext.BaseDirectory, DataPath);
 }

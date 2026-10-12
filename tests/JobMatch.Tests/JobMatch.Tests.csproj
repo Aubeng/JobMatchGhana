@@ -28,6 +28,10 @@
     <!-- Shared HTTP contract with the Python NLU service (also read by nlp/tests). -->
     <None Include="..\..\nlp\tests\fixtures\nlu_response.json" Link="Fixtures\nlu_response.json"
           CopyToOutputDirectory="PreserveNewest" />
+    <!-- The dialogue catalog's data, as the API ships it (Data/). -->
+    <None Include="..\..\nlp\data\taxonomy_v1.json" Link="Data\taxonomy_v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\nlp\data\localities_v1.json" Link="Data\localities_v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\nlp\data\ghana_districts.json" Link="Data\ghana_districts.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

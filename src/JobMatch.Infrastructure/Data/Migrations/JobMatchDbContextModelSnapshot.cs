@@ -241,6 +241,10 @@ namespace JobMatch.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Availability")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<bool>("ConsentGiven")
                         .HasColumnType("bit");
 
@@ -254,8 +258,23 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
+                    b.Property<string>("ExperienceText")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<double?>("ExperienceYears")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LocationDistrict")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("LocationRegion")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("LocationText")
                         .HasMaxLength(200)
@@ -266,6 +285,17 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
 
+                    b.Property<DateTimeOffset?>("ProfileConfirmedUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("TradeCategoryId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("TradeName")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<DateTimeOffset>("UpdatedUtc")
                         .HasColumnType("datetimeoffset");
 
@@ -275,6 +305,8 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(32)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LocationDistrict");
 
                     b.HasIndex("WaId")
                         .IsUnique();
@@ -295,6 +327,9 @@ namespace JobMatch.Infrastructure.Data.Migrations
 
                     b.Property<double>("ExtractionConfidence")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("RemovedUtc")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("SkillId")
                         .HasColumnType("int");

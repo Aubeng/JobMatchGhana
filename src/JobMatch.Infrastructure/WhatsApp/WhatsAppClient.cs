@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using JobMatch.Domain.Abstractions;
+using JobMatch.Domain.Conversation;
 using JobMatch.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -27,18 +28,9 @@ public class WhatsAppClient : IWhatsAppClient
 
     private string MessagesPath => $"/{_options.GraphApiVersion}/{_options.PhoneNumberId}/messages";
 
-    public async Task<string?> SendTextAsync(string waId, string text, CancellationToken ct)
+    public async Task<string?> SendAsync(string waId, OutboundMessage message, CancellationToken ct)
     {
-        var payload = new
-        {
-            messaging_product = "whatsapp",
-            recipient_type = "individual",
-            to = waId,
-            type = "text",
-            text = new { preview_url = false, body = text }
-        };
-
-        using var resp = await _http.PostAsJsonAsync(MessagesPath, payload, ct);
+        using var resp = await _http.PostAsJsonAsync(MessagesPath, BuildPayload(waId, message), ct);
         if (!resp.IsSuccessStatusCode)
         {
             var body = await resp.Content.ReadAsStringAsync(ct);
@@ -51,6 +43,70 @@ public class WhatsAppClient : IWhatsAppClient
             return msgs[0].GetProperty("id").GetString();
         return null;
     }
+
+    /// <summary>
+    /// Graph API payload: text, interactive "button" (max 3 replies, titles &lt;= 20 chars) or
+    /// interactive "list" (max 10 rows, titles &lt;= 24, descriptions &lt;= 72). Over-long titles
+    /// are trimmed here so a wording change can never make Meta reject a message.
+    /// </summary>
+    public static object BuildPayload(string waId, OutboundMessage message)
+    {
+        object content;
+        string type;
+        if (message.Buttons is { Count: > 0 } buttons)
+        {
+            type = "interactive";
+            content = new
+            {
+                type = "button",
+                body = new { text = message.Text },
+                action = new
+                {
+                    buttons = buttons.Take(3).Select(b => new { type = "reply", reply = new { id = b.Id, title = Cut(b.Title, 20) } })
+                }
+            };
+        }
+        else if (message.List is { Count: > 0 } rows)
+        {
+            type = "interactive";
+            content = new
+            {
+                type = "list",
+                body = new { text = message.Text },
+                action = new
+                {
+                    button = Cut(message.ListButton ?? "Choose", 20),
+                    sections = new[]
+                    {
+                        new
+                        {
+                            title = "Options",
+                            rows = rows.Take(10).Select(r => r.Description is null
+                                ? (object)new { id = r.Id, title = Cut(r.Title, 24) }
+                                : new { id = r.Id, title = Cut(r.Title, 24), description = Cut(r.Description, 72) })
+                        }
+                    }
+                }
+            };
+        }
+        else
+        {
+            type = "text";
+            content = new { preview_url = false, body = message.Text };
+        }
+
+        var payload = new Dictionary<string, object>
+        {
+            ["messaging_product"] = "whatsapp",
+            ["recipient_type"] = "individual",
+            ["to"] = waId,
+            ["type"] = type,
+            [type] = content
+        };
+        return payload;
+    }
+
+    private static string Cut(string s, int max) => s.Length <= max ? s : s[..(max - 1)] + "…";
 
     public async Task MarkReadAsync(string waMessageId, CancellationToken ct)
     {
@@ -77,10 +133,10 @@ public class LoggingWhatsAppClient : IWhatsAppClient
 
     public LoggingWhatsAppClient(ILogger<LoggingWhatsAppClient> logger) => _logger = logger;
 
-    public Task<string?> SendTextAsync(string waId, string text, CancellationToken ct)
+    public Task<string?> SendAsync(string waId, OutboundMessage message, CancellationToken ct)
     {
         var id = $"local-out-{Interlocked.Increment(ref _counter)}";
-        _logger.LogInformation("[WhatsApp:DRYRUN] -> {WaId}: {Text}", waId, text);
+        _logger.LogInformation("[WhatsApp:DRYRUN] -> {WaId}: {Text}", waId, MessageRendering.ForLog(message));
         return Task.FromResult<string?>(id);
     }
 

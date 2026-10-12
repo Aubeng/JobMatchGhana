@@ -24,6 +24,13 @@ public class JobMatchDbContext : DbContext
             e.Property(w => w.DisplayName).HasMaxLength(120);
             e.Property(w => w.PreferredLanguage).HasMaxLength(8);
             e.Property(w => w.LocationText).HasMaxLength(200);
+            e.Property(w => w.TradeCategoryId).HasMaxLength(64);
+            e.Property(w => w.TradeName).HasMaxLength(128);
+            e.Property(w => w.ExperienceText).HasMaxLength(64);
+            e.Property(w => w.Availability).HasMaxLength(64);
+            e.Property(w => w.LocationDistrict).HasMaxLength(64);
+            e.Property(w => w.LocationRegion).HasMaxLength(32);
+            e.HasIndex(w => w.LocationDistrict);   // matching's geographic pre-filter
         });
 
         b.Entity<Skill>(e =>

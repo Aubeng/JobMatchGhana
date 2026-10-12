@@ -10,6 +10,8 @@
     "2026-10-11: +29 synonyms/terms proposed while drafting the utterances.",
     "2026-10-11: removed \"till\", \"spot\", \"burkina\", \"makola\": generic words / place names that produced false skill matches."
   ],
+  "trade_menu": ["construction", "woodwork", "electrical", "textile_fashion", "trading_sales", "domestic_services", "food_catering", "agriculture", "hair_beauty", "transport"],
+  "trade_menu_note": "The 10 trades offered as a WhatsApp list in S1 (10 rows max): the 8 BOOST cohort trades first. The others are reached by typing.",
   "categories": [
     {
       "id": "construction",

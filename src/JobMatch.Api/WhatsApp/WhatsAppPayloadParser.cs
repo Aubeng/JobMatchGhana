@@ -63,12 +63,19 @@ public static class WhatsAppPayloadParser
         _ => string.Empty
     };
 
+    /// <summary>
+    /// A tapped button or list row yields its <c>id</c>: the same value a worker could type
+    /// ("1", "done"), so the FSM handles taps and typing identically. Title only as a fallback.
+    /// </summary>
     private static string ExtractInteractive(JsonElement interactive)
     {
-        if (interactive.TryGetProperty("button_reply", out var br))
-            return br.TryGetProperty("title", out var t) ? t.GetString() ?? string.Empty : string.Empty;
-        if (interactive.TryGetProperty("list_reply", out var lr))
-            return lr.TryGetProperty("title", out var t) ? t.GetString() ?? string.Empty : string.Empty;
+        foreach (var kind in new[] { "button_reply", "list_reply" })
+        {
+            if (!interactive.TryGetProperty(kind, out var reply)) continue;
+            if (reply.TryGetProperty("id", out var id) && id.GetString() is { Length: > 0 } value)
+                return value;
+            return reply.TryGetProperty("title", out var t) ? t.GetString() ?? string.Empty : string.Empty;
+        }
         return string.Empty;
     }
 

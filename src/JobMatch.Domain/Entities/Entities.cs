@@ -10,7 +10,22 @@ public class Worker
     public string WaId { get; set; } = string.Empty;
     public string? DisplayName { get; set; }
     public string PreferredLanguage { get; set; } = "en";
+    /// <summary>The area as the worker named it ("Madina").</summary>
     public string? LocationText { get; set; }
+
+    // ---- Skills profile (S&D S1-S4), written when the worker confirms the S5 summary (FR-10). ----
+    /// <summary>Taxonomy trade category id, e.g. "construction".</summary>
+    public string? TradeCategoryId { get; set; }
+    public string? TradeName { get; set; }
+    public double? ExperienceYears { get; set; }
+    /// <summary>Experience as answered ("1 to 5 years", "since 2018").</summary>
+    public string? ExperienceText { get; set; }
+    public string? Availability { get; set; }
+    /// <summary>District (MMDA) used for matching's geographic filter (S&D L5).</summary>
+    public string? LocationDistrict { get; set; }
+    public string? LocationRegion { get; set; }
+    /// <summary>Last time the worker confirmed their profile summary.</summary>
+    public DateTimeOffset? ProfileConfirmedUtc { get; set; }
 
     // Consent gate (research ethics condition): no profiling/matching before consent.
     public bool ConsentGiven { get; set; }
@@ -56,6 +71,11 @@ public class WorkerSkill
     /// <summary>NLU confidence 0..1 for the extraction (research data).</summary>
     public double ExtractionConfidence { get; set; }
     public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
+    /// <summary>
+    /// Set when a later confirmed profile no longer has this skill. Rows are kept rather than
+    /// deleted so the extraction record survives (only "delete my data" removes them).
+    /// </summary>
+    public DateTimeOffset? RemovedUtc { get; set; }
 }
 
 /// <summary>A job opportunity posted by an employer via the admin SPA.</summary>

@@ -1,6 +1,8 @@
 using JobMatch.Domain.Abstractions;
 using JobMatch.Infrastructure.Configuration;
+using JobMatch.Domain.Conversation;
 using JobMatch.Infrastructure.Data;
+using JobMatch.Infrastructure.Dialogue;
 using JobMatch.Infrastructure.Nlu;
 using JobMatch.Infrastructure.Orchestration;
 using JobMatch.Infrastructure.Sessions;
@@ -54,7 +56,12 @@ public static class DependencyInjection
             services.AddSingleton<IWhatsAppClient, LoggingWhatsAppClient>();
         }
 
-        // --- NLU client: stub (Slice 1) or real FastAPI client (Slice 2) ---
+        // --- Dialogue reference data: taxonomy, menus, gazetteer (the files nlp/ resolves against) ---
+        services.Configure<DialogueOptions>(config.GetSection(DialogueOptions.SectionName));
+        services.AddSingleton(sp => DialogueCatalogLoader.Load(
+            sp.GetRequiredService<IOptions<DialogueOptions>>().Value.ResolvedDataPath));
+
+        // --- NLU client: offline taxonomy matcher, or the FastAPI service with that as fallback ---
         var nlu = config.GetSection(NluOptions.SectionName).Get<NluOptions>() ?? new NluOptions();
         if (nlu.UseStub)
         {
@@ -71,7 +78,7 @@ public static class DependencyInjection
             // Service first; keyword stub if it's down or slow (graceful degradation).
             services.AddTransient<INluClient>(sp => new FallbackNluClient(
                 sp.GetRequiredService<HttpNluClient>(),
-                new StubNluClient(),
+                new StubNluClient(sp.GetRequiredService<DialogueCatalog>()),
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FallbackNluClient>>()));
         }
 

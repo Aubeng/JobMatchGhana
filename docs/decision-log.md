@@ -167,3 +167,34 @@ overwrite `IntentDetected` with the NLU label (loses the dialogue decision).
 the model's raw prediction for every message, so pilot messages can be annotated afterwards and
 compared. The model version makes results attributable to a specific model (v1 synthetic vs v2
 pilot-trained, D11). The consent gate (DL-010) is kept: nothing is sent for analysis before consent.
+
+---
+
+## DL-015 — Align the dialogue with the S&D hierarchical state machine
+**Decision:** Replace the Slice 1 flow (consent → language → name → free location → skills loop →
+availability) with the S&D design (Design §6.2, Figure 3): S0 WELCOME → S1 ELICIT_TRADE → S2
+ELICIT_SKILLS → S3 ELICIT_EXPERIENCE (years + availability sub-machine) → S4 ELICIT_LOCATION
+(district) → S5 CONFIRM_PROFILE, with correction paths from S5 back to any slot, the 0.75
+confidence threshold, the 3-strike clarification loop ending in human handoff, WhatsApp Quick
+Reply buttons and List Messages (NFR-07), 72-hour sessions (FR-09), profile update (FR-15),
+"delete my data" (FR-16), and a 500-character cap per message (NFR-05). The profile is persisted
+only on S5 confirmation (FR-10) via new `Worker` columns (migration `AlignDialogueWithSdHsm`).
+Dropped skills are soft-removed (`WorkerSkill.RemovedUtc`). S6/S7 are defined and arrive with
+matching in Slice 3. Details: `docs/conversation-design.md`.
+**Alternatives:** Keep the Slice 1 flow and record the difference as a design iteration; align
+later, after matching.
+**Rationale:** The artefact evaluated in the pilot should be the one the S&D describes and the
+examiners approved. Aligning before matching means Slice 3 builds on the final profile shape:
+trade, district and experience are what L5's geographic filter and ranking consume.
+**Decisions within it:**
+- The language and name steps are removed (English-only per FR-03; name optional per NFR-09).
+- Slots volunteered early are filled and skipped (mixed initiative), so a profile takes about 9 turns.
+- The menus come from the same taxonomy and gazetteer files the NLU resolves against
+  (`trade_menu`, `location_menu`).
+- The gateway's offline NLU stub now matches exact taxonomy phrases, so the fallback produces
+  canonical names.
+- NLU EXIT is confirmed before opting out, because the data labels pauses ("later") as EXIT.
+- Taps and bare menu numbers aren't sent to NLU.
+- Sessions in retired states are restarted.
+**Accepted cost:** "delete my data" also removes that worker's `MessageLog` rows, as FR-16
+requires; the consented research dataset shrinks accordingly.

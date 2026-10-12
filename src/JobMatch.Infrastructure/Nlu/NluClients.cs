@@ -1,69 +1,61 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using JobMatch.Domain.Abstractions;
 using JobMatch.Domain.Conversation;
-using JobMatch.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace JobMatch.Infrastructure.Nlu;
 
 /// <summary>
-/// Deterministic keyword-based NLU stub for Slice 1. Maps common Ghanaian informal-sector
-/// phrases to canonical skills so the FSM can be demonstrated end-to-end before the Python
-/// service (Slice 2) is wired in. Returns realistic confidences so the confirm/refine and
-/// repair paths are exercised.
+/// Offline NLU: exact phrase matching against the taxonomy and gazetteer (no models). Used
+/// when <c>Nlu:UseStub</c> is true (local development) and as the fallback whenever the NLU
+/// service is down (<see cref="FallbackNluClient"/>). It returns the same canonical skill,
+/// trade and district names as the service, so profiles stay consistent either way. It
+/// predicts no intent ("unknown"); typos and paraphrases need the real service.
 /// </summary>
 public class StubNluClient : INluClient
 {
-    // Ordered keyword -> canonical skill. First matching keyword per canonical skill wins.
-    private static readonly (string Keyword, string Canonical)[] Lexicon =
-    {
-        ("mason", "Masonry"), ("block", "Masonry"), ("plaster", "Masonry"), ("brick", "Masonry"),
-        ("carpenter", "Carpentry"), ("carpentry", "Carpentry"), ("wood", "Carpentry"), ("furniture", "Carpentry"),
-        ("plumb", "Plumbing"), ("pipe", "Plumbing"), ("drain", "Plumbing"),
-        ("electric", "Electrical Work"), ("wiring", "Electrical Work"), ("wire", "Electrical Work"),
-        ("paint", "Painting"),
-        ("weld", "Welding"), ("fabricat", "Welding"),
-        ("drive", "Driving"), ("driver", "Driving"), ("taxi", "Driving"), ("trotro", "Driving"),
-        ("tro-tro", "Driving"), ("car", "Driving"), ("okada", "Driving"), ("motor", "Driving"),
-        ("cook", "Cooking"), ("chef", "Cooking"), ("food", "Cooking"), ("chop", "Cooking"), ("kitchen", "Cooking"),
-        ("clean", "Cleaning"), ("wash", "Cleaning"), ("laundry", "Cleaning"), ("sweep", "Cleaning"),
-        ("house help", "Domestic Work"), ("housemaid", "Domestic Work"), ("nanny", "Domestic Work"),
-        ("maid", "Domestic Work"), ("domestic", "Domestic Work"),
-        ("tailor", "Tailoring"), ("sew", "Tailoring"), ("dressmak", "Tailoring"), ("seamstress", "Tailoring"),
-        ("hair", "Hairdressing"), ("braid", "Hairdressing"), ("barber", "Hairdressing"), ("salon", "Hairdressing"),
-        ("farm", "Farming"), ("crop", "Farming"), ("garden", "Farming"),
-        ("sell", "Retail Sales"), ("trade", "Retail Sales"), ("shop", "Retail Sales"),
-        ("retail", "Retail Sales"), ("market", "Retail Sales"), ("vendor", "Retail Sales"),
-        ("security", "Security"), ("guard", "Security"), ("watchman", "Security"),
-        ("mechanic", "Auto Mechanics"), ("fitter", "Auto Mechanics"), ("vulcaniz", "Auto Mechanics"),
-        ("tile", "Tiling"), ("tiling", "Tiling"),
-        ("weav", "Weaving"), ("kente", "Weaving"),
-        ("phone repair", "Phone Repair"), ("bead", "Beadwork")
-    };
+    public const string ModelVersion = "stub";
+    /// <summary>Exact matches are certain enough to act on (>= the 0.75 threshold).</summary>
+    private const double ExactConfidence = 0.8;
+    private static readonly Regex Duration = new(
+        @"\b(\d{1,2})\s*(?:\+\s*)?(?:years?|yrs?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private readonly DialogueCatalog _catalog;
+
+    public StubNluClient(DialogueCatalog catalog) => _catalog = catalog;
 
     public Task<NluResult> AnalyzeAsync(string utterance, string state, CancellationToken ct)
     {
-        var text = (utterance ?? string.Empty).ToLowerInvariant();
-        var found = new List<SkillCandidate>();
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var text = utterance ?? string.Empty;
+        var hits = _catalog.ScanSkills(text);
+        var skills = hits.Select(h => new SkillCandidate(h.Skill.Name, ExactConfidence)).ToList();
 
-        foreach (var (keyword, canonical) in Lexicon)
+        TradeCandidate? trade = null;
+        if (_catalog.ScanTrade(text) is { } named)
+            trade = new TradeCandidate(named.Id, named.Name, ExactConfidence, named.Skills.Take(3).Select(k => k.Name).ToList());
+        else if (hits.Count > 0)
+            trade = new TradeCandidate(hits[0].Trade.Id, hits[0].Trade.Name, ExactConfidence,
+                                       hits[0].Trade.Skills.Take(3).Select(k => k.Name).ToList(), "skill");
+
+        var place = _catalog.ScanLocation(text);
+        var years = Duration.Match(text);
+
+        var result = new NluResult("unknown", skills.Count > 0 ? ExactConfidence : 0.2, skills)
         {
-            if (text.Contains(keyword, StringComparison.Ordinal) && seen.Add(canonical))
-            {
-                // Simple length-based pseudo-confidence: longer, more specific keywords score higher.
-                var confidence = Math.Min(0.95, 0.6 + keyword.Length * 0.03);
-                found.Add(new SkillCandidate(canonical, Math.Round(confidence, 2)));
-            }
-        }
-
-        var intent = found.Count > 0 ? "provide_skill" : "unknown";
-        var overall = found.Count > 0 ? found.Max(f => f.Confidence) : 0.2;
-        return Task.FromResult(new NluResult(intent, overall, found) { ModelVersion = ModelVersion });
+            Trade = trade,
+            LocationDistrict = place?.District,
+            LocationRegion = place?.Region,
+            LocationText = place?.Label,
+            LocationConfidence = place is null ? 0 : ExactConfidence,
+            ExperienceYears = years.Success ? double.Parse(years.Groups[1].Value, CultureInfo.InvariantCulture) : null,
+            ExperienceText = years.Success ? years.Value : null,
+            ModelVersion = ModelVersion
+        };
+        return Task.FromResult(result);
     }
-
-    public const string ModelVersion = "stub";
 }
 
 /// <summary>
@@ -104,23 +96,38 @@ public class HttpNluClient : INluClient
                 ? ex.EnumerateArray().Select(e => e.GetString()!).ToList()
                 : new List<string>();
             trade = new TradeCandidate(t.GetProperty("category_id").GetString()!, t.GetProperty("name").GetString()!,
-                                       t.GetProperty("confidence").GetDouble(), examples);
+                                       t.GetProperty("confidence").GetDouble(), examples,
+                                       t.TryGetProperty("via", out var via) ? via.GetString() ?? "trade" : "trade");
         }
 
-        string? district = null;
+        string? district = null, region = null, place = null;
+        double locConfidence = 0;
         if (root.TryGetProperty("location", out var loc) && loc.ValueKind == JsonValueKind.Object)
+        {
             district = loc.GetProperty("district").GetString();
+            region = loc.TryGetProperty("region", out var r) ? r.GetString() : null;
+            place = loc.TryGetProperty("source_text", out var st) ? st.GetString() : null;
+            locConfidence = loc.TryGetProperty("confidence", out var lc) ? lc.GetDouble() : 0;
+        }
 
         double? years = null;
-        if (root.TryGetProperty("experience", out var exp) && exp.ValueKind == JsonValueKind.Object
-            && exp.TryGetProperty("years", out var y) && y.ValueKind == JsonValueKind.Number)
-            years = y.GetDouble();
+        string? expText = null;
+        if (root.TryGetProperty("experience", out var exp) && exp.ValueKind == JsonValueKind.Object)
+        {
+            if (exp.TryGetProperty("years", out var y) && y.ValueKind == JsonValueKind.Number)
+                years = y.GetDouble();
+            expText = exp.TryGetProperty("text", out var et) ? et.GetString() : null;
+        }
 
         return new NluResult(root.GetProperty("intent").GetString()!, root.GetProperty("confidence").GetDouble(), skills)
         {
             Trade = trade,
             LocationDistrict = district,
+            LocationRegion = region,
+            LocationText = place,
+            LocationConfidence = locConfidence,
             ExperienceYears = years,
+            ExperienceText = expText,
             BelowThreshold = root.TryGetProperty("below_threshold", out var b) && b.GetBoolean(),
             EntitiesJson = root.TryGetProperty("entities", out var ents) ? ents.GetRawText() : null,
             ModelVersion = root.TryGetProperty("model_version", out var v) ? v.GetString() : null,

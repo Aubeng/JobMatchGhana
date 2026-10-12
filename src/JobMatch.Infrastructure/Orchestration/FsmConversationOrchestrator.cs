@@ -3,20 +3,20 @@ using JobMatch.Domain.Conversation;
 using JobMatch.Domain.Entities;
 using JobMatch.Domain.Enums;
 using JobMatch.Infrastructure.Data;
+using JobMatch.Infrastructure.WhatsApp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobMatch.Infrastructure.Orchestration;
 
 /// <summary>
-/// Slice 1 orchestrator: replaces the Phase 1 echo with the deterministic FSM + Redis
-/// sessions. Responsibilities (the FSM itself stays pure):
-///   1. Idempotency — dedupe on <c>MessageLog.WaMessageId</c> (at-least-once delivery).
-///   2. Load/create the Redis session and run one FSM step (calling NLU on every post-consent turn).
-///   3. Persist worker profile + confirmed skills once consent is given (consent gate).
-///   4. Instrument every turn: FSM state, detected intent, NLU confidence, repair flag,
-///      plus the NLU service's own intent/entities/model version (Slice 2).
-///   5. Send outbound replies and mark the inbound message read.
+/// The impure shell around the pure dialogue state machine (the FSM itself does no I/O):
+///   1. Idempotency: dedupe on <c>MessageLog.WaMessageId</c> (at-least-once delivery).
+///   2. Load the Redis session, run NLU when allowed (post-consent free text), step the FSM.
+///   3. Persistence: the worker row at consent; the whole skills profile when the worker
+///      confirms the S5 summary (FR-10); "delete my data" removes everything (FR-16).
+///   4. Instrument every turn: FSM state and intent, NLU prediction, repair/handoff events.
+///   5. Send replies (interactive where offered), split to the 500-character limit (NFR-05).
 /// </summary>
 public class FsmConversationOrchestrator : IConversationOrchestrator
 {
@@ -24,6 +24,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
     private readonly ISessionStore _sessions;
     private readonly IWhatsAppClient _whatsapp;
     private readonly INluClient _nlu;
+    private readonly DialogueCatalog _catalog;
     private readonly ILogger<FsmConversationOrchestrator> _logger;
 
     public FsmConversationOrchestrator(
@@ -31,12 +32,14 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         ISessionStore sessions,
         IWhatsAppClient whatsapp,
         INluClient nlu,
+        DialogueCatalog catalog,
         ILogger<FsmConversationOrchestrator> logger)
     {
         _db = db;
         _sessions = sessions;
         _whatsapp = whatsapp;
         _nlu = nlu;
+        _catalog = catalog;
         _logger = logger;
     }
 
@@ -80,16 +83,23 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         try { await _whatsapp.MarkReadAsync(message.WaMessageId, ct); }
         catch (Exception ex) { _logger.LogWarning(ex, "mark-read failed for {Id}", message.WaMessageId); }
 
-        // 2) Load or create the session and run one FSM step.
-        var session = await _sessions.GetAsync(message.WaId, ct)
-                      ?? new ConversationSession { WaId = message.WaId, State = ConversationState.New };
+        // 2) Load the session and run one FSM step.
+        var session = await _sessions.GetAsync(message.WaId, ct);
+        if (session is not null && !Enum.IsDefined(session.State))
+        {
+            // A session from before DL-015 (retired Slice 1 state): start the new flow cleanly.
+            _logger.LogInformation("Session for {WaId} was in retired state {State}; restarting.", message.WaId, (int)session.State);
+            session = null;
+        }
+        session ??= new ConversationSession { WaId = message.WaId, State = ConversationState.New };
         var stateBefore = session.State;
 
+        var isTap = message.MessageType is "interactive" or "button";
         NluResult? nlu = null;
-        if (ConversationFsm.ShouldAnalyze(session, message.Text))
+        if (ConversationFsm.ShouldAnalyze(session, message.Text, isTap))
             nlu = await _nlu.AnalyzeAsync(message.Text, session.State.ToString(), ct);
 
-        var result = ConversationFsm.Step(session, message.Text, nlu);
+        var result = ConversationFsm.Step(session, message.Text, nlu, _catalog);
 
         // 3) Instrument the inbound turn (research metrics).
         inboundLog.IntentDetected = result.Intent;
@@ -105,42 +115,53 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
             inboundLog.NluLatencyMs = nlu.LatencyMs;
         }
 
-        // 4) Sync worker + skills (only after consent — consent gate).
-        await SyncWorkerAsync(result, message, ct);
+        if (result.DeleteRequested)
+        {
+            await DeleteEverythingAsync(message.WaId, ct);
+            await SendAsync(message.WaId, result.Replies, logAs: null, ct);
+            return;
+        }
 
-        // 5) Persist the session (Redis, 24h TTL).
+        if (result.HandoffRequested)
+            _logger.LogWarning("Human handoff requested: wa={WaId} state={State} (3 failed turns).", message.WaId, stateBefore);
+
+        // 4) Worker + profile (consent-gated; profile only once confirmed).
+        await SyncWorkerAsync(result, message.WaId, ct);
+
+        // 5) Persist the session (Redis, 72h TTL per FR-09).
         await _sessions.SaveAsync(result.Session, ct);
 
-        // 6) Send replies and log each outbound turn.
-        foreach (var reply in result.Replies)
+        // 6) Send replies and log each outbound message.
+        await SendAsync(message.WaId, result.Replies, result.Session.State, ct);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    private async Task SendAsync(string waId, IReadOnlyList<OutboundMessage> replies, ConversationState? logAs, CancellationToken ct)
+    {
+        foreach (var part in replies.SelectMany(r => MessageRendering.Split(r)))
         {
             string? outId = null;
             try
             {
-                outId = await _whatsapp.SendTextAsync(message.WaId, reply.Text, ct);
+                outId = await _whatsapp.SendAsync(waId, part, ct);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Outbound send failed to {WaId}", message.WaId);
+                _logger.LogError(ex, "Outbound send failed to {WaId}", waId);
             }
 
+            if (logAs is null) continue;   // after a deletion nothing more is stored
             _db.MessageLogs.Add(new MessageLog
             {
                 WaMessageId = outId,
-                WaId = message.WaId,
+                WaId = waId,
                 Direction = MessageDirection.Outbound,
-                Body = reply.Text,
-                MessageType = "text",
-                SessionState = result.Session.State,
+                Body = MessageRendering.ForLog(part),
+                MessageType = part.Buttons is not null || part.List is not null ? "interactive" : "text",
+                SessionState = logAs,
                 Timestamp = DateTimeOffset.UtcNow
             });
         }
-
-        await _db.SaveChangesAsync(ct);
-
-        if (result.IsRepair)
-            _logger.LogInformation("Repair event: wa={WaId} state={State} count={Count}",
-                message.WaId, stateBefore, result.Session.RepairCount);
     }
 
     private Task<bool> AlreadyProcessedAsync(string waMessageId, CancellationToken ct) =>
@@ -148,67 +169,104 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
             .AnyAsync(m => m.WaMessageId == waMessageId && m.Direction == MessageDirection.Inbound, ct);
 
     /// <summary>
-    /// Upsert the Worker row from the session state — but never before consent. Also persists
-    /// a newly confirmed skill (with its source utterance + confidence) and handles opt-out.
+    /// Consent gate: the worker row is created when consent is given (never before). The skills
+    /// profile is written only when the worker confirms the S5 summary (FR-10).
     /// </summary>
-    private async Task SyncWorkerAsync(FsmStepResult result, InboundMessage message, CancellationToken ct)
+    private async Task SyncWorkerAsync(FsmStepResult result, string waId, CancellationToken ct)
     {
         var session = result.Session;
-
-        // Consent gate: no worker profile is written until the worker has consented.
         if (!session.ConsentGiven && !result.OptedOut)
             return;
 
-        var worker = await _db.Workers.FirstOrDefaultAsync(w => w.WaId == message.WaId, ct);
+        var worker = await _db.Workers.FirstOrDefaultAsync(w => w.WaId == waId, ct);
         if (worker is null)
         {
-            if (!session.ConsentGiven) return; // opt-out before any consent → nothing to store
-            worker = new Worker { WaId = message.WaId, CreatedUtc = DateTimeOffset.UtcNow };
+            if (!session.ConsentGiven) return;   // opted out before consenting: nothing to store
+            worker = new Worker { WaId = waId, CreatedUtc = DateTimeOffset.UtcNow };
             _db.Workers.Add(worker);
         }
-
-        worker.DisplayName = session.DisplayName ?? worker.DisplayName;
-        worker.PreferredLanguage = session.PreferredLanguage ?? worker.PreferredLanguage;
-        worker.LocationText = session.LocationText ?? worker.LocationText;
-        worker.UpdatedUtc = DateTimeOffset.UtcNow;
 
         if (session.ConsentGiven && !worker.ConsentGiven)
         {
             worker.ConsentGiven = true;
             worker.ConsentUtc = DateTimeOffset.UtcNow;
         }
-
         if (result.OptedOut)
             worker.IsActive = false;
 
-        await _db.SaveChangesAsync(ct); // ensure worker.Id is available for skill linkage
+        if (result.ProfileConfirmed)
+        {
+            worker.IsActive = true;
+            worker.TradeCategoryId = session.TradeId;
+            worker.TradeName = session.TradeName;
+            worker.ExperienceYears = session.ExperienceYears;
+            worker.ExperienceText = session.ExperienceText;
+            worker.Availability = session.Availability;
+            worker.LocationDistrict = session.LocationDistrict;
+            worker.LocationRegion = session.LocationRegion;
+            worker.LocationText = session.LocationText;
+            worker.ProfileConfirmedUtc = DateTimeOffset.UtcNow;
+        }
+        worker.UpdatedUtc = DateTimeOffset.UtcNow;
+        await _db.SaveChangesAsync(ct);   // worker.Id is needed for skill links
 
-        if (result.NewlyConfirmedSkill is { } pending)
-            await AddWorkerSkillAsync(worker, pending, ct);
+        if (result.ProfileConfirmed)
+            await SyncSkillsAsync(worker, session.Skills, ct);
     }
 
-    private async Task AddWorkerSkillAsync(Worker worker, PendingSkill pending, CancellationToken ct)
+    /// <summary>
+    /// Make the worker's active skills equal the confirmed set. New skills keep the utterance
+    /// and confidence that produced them (research data); dropped skills are marked removed,
+    /// not deleted.
+    /// </summary>
+    private async Task SyncSkillsAsync(Worker worker, IReadOnlyList<CapturedSkill> confirmed, CancellationToken ct)
     {
-        var canonical = pending.CanonicalName.Trim();
-        var skill = await _db.Skills.FirstOrDefaultAsync(s => s.CanonicalName == canonical, ct);
-        if (skill is null)
+        var active = await _db.WorkerSkills.Include(ws => ws.Skill)
+            .Where(ws => ws.WorkerId == worker.Id && ws.RemovedUtc == null)
+            .ToListAsync(ct);
+        var wanted = confirmed.Select(c => c.CanonicalName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var ws in active.Where(ws => !wanted.Contains(ws.Skill!.CanonicalName)))
+            ws.RemovedUtc = DateTimeOffset.UtcNow;
+
+        var have = active.Select(ws => ws.Skill!.CanonicalName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var captured in confirmed.Where(c => !have.Contains(c.CanonicalName)))
         {
-            skill = new Skill { CanonicalName = canonical };
-            _db.Skills.Add(skill);
-            await _db.SaveChangesAsync(ct);
+            var name = captured.CanonicalName.Trim();
+            var skill = await _db.Skills.FirstOrDefaultAsync(s => s.CanonicalName == name, ct);
+            if (skill is null)
+            {
+                skill = new Skill { CanonicalName = name, Category = _catalog.FindSkill(name)?.Trade.Name };
+                _db.Skills.Add(skill);
+                await _db.SaveChangesAsync(ct);
+            }
+            _db.WorkerSkills.Add(new WorkerSkill
+            {
+                WorkerId = worker.Id,
+                SkillId = skill.Id,
+                SourceUtterance = captured.SourceUtterance,   // research data, preserved
+                ExtractionConfidence = captured.Confidence
+            });
         }
-
-        var exists = await _db.WorkerSkills
-            .AnyAsync(ws => ws.WorkerId == worker.Id && ws.SkillId == skill.Id, ct);
-        if (exists) return;
-
-        _db.WorkerSkills.Add(new WorkerSkill
-        {
-            WorkerId = worker.Id,
-            SkillId = skill.Id,
-            SourceUtterance = pending.SourceUtterance, // research data — preserved
-            ExtractionConfidence = pending.Confidence
-        });
         await _db.SaveChangesAsync(ct);
+    }
+
+    /// <summary>
+    /// FR-16: permanently remove the worker's profile, skills, matches and every logged message,
+    /// plus the session. The research consent covers data only while the worker keeps it there.
+    /// </summary>
+    private async Task DeleteEverythingAsync(string waId, CancellationToken ct)
+    {
+        var worker = await _db.Workers.FirstOrDefaultAsync(w => w.WaId == waId, ct);
+        if (worker is not null)
+        {
+            _db.WorkerSkills.RemoveRange(await _db.WorkerSkills.Where(ws => ws.WorkerId == worker.Id).ToListAsync(ct));
+            _db.Matches.RemoveRange(await _db.Matches.Where(m => m.WorkerId == worker.Id).ToListAsync(ct));
+            _db.Workers.Remove(worker);
+        }
+        _db.MessageLogs.RemoveRange(await _db.MessageLogs.Where(m => m.WaId == waId).ToListAsync(ct));
+        await _db.SaveChangesAsync(ct);
+        await _sessions.DeleteAsync(waId, ct);
+        _logger.LogInformation("Deleted all data for a worker on request (FR-16).");
     }
 }

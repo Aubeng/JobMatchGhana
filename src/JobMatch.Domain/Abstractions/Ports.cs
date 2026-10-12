@@ -20,10 +20,15 @@ public interface ISessionStore
     Task DeleteAsync(string waId, CancellationToken ct);
 }
 
-/// <summary>Typed WhatsApp Cloud API client (send text, mark-as-read).</summary>
+/// <summary>Typed WhatsApp Cloud API client (send text or interactive messages, mark-as-read).</summary>
 public interface IWhatsAppClient
 {
-    Task<string?> SendTextAsync(string waId, string text, CancellationToken ct);
+    /// <summary>
+    /// Sends a message: plain text, or interactive (Quick Reply buttons / List Message) when
+    /// <see cref="OutboundMessage.Buttons"/> or <see cref="OutboundMessage.List"/> is set.
+    /// Returns Meta's message id.
+    /// </summary>
+    Task<string?> SendAsync(string waId, OutboundMessage message, CancellationToken ct);
     Task MarkReadAsync(string waMessageId, CancellationToken ct);
 }
 
