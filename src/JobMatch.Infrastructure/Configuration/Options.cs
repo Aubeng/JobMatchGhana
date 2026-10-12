@@ -41,7 +41,22 @@ public class NluOptions
     public bool UseStub { get; set; } = true;
     /// <summary>Per-request timeout. On timeout or error the gateway falls back to the keyword stub.</summary>
     public double TimeoutSeconds { get; set; } = 5;
-    public double MatchThreshold { get; set; } = 0.55;
+}
+
+/// <summary>Matching engine (S&D L5) and new-job alerts.</summary>
+public class MatchingOptions
+{
+    public const string SectionName = "Matching";
+
+    /// <summary>S&D: return the top 3.</summary>
+    public int TopK { get; set; } = 3;
+    /// <summary>Minimum cosine similarity (MiniLM) for a job to be offered. From the build brief.</summary>
+    public double MinScore { get; set; } = 0.55;
+    /// <summary>At most one new-job alert per worker in this many hours (cost discipline).</summary>
+    public int AlertCooldownHours { get; set; } = 24;
+    /// <summary>Approved utility template for new-job alerts: "{{1}} in {{2}}" + quick reply.</summary>
+    public string AlertTemplate { get; set; } = "job_match_alert";
+    public string AlertTemplateLanguage { get; set; } = "en";
 }
 
 /// <summary>Where the dialogue's reference data (taxonomy, localities, districts) is read from.</summary>

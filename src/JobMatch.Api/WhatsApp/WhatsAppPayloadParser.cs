@@ -58,8 +58,11 @@ public static class WhatsAppPayloadParser
         // Interactive button/list replies carry the chosen id/title.
         "interactive" when msg.TryGetProperty("interactive", out var i)
             => ExtractInteractive(i),
-        "button" when msg.TryGetProperty("button", out var b) && b.TryGetProperty("text", out var bt)
-            => bt.GetString() ?? string.Empty,
+        // A template's quick-reply button: prefer its payload (e.g. "matches") over its label.
+        "button" when msg.TryGetProperty("button", out var b)
+            => (b.TryGetProperty("payload", out var bp) ? bp.GetString() : null) is { Length: > 0 } payload
+                ? payload
+                : b.TryGetProperty("text", out var bt) ? bt.GetString() ?? string.Empty : string.Empty,
         _ => string.Empty
     };
 

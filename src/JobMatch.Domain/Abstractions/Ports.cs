@@ -29,6 +29,15 @@ public interface IWhatsAppClient
     /// Returns Meta's message id.
     /// </summary>
     Task<string?> SendAsync(string waId, OutboundMessage message, CancellationToken ct);
+
+    /// <summary>
+    /// Sends a pre-approved WhatsApp template: the only kind of message a business may start
+    /// outside the 24-hour customer-service window. Used solely for new-job alerts (utility
+    /// category), per the cost-discipline rule. <paramref name="quickReplyPayload"/> is what
+    /// comes back when the worker taps the template's quick-reply button.
+    /// </summary>
+    Task<string?> SendTemplateAsync(string waId, string templateName, string languageCode,
+        IReadOnlyList<string> bodyParameters, string? quickReplyPayload, CancellationToken ct);
     Task MarkReadAsync(string waMessageId, CancellationToken ct);
 }
 

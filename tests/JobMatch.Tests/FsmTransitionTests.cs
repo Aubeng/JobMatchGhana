@@ -456,6 +456,130 @@ public class FsmTransitionTests
         Step(s, "this is helpful thanks", Nlu("FEEDBACK_PROVIDE", 0.92)).Intent.Should().Be(Intent.ProvideFeedback);
     }
 
+    // ---- S6 DELIVER_MATCH / S7 FEEDBACK -----------------------------------------------------
+
+    private static MatchCard Card(int rank) => new(100 + rank, rank, $"Job {rank}", "Madina (La Nkwantanang Madina)",
+        "GHS 180–250 per day", "Full-time", "Needs your skill: Block laying; in your area", "Small building contractor");
+
+    private static ConversationSession Delivered(int count = 3)
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        Step(s, "1");
+        ConversationFsm.DeliverMatches(s, Enumerable.Range(1, count).Select(Card).ToList());
+        return s;
+    }
+
+    [Fact]
+    public void Confirming_the_profile_requests_matches()
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        var r = Step(s, "1");
+        r.ProfileConfirmed.Should().BeTrue();
+        r.RequestMatches.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Matches_command_requests_matches_only_with_a_confirmed_profile()
+    {
+        var early = At(ConversationState.ElicitLocation);
+        Step(early, "matches").RequestMatches.Should().BeFalse();
+
+        var s = At(ConversationState.ConfirmProfile);
+        Step(s, "1");
+        var r = Step(s, "matches");
+        r.RequestMatches.Should().BeTrue();
+        r.Replies.Should().BeEmpty("the delivery supplies the replies");
+    }
+
+    [Fact]
+    public void S6_delivers_each_job_with_an_interested_button_then_asks_for_a_rating_FR12_FR14()
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        Step(s, "1");
+        var r = ConversationFsm.DeliverMatches(s, new[] { Card(1), Card(2), Card(3) });
+
+        r.Intent.Should().Be(Intent.DeliverMatches);
+        s.State.Should().Be(ConversationState.Feedback, "S6 -> S7 once results are dispatched");
+        r.Replies.Should().HaveCount(5, "intro, three jobs, rating question");
+        var job = r.Replies[1];
+        job.Text.Should().Contain("Job 1").And.Contain("GHS 180–250 per day").And.Contain("Madina").And.Contain("Needs your skill");
+        job.Buttons!.Single().Id.Should().Be("int_1");
+        r.Replies.Last().List.Should().HaveCount(5);
+        r.Replies.Should().OnlyContain(m => m.Text.Length <= OutboundMessage.MaxLength);
+        s.DeliveredMatches.Select(m => m.MatchId).Should().Equal(101, 102, 103);
+    }
+
+    [Fact]
+    public void S6_with_no_matches_says_so_and_rests_in_active()
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        Step(s, "1");
+        var r = ConversationFsm.DeliverMatches(s, Array.Empty<MatchCard>());
+        s.State.Should().Be(ConversationState.Active);
+        r.Replies.Single().Text.Should().Contain("no jobs");
+    }
+
+    [Fact]
+    public void S7_rating_then_comment_applies_to_every_delivered_match()
+    {
+        var s = Delivered();
+        var rated = Step(s, "rate_4");
+        rated.Intent.Should().Be(Intent.RateMatches);
+        rated.Rating.Should().Be(4);
+        rated.FeedbackMatchIds.Should().Equal(101, 102, 103);
+        s.AwaitingComment.Should().BeTrue();
+
+        var comment = Step(s, "the second one is too far", Nlu("FEEDBACK_PROVIDE", 0.9));
+        comment.FeedbackText.Should().Be("the second one is too far");
+        comment.FeedbackMatchIds.Should().Equal(101, 102, 103);
+        s.State.Should().Be(ConversationState.Active);
+    }
+
+    [Theory]
+    [InlineData("5")]
+    [InlineData("4/5")]
+    [InlineData("3 stars")]
+    public void S7_accepts_typed_ratings(string typed)
+    {
+        var s = Delivered();
+        Step(s, typed).Rating.Should().Be(int.Parse(typed[..1]));
+    }
+
+    [Fact]
+    public void S7_comment_can_be_skipped()
+    {
+        var s = Delivered();
+        Step(s, "rate_2");
+        var r = Step(s, "skip");
+        r.FeedbackText.Should().BeNull();
+        s.State.Should().Be(ConversationState.Active);
+    }
+
+    [Fact]
+    public void Interested_is_recorded_for_the_tapped_job_even_after_rating()
+    {
+        var s = Delivered();
+        var r = Step(s, "int_2");
+        r.Intent.Should().Be(Intent.ExpressInterest);
+        r.InterestedMatchId.Should().Be(102);
+        r.Replies.Single().Text.Should().Contain("Job 2");
+        s.State.Should().Be(ConversationState.Feedback, "the rating is still to come");
+
+        Step(s, "rate_5");
+        Step(s, "skip");
+        Step(s, "int_3").InterestedMatchId.Should().Be(103);
+    }
+
+    [Fact]
+    public void S7_an_opinion_before_the_rating_is_kept_and_the_rating_asked_again()
+    {
+        var s = Delivered();
+        var r = Step(s, "the pay is too small", Nlu("FEEDBACK_PROVIDE", 0.88));
+        r.FeedbackText.Should().Be("the pay is too small");
+        r.Replies.Last().List.Should().HaveCount(5);
+        s.State.Should().Be(ConversationState.Feedback);
+    }
+
     // ---- NLU gating ------------------------------------------------------------------------
 
     [Fact]

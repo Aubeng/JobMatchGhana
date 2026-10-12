@@ -3,6 +3,7 @@ using JobMatch.Domain.Conversation;
 using JobMatch.Domain.Entities;
 using JobMatch.Domain.Enums;
 using JobMatch.Infrastructure.Data;
+using JobMatch.Infrastructure.Matching;
 using JobMatch.Infrastructure.WhatsApp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,9 @@ namespace JobMatch.Infrastructure.Orchestration;
 ///   3. Persistence: the worker row at consent; the whole skills profile when the worker
 ///      confirms the S5 summary (FR-10); "delete my data" removes everything (FR-16).
 ///   4. Instrument every turn: FSM state and intent, NLU prediction, repair/handoff events.
-///   5. Send replies (interactive where offered), split to the 500-character limit (NFR-05).
+///   5. Matching: when the FSM asks for it, run the engine and let the FSM deliver the results
+///      (S6); store S7 ratings, comments and "I'm interested" on the match rows.
+///   6. Send replies (interactive where offered), split to the 500-character limit (NFR-05).
 /// </summary>
 public class FsmConversationOrchestrator : IConversationOrchestrator
 {
@@ -25,6 +28,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
     private readonly IWhatsAppClient _whatsapp;
     private readonly INluClient _nlu;
     private readonly DialogueCatalog _catalog;
+    private readonly MatchingService _matching;
     private readonly ILogger<FsmConversationOrchestrator> _logger;
 
     public FsmConversationOrchestrator(
@@ -33,6 +37,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         IWhatsAppClient whatsapp,
         INluClient nlu,
         DialogueCatalog catalog,
+        MatchingService matching,
         ILogger<FsmConversationOrchestrator> logger)
     {
         _db = db;
@@ -40,6 +45,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         _whatsapp = whatsapp;
         _nlu = nlu;
         _catalog = catalog;
+        _matching = matching;
         _logger = logger;
     }
 
@@ -126,13 +132,22 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
             _logger.LogWarning("Human handoff requested: wa={WaId} state={State} (3 failed turns).", message.WaId, stateBefore);
 
         // 4) Worker + profile (consent-gated; profile only once confirmed).
-        await SyncWorkerAsync(result, message.WaId, ct);
+        var worker = await SyncWorkerAsync(result, message.WaId, ct);
+        await RecordFeedbackAsync(result, ct);
 
-        // 5) Persist the session (Redis, 72h TTL per FR-09).
+        // 5) S6: run the matching engine and let the FSM present the results.
+        var replies = result.Replies.ToList();
+        if (result.RequestMatches && worker is not null)
+        {
+            var cards = await _matching.FindForWorkerAsync(worker, ct);
+            replies.AddRange(ConversationFsm.DeliverMatches(result.Session, cards).Replies);
+        }
+
+        // 6) Persist the session (Redis, 72h TTL per FR-09).
         await _sessions.SaveAsync(result.Session, ct);
 
-        // 6) Send replies and log each outbound message.
-        await SendAsync(message.WaId, result.Replies, result.Session.State, ct);
+        // 7) Send replies and log each outbound message.
+        await SendAsync(message.WaId, replies, result.Session.State, ct);
         await _db.SaveChangesAsync(ct);
     }
 
@@ -172,16 +187,16 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
     /// Consent gate: the worker row is created when consent is given (never before). The skills
     /// profile is written only when the worker confirms the S5 summary (FR-10).
     /// </summary>
-    private async Task SyncWorkerAsync(FsmStepResult result, string waId, CancellationToken ct)
+    private async Task<Worker?> SyncWorkerAsync(FsmStepResult result, string waId, CancellationToken ct)
     {
         var session = result.Session;
         if (!session.ConsentGiven && !result.OptedOut)
-            return;
+            return null;
 
         var worker = await _db.Workers.FirstOrDefaultAsync(w => w.WaId == waId, ct);
         if (worker is null)
         {
-            if (!session.ConsentGiven) return;   // opted out before consenting: nothing to store
+            if (!session.ConsentGiven) return null;   // opted out before consenting: nothing to store
             worker = new Worker { WaId = waId, CreatedUtc = DateTimeOffset.UtcNow };
             _db.Workers.Add(worker);
         }
@@ -212,6 +227,33 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
 
         if (result.ProfileConfirmed)
             await SyncSkillsAsync(worker, session.Skills, ct);
+        return worker;
+    }
+
+    /// <summary>S7 answers onto the delivered match rows (the Matching Relevance metric's data).</summary>
+    private async Task RecordFeedbackAsync(FsmStepResult result, CancellationToken ct)
+    {
+        var now = DateTimeOffset.UtcNow;
+        if (result.InterestedMatchId is { } interestedId
+            && await _db.Matches.FirstOrDefaultAsync(m => m.Id == interestedId, ct) is { } interested)
+        {
+            interested.Status = MatchStatus.Interested;
+            interested.InterestedUtc ??= now;
+            interested.UpdatedUtc = now;
+        }
+        if (result.FeedbackMatchIds.Count > 0 && (result.Rating is not null || result.FeedbackText is not null))
+        {
+            var rows = await _db.Matches.Where(m => result.FeedbackMatchIds.Contains(m.Id)).ToListAsync(ct);
+            foreach (var m in rows)
+            {
+                if (result.Rating is { } rating) { m.Rating = rating; m.RatedUtc = now; }
+                if (result.FeedbackText is { } text) m.FeedbackText = text;
+                m.UpdatedUtc = now;
+            }
+        }
+        await _db.SaveChangesAsync(ct);
+        if (result.InterestedMatchId is not null)
+            _logger.LogInformation("Worker interested in match {MatchId}: BOOST team to connect.", result.InterestedMatchId);
     }
 
     /// <summary>

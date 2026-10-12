@@ -92,6 +92,7 @@ class FakePipeline:
 def test_api_contract(resources):
     fake = FakePipeline(resources)
     app.state.pipeline_factory = lambda: fake
+    app.state.embedder_factory = lambda: None   # matching isn't under test here
     try:
         with TestClient(app) as client:
             assert client.get("/health").json()["status"] == "ok"
@@ -104,15 +105,18 @@ def test_api_contract(resources):
             assert client.post("/nlu", json={"utterance": ""}).status_code == 422
     finally:
         app.state.pipeline_factory = None
+        app.state.embedder_factory = None
 
 
 def test_api_reports_unhealthy_when_models_are_missing():
     def broken():
         raise FileNotFoundError("models/intent")
     app.state.pipeline_factory = broken
+    app.state.embedder_factory = lambda: None
     try:
         with TestClient(app) as client:
             assert client.get("/health").status_code == 503
             assert client.post("/nlu", json={"utterance": "hi"}).status_code == 503
     finally:
         app.state.pipeline_factory = None
+        app.state.embedder_factory = None

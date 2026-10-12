@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0-draft",
+  "status": "DRAFT - drafted by Claude 2026-10-12 from general knowledge of Greater Accra geography, for researcher validation. EVERY pair needs checking against an official MMDA boundary map (e.g. Ghana Statistical Service / MLGRD) before the pilot.",
+  "notes": [
+    "District (MMDA) -> districts sharing a border or a short, common commute. Used by the matching engine's stage 1 geographic filter (S&D L5): a worker sees jobs in their own district and these neighbours.",
+    "Pairs are listed once or twice; the loader makes the relation symmetric, so A -> B implies B -> A.",
+    "Names must match ghana_districts.json exactly. Awutu Senya East (Central region, Kasoa) is included because Kasoa is a major commuter town for western Accra."
+  ],
+  "adjacency": {
+    "Ga South": ["Weija Gbawe", "Ga Central", "Ga West", "Awutu Senya East"],
+    "Weija Gbawe": ["Ga South", "Ga Central", "Ablekuma West", "Ablekuma North", "Awutu Senya East"],
+    "Ga Central": ["Weija Gbawe", "Ga South", "Ga West", "Ga North", "Ablekuma North"],
+    "Ga West": ["Ga South", "Ga Central", "Ga North"],
+    "Ga North": ["Ga West", "Ga Central", "Ga East", "Okaikwai North", "Ablekuma North"],
+    "Ga East": ["Ga North", "La Nkwantanang Madina", "Ayawaso West", "Okaikwai North"],
+    "La Nkwantanang Madina": ["Ga East", "Adentan", "Ayawaso West", "La Dade Kotopon", "Shai Osudoku"],
+    "Adentan": ["La Nkwantanang Madina", "Ledzokuku", "Krowor", "Kpone Katamanso", "La Dade Kotopon"],
+    "Ablekuma West": ["Weija Gbawe", "Ablekuma Central", "Ablekuma North"],
+    "Ablekuma Central": ["Ablekuma West", "Ablekuma North", "Accra", "Okaikwai North"],
+    "Ablekuma North": ["Ablekuma Central", "Ablekuma West", "Okaikwai North", "Ga Central"],
+    "Okaikwai North": ["Ablekuma North", "Ablekuma Central", "Accra", "Ayawaso Central", "Ayawaso North", "Ayawaso West"],
+    "Accra": ["Ablekuma Central", "Korle Klottey", "Ayawaso Central", "Ayawaso North", "Okaikwai North"],
+    "Korle Klottey": ["Accra", "La Dade Kotopon", "Ayawaso Central", "Ayawaso East"],
+    "Ayawaso Central": ["Accra", "Korle Klottey", "Ayawaso East", "Ayawaso North", "Ayawaso West"],
+    "Ayawaso East": ["Ayawaso Central", "Ayawaso West", "Ayawaso North", "Korle Klottey", "La Dade Kotopon"],
+    "Ayawaso North": ["Ayawaso Central", "Ayawaso East", "Okaikwai North", "Accra"],
+    "Ayawaso West": ["Ayawaso East", "Ayawaso Central", "Okaikwai North", "Ga East", "La Nkwantanang Madina", "La Dade Kotopon"],
+    "La Dade Kotopon": ["Korle Klottey", "Ayawaso East", "Ayawaso West", "Ledzokuku", "La Nkwantanang Madina", "Adentan"],
+    "Ledzokuku": ["La Dade Kotopon", "Krowor", "Adentan"],
+    "Krowor": ["Ledzokuku", "Tema West", "Adentan"],
+    "Tema West": ["Krowor", "Tema", "Ashaiman", "Kpone Katamanso"],
+    "Tema": ["Tema West", "Ashaiman", "Kpone Katamanso"],
+    "Ashaiman": ["Tema", "Tema West", "Kpone Katamanso"],
+    "Kpone Katamanso": ["Tema", "Ashaiman", "Tema West", "Ningo Prampram", "Adentan", "Shai Osudoku"],
+    "Ningo Prampram": ["Kpone Katamanso", "Shai Osudoku", "Ada West"],
+    "Shai Osudoku": ["Ningo Prampram", "Kpone Katamanso", "Ada West", "La Nkwantanang Madina"],
+    "Ada West": ["Ningo Prampram", "Shai Osudoku", "Ada East"],
+    "Ada East": ["Ada West"],
+    "Awutu Senya East": ["Ga South", "Weija Gbawe"]
+  }
+}

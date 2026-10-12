@@ -89,6 +89,28 @@ public class JobPosting
     public byte[]? Embedding { get; set; }
     /// <summary>e.g. Draft / Open / Closed.</summary>
     public string Status { get; set; } = "Open";
+
+    // ---- Matching (S&D L5) and delivery (FR-12) ----
+    /// <summary>Taxonomy trade category id, e.g. "construction".</summary>
+    public string? TradeCategoryId { get; set; }
+    /// <summary>District (MMDA): the matching engine's geographic filter key.</summary>
+    public string? District { get; set; }
+    public string? Region { get; set; }
+    /// <summary>Estimated pay range in GHS per <see cref="PayPeriod"/>.</summary>
+    public decimal? PayMin { get; set; }
+    public decimal? PayMax { get; set; }
+    /// <summary>"day", "week", "month" or "job".</summary>
+    public string? PayPeriod { get; set; }
+    /// <summary>"Full-time", "Part-time", "Weekends only" or "Flexible".</summary>
+    public string? Availability { get; set; }
+    /// <summary>A description of the employer ("Family home", "Building contractor").</summary>
+    public string? EmployerName { get; set; }
+    public DateTimeOffset? ExpiresUtc { get; set; }
+    /// <summary>
+    /// Invented demo data (seeded from jobs_synthetic_v1.json). Never report matches against
+    /// these as study results.
+    /// </summary>
+    public bool IsSynthetic { get; set; }
     public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedUtc { get; set; } = DateTimeOffset.UtcNow;
 
@@ -126,6 +148,20 @@ public class Match
     public MatchStatus Status { get; set; } = MatchStatus.Proposed;
     public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedUtc { get; set; } = DateTimeOffset.UtcNow;
+
+    // ---- Delivery and feedback (S6/S7; research data for the Matching Relevance metric) ----
+    /// <summary>Position (1-3) in the set delivered to the worker.</summary>
+    public int? Rank { get; set; }
+    /// <summary>"conversation" (S6, worker asked) or "alert" (utility template for a new job).</summary>
+    public string? Channel { get; set; }
+    public DateTimeOffset? DeliveredUtc { get; set; }
+    /// <summary>S7 relevance rating 1-5 (FR-14). S&D target: >= 60% of matches rated 4 or 5.</summary>
+    public int? Rating { get; set; }
+    public DateTimeOffset? RatedUtc { get; set; }
+    /// <summary>Optional free-text feedback from S7.</summary>
+    public string? FeedbackText { get; set; }
+    /// <summary>The worker tapped "I'm interested"; the BOOST team makes the connection.</summary>
+    public DateTimeOffset? InterestedUtc { get; set; }
 }
 
 /// <summary>

@@ -44,6 +44,45 @@ public class WhatsAppClient : IWhatsAppClient
         return null;
     }
 
+    public async Task<string?> SendTemplateAsync(string waId, string templateName, string languageCode,
+        IReadOnlyList<string> bodyParameters, string? quickReplyPayload, CancellationToken ct)
+    {
+        using var resp = await _http.PostAsJsonAsync(MessagesPath,
+            BuildTemplatePayload(waId, templateName, languageCode, bodyParameters, quickReplyPayload), ct);
+        var body = await resp.Content.ReadAsStringAsync(ct);
+        if (!resp.IsSuccessStatusCode)
+        {
+            _logger.LogError("WhatsApp template {Template} failed ({Status}): {Body}", templateName, (int)resp.StatusCode, body);
+            resp.EnsureSuccessStatusCode();
+        }
+        using var doc = JsonDocument.Parse(body);
+        return doc.RootElement.TryGetProperty("messages", out var msgs) && msgs.GetArrayLength() > 0
+            ? msgs[0].GetProperty("id").GetString() : null;
+    }
+
+    /// <summary>Graph API template payload: body parameters plus an optional quick-reply payload.</summary>
+    public static object BuildTemplatePayload(string waId, string templateName, string languageCode,
+        IReadOnlyList<string> bodyParameters, string? quickReplyPayload)
+    {
+        var components = new List<object>
+        {
+            new { type = "body", parameters = bodyParameters.Select(p => new { type = "text", text = p }) }
+        };
+        if (quickReplyPayload is not null)
+            components.Add(new
+            {
+                type = "button", sub_type = "quick_reply", index = "0",
+                parameters = new[] { new { type = "payload", payload = quickReplyPayload } }
+            });
+        return new
+        {
+            messaging_product = "whatsapp",
+            to = waId,
+            type = "template",
+            template = new { name = templateName, language = new { code = languageCode }, components }
+        };
+    }
+
     /// <summary>
     /// Graph API payload: text, interactive "button" (max 3 replies, titles &lt;= 20 chars) or
     /// interactive "list" (max 10 rows, titles &lt;= 24, descriptions &lt;= 72). Over-long titles
@@ -137,6 +176,15 @@ public class LoggingWhatsAppClient : IWhatsAppClient
     {
         var id = $"local-out-{Interlocked.Increment(ref _counter)}";
         _logger.LogInformation("[WhatsApp:DRYRUN] -> {WaId}: {Text}", waId, MessageRendering.ForLog(message));
+        return Task.FromResult<string?>(id);
+    }
+
+    public Task<string?> SendTemplateAsync(string waId, string templateName, string languageCode,
+        IReadOnlyList<string> bodyParameters, string? quickReplyPayload, CancellationToken ct)
+    {
+        var id = $"local-out-{Interlocked.Increment(ref _counter)}";
+        _logger.LogInformation("[WhatsApp:DRYRUN] -> {WaId}: template {Template}({Params})", waId, templateName,
+            string.Join(", ", bodyParameters));
         return Task.FromResult<string?>(id);
     }
 

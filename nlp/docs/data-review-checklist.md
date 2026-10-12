@@ -24,6 +24,16 @@ Tick items off, retrain (`nlp/README.md` §3), and record the outcome in the dec
       MMDA list in `ghana_districts.json` (264 districts; Upper East corrected 2026-09-13).
 - [ ] Add the neighbourhoods your participants actually live in.
 
+## 2b. Matching data (Slice 3)
+- [ ] `data/district_adjacency_v1.json`: every neighbour pair is a draft from general knowledge.
+      Check it against an official MMDA boundary map. Example to check: is **Adentan** next to
+      **Ayawaso West** (East Legon)? The draft says no, so an Adentan worker isn't offered East Legon jobs.
+- [ ] `src/JobMatch.Api/Seed/jobs_synthetic_v1.json`: 32 **invented** jobs with estimated 2026 GHS
+      pay. Replace them with real BOOST opportunities before the pilot. Seeded rows carry
+      `IsSynthetic`, and every match records `jobIsSynthetic` in its breakdown.
+- [ ] `Matching:MinScore` (0.55, from the build brief): on the synthetic jobs the right job scores
+      about 0.68–0.72 and loosely related ones 0.45–0.55. Revisit it with real jobs.
+
 ## 3. Annotation guidelines: `docs/annotation-guidelines.md`
 - [ ] **Open decision:** experience-only answers ("5 years", "since 2016") are labelled
       `SKILL_DECLARE` (20 lines), because the S&D defines an `EXPERIENCE_DURATION` entity but no

@@ -198,3 +198,42 @@ trade, district and experience are what L5's geographic filter and ranking consu
 - Sessions in retired states are restarted.
 **Accepted cost:** "delete my data" also removes that worker's `MessageLog` rows, as FR-16
 requires; the consented research dataset shrinks accordingly.
+
+---
+
+## DL-016 — Matching engine (Slice 3): SQL geographic filter + MiniLM ranking, S6/S7 delivery and feedback
+**Decision:** Implement S&D L5 as specified. **Stage 1** runs in the gateway's SQL query: open,
+unexpired jobs in the worker's district or an adjacent one (`nlp/data/district_adjacency_v1.json`,
+made symmetric), with compatible availability, not already shown in conversation. **Stage 2** runs in
+the Python service (`POST /match`): cosine similarity between paraphrase-MiniLM-L6-v2 embeddings of
+the profile text (trade + skills) and each job text, top 3 at or above `Matching:MinScore` (0.55, from
+the brief). Each match stores its full breakdown in `Match.ScoreBreakdownJson`: ranker, score,
+closest skill, explicit overlap, same or adjacent district, availabilities, synthetic flag.
+S6 sends each job as its own message (FR-12: type, area, pay, availability) with a plain-language
+reason (FR-13) and an "I'm interested" button. S7 asks a 1–5 rating (FR-14) and an optional comment,
+stored on every delivered match. Migration `MatchingEngine`.
+**Alternatives:** Do all matching in .NET with embeddings stored per job; a weighted score mixing
+skills, distance and experience; per-job ratings.
+**Rationale:**
+- The S&D places the matching microservice in Python and ranks by cosine alone. Keeping that makes
+  the evaluated algorithm the documented one.
+- Stage 1 belongs where the jobs are (SQL), and stage 2 where the model is.
+- Rating the delivered set once, rather than each job, keeps S7 to one tap for low-literacy users;
+  the rating is recorded on each match row for the Matching Relevance metric.
+**Further decisions:**
+- *Availability* is a stage 1 filter: a full-time worker can take any job, part-time fits part-time
+  or weekend jobs, weekends-only fits weekend jobs, and "Flexible" fits everyone. Matching uses only
+  skills, location and availability (NFR-13); nothing else about the worker reaches the ranker.
+- *Contact:* employers' numbers are never sent. "I'm interested" marks the match `Interested` and
+  the BOOST team connects the two people. This is safer for both sides and avoids unverified
+  numbers in chats.
+- *Graceful degradation:* if `/match` fails, an offline ranker uses exact skill overlap. It is
+  stricter (at least one shared skill) and is labelled in the breakdown.
+- *New-job alerts:* `JobAlertService` runs the same two stages in reverse for one new job and sends
+  each suitable confirmed worker the utility template `job_match_alert` ("{{1}} in {{2}}", with a quick
+  reply that sends "matches"). At most one alert per worker per 24h; these templates are the only
+  business-initiated messages. It is triggered by `alert-job <id>` until the admin SPA (Slice 4).
+  The template must be created and approved in Meta before use.
+- *Data:* 32 **synthetic** jobs (`Seed/jobs_synthetic_v1.json`, loaded by `seed-jobs`, flagged
+  `IsSynthetic`) and the adjacency map are drafts for researcher validation. Matches against
+  synthetic jobs are never study results.

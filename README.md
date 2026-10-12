@@ -15,7 +15,7 @@ opportunities through NLP-driven skills elicitation. MSc Computer Science capsto
 | Slice 1 | Deterministic FSM + Redis sessions replacing the echo orchestrator (NLP stubbed) | ✅ built |
 | Slice 2b | Dialogue aligned with the S&D HSM: S0–S5, buttons/lists, 3-strike handoff, update/delete ([design](docs/conversation-design.md), DL-015) | ✅ built |
 | Slice 2 | NLU service: fine-tuned XLM-R intents + BERT+CRF entities, taxonomy/district resolution ([nlp/](nlp/README.md), DL-013/014) | ✅ built (data pending researcher validation) |
-| Slice 3 | Embedding-based matching engine + utility-template notifications | ⏳ pending |
+| Slice 3 | Matching engine: district filter + MiniLM ranking, S6 delivery, S7 feedback, new-job alerts (DL-016) | ✅ built (synthetic jobs) |
 | Slice 4 | Vue 3 admin SPA | ⏳ pending |
 | Staging | Windows/IIS VPS at `jobmatch.intellite.net` ([guide](docs/vps-deployment.md), DL-012) | ⏸️ on hold until slices are done (scripts written) |
 | Slice 5 | Hardening, seed taxonomy, Azure deployment | ⏳ pending |
@@ -31,7 +31,7 @@ tests/
   JobMatch.Tests           Signature, FSM, idempotency, NLU contract, and full webhook-pipeline tests
 nlp/                       Python NLU service (FastAPI): models, D4 taxonomy + D5 training data, pytest
 docs/
-  decision-log.md               DL-001 … DL-015
+  decision-log.md               DL-001 … DL-016
   whatsapp-cloud-api-setup.md   Meta setup, diagnostics, troubleshooting, daily checklist
   vps-deployment.md             Windows/IIS VPS staging: server setup, releases, rollback
 deploy/
@@ -52,7 +52,7 @@ The S&D hierarchical state machine (DL-015; full design in [docs/conversation-de
 
 ```
 S0 WELCOME (consent) → S1 ELICIT_TRADE → S2 ELICIT_SKILLS → S3 ELICIT_EXPERIENCE (years, availability)
-   → S4 ELICIT_LOCATION (district) → S5 CONFIRM_PROFILE → profile saved   [S6 match / S7 feedback: Slice 3]
+   → S4 ELICIT_LOCATION (district) → S5 CONFIRM_PROFILE → profile saved → S6 DELIVER_MATCH → S7 FEEDBACK
 ```
 
 - Buttons and lists everywhere, with free text understood by the NLU. Slots given early are skipped.
@@ -88,10 +88,12 @@ Connection strings default to `localhost`; override `ConnectionStrings:SqlServer
 
 ```bash
 dotnet build
-dotnet test                                   # 63 tests: signature, FSM, idempotency, NLU contract, pipeline
+dotnet test                                   # 92 tests: signature, FSM, matching, NLU/match contracts, pipeline
 dotnet ef database update \                   # apply migrations to SQL Server
   --project src/JobMatch.Infrastructure --startup-project src/JobMatch.Api
 dotnet run --project src/JobMatch.Api         # webhook on /webhook, health on /health
+dotnet run --project src/JobMatch.Api -- seed-jobs        # load the 32 synthetic demo jobs
+dotnet run --project src/JobMatch.Api -- alert-job 7      # send new-job alerts for job 7
 ```
 
 To use the real NLU models instead of the keyword stub, train and start the service

@@ -63,7 +63,12 @@ environment.
 ```
 - `GET /health`: `200 {"status":"ok","model_version":...}`, or `503` if the models aren't trained or
   failed to load. The service stays up so the gateway's fallback can take over.
-- `POST /nlu` `{"utterance": "...", "state": "SkillsElicitation"}` returns intent, ranking,
+- `POST /match` `{"trade", "skills": [...], "jobs": [{id, title, description, required_skills}], "top_k", "min_score"}`
+  is stage 2 of the matching engine (S&D L5): paraphrase-MiniLM-L6-v2 cosine similarity, top-k, with
+  each job's closest skill and skill overlap (FR-13 explanations). The gateway sends only the jobs
+  that passed its geographic filter. The model (~90 MB) downloads on first start; contract in
+  `tests/fixtures/match_response.json`.
+- `POST /nlu` `{"utterance": "...", "state": "ElicitSkills"}` returns intent, ranking,
   entities, resolved skills, trade, location, experience, model version and latency. See
   `tests/fixtures/nlu_response.json` for an example.
 

@@ -44,6 +44,18 @@ public class CapturedSkill
     public double Confidence { get; set; }
 }
 
+/// <summary>One job as delivered in S6 (FR-12: type, location, pay, how to proceed; FR-13: why).</summary>
+public record MatchCard(int MatchId, int Rank, string Title, string Area, string? Pay, string? Availability,
+    string Why, string? Employer = null);
+
+/// <summary>A match shown to the worker, kept on the session so S7 answers refer to it.</summary>
+public class DeliveredMatch
+{
+    public int MatchId { get; set; }
+    public int Rank { get; set; }
+    public string Title { get; set; } = string.Empty;
+}
+
 /// <summary>What a pending yes/no or menu question is about.</summary>
 public enum PendingKind
 {
@@ -103,6 +115,12 @@ public class ConversationSession
     /// </summary>
     public List<PendingSkill> QueuedSkills { get; set; } = new();
     public PendingQuestion? Pending { get; set; }
+
+    // ---- S6/S7 ----
+    /// <summary>The matches last delivered (S6); ratings, comments and "interested" apply to these.</summary>
+    public List<DeliveredMatch> DeliveredMatches { get; set; } = new();
+    /// <summary>S7: rated; now waiting for an optional comment.</summary>
+    public bool AwaitingComment { get; set; }
     /// <summary>Consecutive failed turns in the current state; the 3rd triggers human handoff.</summary>
     public int Strikes { get; set; }
 

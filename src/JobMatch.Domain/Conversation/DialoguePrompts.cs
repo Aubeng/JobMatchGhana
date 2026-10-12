@@ -134,11 +134,58 @@ public static class DialoguePrompts
         List = EditOptions.Select(o => new ReplyOption(o.Id, o.Title)).ToList()
     };
 
-    public static OutboundMessage ProfileSaved() => new(
-        "Your profile is saved ✅\n" +
-        "We will message you when we find jobs that match your skills.\n\n" +
-        "Any time you can type:\n" +
-        "• *matches* to see your matches\n• *update* to change your profile\n• *help* for help");
+    public static OutboundMessage ProfileSaved() => new("Your profile is saved ✅");
+
+    // ---- S6 DELIVER_MATCH / S7 FEEDBACK ----
+
+    public static OutboundMessage MatchesIntro(int count) => new(count == 1
+        ? "I found *1 job* that fits you 👇"
+        : $"I found *{count} jobs* that fit you 👇");
+
+    /// <summary>One job (FR-12: type, area, pay, availability; FR-13: why it matches).</summary>
+    public static OutboundMessage MatchCard(MatchCard m)
+    {
+        var lines = new List<string> { $"*{m.Rank}. {m.Title}*", $"📍 {m.Area}" };
+        if (m.Pay is not null) lines.Add($"💰 {m.Pay}");
+        if (m.Availability is not null) lines.Add($"🕒 {m.Availability}");
+        if (m.Employer is not null) lines.Add($"🏠 {m.Employer}");
+        lines.Add($"✅ {m.Why}");
+        lines.Add("Tap *I'm interested* and the JobMatch team will connect you.");
+        return new OutboundMessage(string.Join("\n", lines))
+        {
+            Buttons = new[] { new ReplyOption(InterestedId(m.Rank), "I'm interested") }
+        };
+    }
+
+    public static string InterestedId(int rank) => $"int_{rank}";
+
+    public static OutboundMessage RateMatches() => new(
+        "How helpful are these jobs for you?\nChoose from 5 (very helpful) to 1 (not helpful).")
+    {
+        ListButton = "Rate the jobs",
+        List = new[]
+        {
+            new ReplyOption("rate_5", "5 – Very helpful"), new ReplyOption("rate_4", "4 – Helpful"),
+            new ReplyOption("rate_3", "3 – OK"), new ReplyOption("rate_2", "2 – Not very helpful"),
+            new ReplyOption("rate_1", "1 – Not helpful")
+        }
+    };
+
+    public static OutboundMessage AskComment() => new(
+        "Thank you! ⭐ Anything else you want to tell us about these jobs?\nType it, or tap *Skip*.")
+    {
+        Buttons = new[] { new ReplyOption("skip", "Skip") }
+    };
+
+    public static OutboundMessage NoMatches() => new(
+        "There are no jobs that fit you right now. We will message you when a new job matches your skills. ✅\n\n" +
+        "Type *matches* any time to check again, or *update* to change your profile.");
+
+    public static OutboundMessage Interested(string title) => new(
+        $"Great 👍 The JobMatch team will contact you about *{title}* soon.");
+
+    public static OutboundMessage FeedbackDone() => new(
+        "Thank you for your feedback 🙏 Type *matches* any time to see new jobs.");
 
     public static OutboundMessage ActiveMenu() => new(
         "Your profile is saved ✅\nType *matches* to see your matches, *update* to change your " +
@@ -179,9 +226,6 @@ public static class DialoguePrompts
 
     public static OutboundMessage ConsentRefused() => new(
         "No problem. We won't save your details.\nReply *start* any time if you change your mind. 🙏");
-
-    public static OutboundMessage MatchesComingSoon() => new(
-        "Job matching is coming soon. We'll message you when a job fits your skills. ✅");
 
     public static OutboundMessage FinishFirst() => new("Let's finish your profile first.");
 

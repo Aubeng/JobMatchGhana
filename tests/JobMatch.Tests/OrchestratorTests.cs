@@ -2,7 +2,9 @@ using FluentAssertions;
 using JobMatch.Domain.Abstractions;
 using JobMatch.Domain.Conversation;
 using JobMatch.Domain.Enums;
+using JobMatch.Infrastructure.Configuration;
 using JobMatch.Infrastructure.Data;
+using JobMatch.Infrastructure.Matching;
 using JobMatch.Infrastructure.Nlu;
 using JobMatch.Infrastructure.Orchestration;
 using Microsoft.EntityFrameworkCore;
@@ -29,13 +31,22 @@ public class OrchestratorTests
         public async Task SendAsync(string waId, string text, string? messageId = null, string type = "text")
         {
             await using var db = NewContext();
-            var orch = new FsmConversationOrchestrator(db, Sessions, WhatsApp, Nlu, TestCatalog.Instance,
+            var matching = new MatchingService(db, new OfflineMatchRanker(), TestCatalog.Instance,
+                Microsoft.Extensions.Options.Options.Create(new MatchingOptions()), NullLogger<MatchingService>.Instance);
+            var orch = new FsmConversationOrchestrator(db, Sessions, WhatsApp, Nlu, TestCatalog.Instance, matching,
                 NullLogger<FsmConversationOrchestrator>.Instance);
             await orch.HandleAsync(new InboundMessage(waId, messageId ?? $"wamid.{waId}.{++_seq}", text, type, null,
                 DateTimeOffset.UtcNow), CancellationToken.None);
         }
 
         public Task TapAsync(string waId, string id, string? messageId = null) => SendAsync(waId, id, messageId, "interactive");
+
+        public async Task SeedJobsAsync()
+        {
+            await using var db = NewContext();
+            await new JobSeeder(db, TestCatalog.Instance).SeedAsync(
+                Path.Combine(AppContext.BaseDirectory, "Seed", "jobs_synthetic_v1.json"), default);
+        }
 
         /// <summary>Consent, Construction, two skills, 1-5 years, full-time, Madina; summary shown.</summary>
         public async Task ToSummaryAsync(string wa)
@@ -106,6 +117,42 @@ public class OrchestratorTests
         worker.Skills.Select(s => s.Skill!.CanonicalName).Should().BeEquivalentTo("Block laying", "Tiling");
         worker.Skills.Should().OnlyContain(s => s.SourceUtterance == "i can lay blocks and do tiling", "research data preserved");
         worker.Skills.First().Skill!.Category.Should().Be("Construction & Building");
+    }
+
+    [Fact]
+    public async Task Confirming_the_profile_delivers_matches_and_S7_answers_are_stored()
+    {
+        var h = new Harness();
+        await h.SeedJobsAsync();
+        const string wa = "233240000010";
+        await h.ToSummaryAsync(wa);
+
+        await h.TapAsync(wa, "1");                       // confirm -> S6
+        var sent = h.WhatsApp.Sends.Select(x => x.Text).ToList();
+        sent.Should().Contain(t => t.Contains("Block layer for 2-storey house") && t.Contains("GHS 180–250 per day"));
+        sent.Last().Should().Contain("How helpful");
+
+        await h.TapAsync(wa, "int_1");                    // interested in the first job
+        await h.TapAsync(wa, "rate_4");
+        await h.SendAsync(wa, "good jobs thank you");
+
+        await using var db = h.NewContext();
+        var matches = await db.Matches.Include(m => m.JobPosting).OrderBy(m => m.Rank).ToListAsync();
+        matches.Should().NotBeEmpty();
+        matches.Should().OnlyContain(m => m.Rating == 4 && m.FeedbackText == "good jobs thank you" && m.Channel == "conversation");
+        matches[0].Status.Should().Be(MatchStatus.Interested);
+        matches[0].InterestedUtc.Should().NotBeNull();
+        (await h.Sessions.GetAsync(wa, default))!.State.Should().Be(ConversationState.Active);
+    }
+
+    [Fact]
+    public async Task With_no_jobs_nearby_the_worker_is_told_so()
+    {
+        var h = new Harness();   // no jobs seeded
+        const string wa = "233240000011";
+        await h.ToSummaryAsync(wa);
+        await h.TapAsync(wa, "1");
+        h.WhatsApp.Sends.Last().Text.Should().Contain("no jobs");
     }
 
     [Fact]

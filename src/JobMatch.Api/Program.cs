@@ -1,3 +1,4 @@
+using JobMatch.Api;
 using JobMatch.Api.Messaging;
 using JobMatch.Api.WhatsApp;
 using JobMatch.Infrastructure;
@@ -12,6 +13,10 @@ builder.Services.AddSingleton<IInboundQueue>(_ => new InboundQueue(capacity: 100
 builder.Services.AddHostedService<MessageProcessingService>();
 
 var app = builder.Build();
+
+// Operator commands (seed-jobs, alert-job) run and exit instead of starting the web host.
+if (await AdminCommands.TryRunAsync(app.Services, args))
+    return;
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapWhatsAppWebhook();

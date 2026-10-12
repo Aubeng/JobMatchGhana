@@ -17,6 +17,8 @@
     <None Include="..\..\nlp\data\taxonomy_v1.json" Link="Data\taxonomy_v1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Include="..\..\nlp\data\localities_v1.json" Link="Data\localities_v1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Include="..\..\nlp\data\ghana_districts.json" Link="Data\ghana_districts.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="..\..\nlp\data\district_adjacency_v1.json" Link="Data\district_adjacency_v1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="Seed\jobs_synthetic_v1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <PropertyGroup>

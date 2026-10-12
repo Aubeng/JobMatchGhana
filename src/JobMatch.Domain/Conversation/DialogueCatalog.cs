@@ -28,6 +28,7 @@ public class DialogueCatalog
     private readonly Dictionary<string, TradeInfo> _tradeByTerm = new(StringComparer.Ordinal);
     private readonly Dictionary<string, SkillHit> _skillByPhrase = new(StringComparer.Ordinal);
     private readonly Dictionary<string, LocationOption> _locationByName = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, HashSet<string>> _neighbours = new(StringComparer.OrdinalIgnoreCase);
 
     public IReadOnlyList<TradeInfo> Trades { get; }
     /// <summary>Trades offered as list rows in S1 (WhatsApp lists hold at most 10).</summary>
@@ -42,8 +43,17 @@ public class DialogueCatalog
         IEnumerable<(string Name, IReadOnlyList<string> Aliases, string District, string Region)> localities,
         IReadOnlyDictionary<string, IReadOnlyList<string>> districtsByRegion,
         IReadOnlyList<string> locationMenuLabels,
-        string taxonomyVersion = "test")
+        string taxonomyVersion = "test",
+        IReadOnlyDictionary<string, IReadOnlyList<string>>? adjacency = null)
     {
+        // District adjacency is made symmetric: A next to B means B next to A.
+        foreach (var (district, near) in adjacency ?? new Dictionary<string, IReadOnlyList<string>>())
+            foreach (var other in near)
+            {
+                Neighbour(district).Add(other);
+                Neighbour(other).Add(district);
+            }
+
         Trades = trades;
         TaxonomyVersion = taxonomyVersion;
         foreach (var trade in trades)
@@ -74,6 +84,26 @@ public class DialogueCatalog
     }
 
     public TradeInfo? TradeById(string id) => Trades.FirstOrDefault(t => t.Id == id);
+
+    /// <summary>
+    /// S&D L5 stage 1: the district itself plus its adjacent districts. A district with no
+    /// adjacency entry yields just itself.
+    /// </summary>
+    public IReadOnlySet<string> Neighbourhood(string district)
+    {
+        var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { district };
+        if (_neighbours.TryGetValue(district, out var near)) set.UnionWith(near);
+        return set;
+    }
+
+    public bool AreNeighbours(string a, string b) => _neighbours.TryGetValue(a, out var near) && near.Contains(b);
+
+    private HashSet<string> Neighbour(string district)
+    {
+        if (!_neighbours.TryGetValue(district, out var set))
+            _neighbours[district] = set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        return set;
+    }
 
     /// <summary>Exact (normalised) trade name or occupation term: "mason", "Carpentry & Woodwork".</summary>
     public TradeInfo? FindTrade(string text) => _tradeByTerm.GetValueOrDefault(Normalise(text));

@@ -3,6 +3,8 @@ using JobMatch.Infrastructure.Configuration;
 using JobMatch.Domain.Conversation;
 using JobMatch.Infrastructure.Data;
 using JobMatch.Infrastructure.Dialogue;
+using JobMatch.Infrastructure.Matching;
+using JobMatch.Domain.Matching;
 using JobMatch.Infrastructure.Nlu;
 using JobMatch.Infrastructure.Orchestration;
 using JobMatch.Infrastructure.Sessions;
@@ -81,6 +83,29 @@ public static class DependencyInjection
                 new StubNluClient(sp.GetRequiredService<DialogueCatalog>()),
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FallbackNluClient>>()));
         }
+
+        // --- Matching engine (S&D L5): MiniLM ranking in the Python service, skill overlap offline ---
+        services.Configure<MatchingOptions>(config.GetSection(MatchingOptions.SectionName));
+        if (nlu.UseStub)
+        {
+            services.AddSingleton<IMatchRanker, OfflineMatchRanker>();
+        }
+        else
+        {
+            services.AddHttpClient<HttpMatchRanker>((sp, http) =>
+            {
+                var opt = sp.GetRequiredService<IOptions<NluOptions>>().Value;
+                http.BaseAddress = new Uri(opt.BaseUrl);
+                http.Timeout = TimeSpan.FromSeconds(opt.TimeoutSeconds);
+            });
+            services.AddTransient<IMatchRanker>(sp => new FallbackMatchRanker(
+                sp.GetRequiredService<HttpMatchRanker>(),
+                new OfflineMatchRanker(),
+                sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FallbackMatchRanker>>()));
+        }
+        services.AddScoped<MatchingService>();
+        services.AddScoped<JobAlertService>();
+        services.AddScoped<JobSeeder>();
 
         // --- Orchestrator (scoped: owns a DbContext per message) ---
         services.AddScoped<IConversationOrchestrator, FsmConversationOrchestrator>();

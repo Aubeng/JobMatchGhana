@@ -55,6 +55,16 @@ public sealed class FakeWhatsAppClient : IWhatsAppClient
         return Task.FromResult<string?>($"fake-out-{Interlocked.Increment(ref _counter)}");
     }
 
+    public record Template(string WaId, string Name, IReadOnlyList<string> Parameters, string? Payload);
+    public ConcurrentQueue<Template> Templates { get; } = new();
+
+    public Task<string?> SendTemplateAsync(string waId, string templateName, string languageCode,
+        IReadOnlyList<string> bodyParameters, string? quickReplyPayload, CancellationToken ct)
+    {
+        Templates.Enqueue(new Template(waId, templateName, bodyParameters, quickReplyPayload));
+        return Task.FromResult<string?>($"fake-tpl-{Interlocked.Increment(ref _counter)}");
+    }
+
     public Task MarkReadAsync(string waMessageId, CancellationToken ct)
     {
         Reads.Enqueue(waMessageId);

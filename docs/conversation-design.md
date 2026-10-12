@@ -20,9 +20,11 @@ stateDiagram-v2
     S5_ConfirmProfile --> S2_ElicitSkills: change skills
     S5_ConfirmProfile --> S3_ElicitExperience: change experience / availability
     S5_ConfirmProfile --> S4_ElicitLocation: change area
-    S5_ConfirmProfile --> Active: confirmed (profile saved, FR-10)
-    Active --> S6_DeliverMatch: Slice 3
-    S6_DeliverMatch --> S7_Feedback: Slice 3
+    S5_ConfirmProfile --> S6_DeliverMatch: confirmed (profile saved, FR-10)
+    Active --> S6_DeliverMatch: "matches" / new-job alert reply
+    S6_DeliverMatch --> S7_Feedback: results dispatched
+    S6_DeliverMatch --> Active: no matching jobs
+    S7_Feedback --> Active: rating + optional comment
     OptedOut --> S0_Welcome: "start"
 ```
 
@@ -34,7 +36,8 @@ stateDiagram-v2
 | S3 ELICIT_EXPERIENCE | `ElicitExperience` | Years (3 **buttons**: <1, 1–5, >5), then availability (3 buttons) | buttons, a number ("7"), "since 2018", "mornings only" |
 | S4 ELICIT_LOCATION | `ElicitLocation` | **List** of 10 common areas | row, place name or alias, free text, resolved to a **district** |
 | S5 CONFIRM_PROFILE | `ConfirmProfile` | Summary of every slot; **Yes / Change something** | yes; change menu (5 slots); a correction with the new value |
-| S6 DELIVER_MATCH, S7 FEEDBACK | `DeliverMatch`, `Feedback` | Not reachable yet: arrive with the matching engine (Slice 3) | |
+| S6 DELIVER_MATCH | (transient) | Up to 3 jobs, one message each: title, area, pay, availability, *why* (FR-12/13), **I'm interested** button | taps |
+| S7 FEEDBACK | `Feedback` | "How helpful are these jobs?" **list** 5–1, then optional comment (**Skip** button) | rating tap or "4", "4/5"; comment; "I'm interested" any time |
 | (rest) | `Active` | Profile saved; commands | feedback (NLU), commands |
 | EXIT | `OptedOut` | Silent | "start", "delete" |
 
@@ -83,7 +86,8 @@ NLU service resolves against, so the menus and the models always agree.
 | S2 "Quick Reply buttons for common skills" | A List Message of the trade's skills | Buttons hold 3 options, a list 10; every trade has 10 skills |
 | S3 "specific days" availability | Full-time / Part-time / Weekends only buttons, plus free text via NLU | Keeps a 3-button choice; any other answer is kept as typed |
 | Figure 3 "EXIT: human handoff" after 3 strikes | Handoff message, then the conversation continues | The worker isn't stranded while waiting for a person |
-| S6/S7 | Defined, not yet reachable | They need the matching engine (Slice 3) |
+| S6 "contact mechanism" (FR-12) | An "I'm interested" button; the BOOST team connects people | No employer numbers in chats (safety, unverified data) |
+| S7 "match quality rating" | One 1–5 rating for the delivered set, stored on each match | One tap instead of three for low-literacy users |
 
 ## Typical session (9 turns, S&D target ≤ 12)
 

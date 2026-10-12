@@ -56,6 +56,15 @@ public class JobMatchDbContext : DbContext
             e.Property(j => j.Title).HasMaxLength(200).IsRequired();
             e.Property(j => j.EmployerContact).HasMaxLength(64);
             e.Property(j => j.Status).HasMaxLength(20);
+            e.Property(j => j.TradeCategoryId).HasMaxLength(64);
+            e.Property(j => j.District).HasMaxLength(64);
+            e.Property(j => j.Region).HasMaxLength(32);
+            e.Property(j => j.PayMin).HasPrecision(10, 2);
+            e.Property(j => j.PayMax).HasPrecision(10, 2);
+            e.Property(j => j.PayPeriod).HasMaxLength(16);
+            e.Property(j => j.Availability).HasMaxLength(32);
+            e.Property(j => j.EmployerName).HasMaxLength(120);
+            e.HasIndex(j => new { j.Status, j.District });   // stage 1 geographic filter
         });
 
         b.Entity<JobPostingSkill>(e =>
@@ -73,6 +82,8 @@ public class JobMatchDbContext : DbContext
             e.HasOne(m => m.JobPosting).WithMany(j => j.Matches)
                 .HasForeignKey(m => m.JobPostingId).OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(m => new { m.WorkerId, m.JobPostingId }).IsUnique();
+            e.Property(m => m.Channel).HasMaxLength(16);
+            e.Property(m => m.FeedbackText).HasMaxLength(1000);
         });
 
         b.Entity<MessageLog>(e =>

@@ -25,6 +25,19 @@ public class FsmStepResult
     public bool DeleteRequested { get; init; }
     /// <summary>3rd consecutive failure in a state: a person should follow up.</summary>
     public bool HandoffRequested { get; init; }
+
+    /// <summary>
+    /// Run the matching engine now and pass its results to <see cref="ConversationFsm.DeliverMatches"/>
+    /// (the FSM can't, being I/O free). Set on profile confirmation and the "matches" command.
+    /// </summary>
+    public bool RequestMatches { get; init; }
+    /// <summary>S7: the worker tapped "I'm interested" on this match.</summary>
+    public int? InterestedMatchId { get; init; }
+    /// <summary>S7: a 1-5 rating for <see cref="FeedbackMatchIds"/> (FR-14).</summary>
+    public int? Rating { get; init; }
+    /// <summary>S7: an optional comment for <see cref="FeedbackMatchIds"/>.</summary>
+    public string? FeedbackText { get; init; }
+    public IReadOnlyList<int> FeedbackMatchIds { get; init; } = Array.Empty<int>();
 }
 
 /// <summary>
@@ -98,9 +111,24 @@ public static class ConversationFsm
                     return Reply(session, Intent.UpdateSkills, P.FinishFirst(), Prompt(session, catalog));
                 return EditSlot(session, catalog, slot: 2, Intent.UpdateSkills);
             case Intent.ListMatches:
-                return Reply(session, Intent.ListMatches,
-                    session.ProfileConfirmed ? P.MatchesComingSoon() : P.FinishFirst(),
-                    session.ProfileConfirmed ? null : Prompt(session, catalog));
+                if (!session.ProfileConfirmed)
+                    return Reply(session, Intent.ListMatches, P.FinishFirst(), Prompt(session, catalog));
+                return new FsmStepResult
+                {
+                    Session = session, Intent = Intent.ListMatches, RequestMatches = true, Replies = Array.Empty<OutboundMessage>()
+                };
+        }
+
+        // "I'm interested" on a delivered job is honoured whenever it's tapped.
+        if (text.StartsWith("int_", StringComparison.Ordinal)
+            && int.TryParse(text[4..], NumberStyles.None, CultureInfo.InvariantCulture, out var rank)
+            && session.DeliveredMatches.FirstOrDefault(m => m.Rank == rank) is { } chosen)
+        {
+            return new FsmStepResult
+            {
+                Session = session, Intent = Intent.ExpressInterest, InterestedMatchId = chosen.MatchId,
+                Replies = new[] { P.Interested(chosen.Title) }
+            };
         }
 
         // 2) Answers to a pending yes/no or menu question.
@@ -126,7 +154,8 @@ public static class ConversationFsm
             ConversationState.ElicitExperience => HandleExperience(session, text, nlu, catalog),
             ConversationState.ElicitLocation => HandleLocation(session, text, nlu, catalog),
             ConversationState.ConfirmProfile => HandleConfirm(session, text, nlu, catalog),
-            _ => HandleActive(session, nlu, catalog)   // Active, and S6/S7 until matching exists
+            ConversationState.Feedback => HandleFeedback(session, text, nlu, catalog),
+            _ => HandleActive(session, nlu, catalog)
         };
     }
 
@@ -395,10 +424,11 @@ public static class ConversationFsm
         if (IsYes(text) || (Confident(nlu, "CONFIRMATION") && !HasSlotValues(nlu)))
         {
             session.ProfileConfirmed = true;
-            Move(session, ConversationState.Active);   // S6 DELIVER_MATCH arrives with Slice 3
+            Move(session, ConversationState.Active);   // DeliverMatches moves on to S6/S7
             return new FsmStepResult
             {
-                Session = session, Intent = Intent.ConfirmProfile, ProfileConfirmed = true, Replies = new[] { P.ProfileSaved() }
+                Session = session, Intent = Intent.ConfirmProfile, ProfileConfirmed = true, RequestMatches = true,
+                Replies = new[] { P.ProfileSaved() }
             };
         }
 
@@ -460,6 +490,74 @@ public static class ConversationFsm
         session.QueuedSkills.Clear();
         Move(session, NextSlot(session));
         return Reply(session, intent, Prompt(session, catalog));
+    }
+
+    // ---- S6 DELIVER_MATCH -----------------------------------------------------------------
+
+    /// <summary>
+    /// S6: present the matching engine's results (up to 3, FR-12), each with an "I'm interested"
+    /// button, then move to S7 and ask for a rating (FR-14). With no results, say so and rest
+    /// in Active. Pure, like <see cref="Step"/>: the orchestrator runs the matching and calls this.
+    /// </summary>
+    public static FsmStepResult DeliverMatches(ConversationSession session, IReadOnlyList<MatchCard> cards)
+    {
+        session.AwaitingComment = false;
+        if (cards.Count == 0)
+        {
+            Move(session, ConversationState.Active);
+            return Reply(session, Intent.DeliverMatches, P.NoMatches());
+        }
+        session.DeliveredMatches = cards
+            .Select(c => new DeliveredMatch { MatchId = c.MatchId, Rank = c.Rank, Title = c.Title })
+            .ToList();
+        Move(session, ConversationState.Feedback);
+        var replies = new List<OutboundMessage> { P.MatchesIntro(cards.Count) };
+        replies.AddRange(cards.Select(P.MatchCard));
+        replies.Add(P.RateMatches());
+        return new FsmStepResult { Session = session, Intent = Intent.DeliverMatches, Replies = replies };
+    }
+
+    // ---- S7 FEEDBACK ------------------------------------------------------------------------
+
+    private static readonly Regex Rating = new(@"^\s*(?:rate_)?([1-5])\s*(?:/\s*5|stars?|⭐+)?\s*$", RegexOptions.IgnoreCase);
+
+    private static FsmStepResult HandleFeedback(ConversationSession session, string text, NluResult? nlu, DialogueCatalog catalog)
+    {
+        var ids = session.DeliveredMatches.Select(m => m.MatchId).ToList();
+        if (session.AwaitingComment)
+        {
+            session.AwaitingComment = false;
+            Move(session, ConversationState.Active);
+            var skipped = text.ToLowerInvariant() is "skip" or "no" or "2" or "nothing" or "no thanks";
+            return new FsmStepResult
+            {
+                Session = session, Intent = Intent.ProvideFeedback, NluConfidence = nlu?.Confidence,
+                FeedbackText = skipped ? null : (text.Length <= 1000 ? text : text[..1000]),
+                FeedbackMatchIds = skipped ? Array.Empty<int>() : ids,
+                Replies = new[] { P.FeedbackDone() }
+            };
+        }
+
+        if (Rating.Match(text) is { Success: true } m)
+        {
+            session.AwaitingComment = true;
+            return new FsmStepResult
+            {
+                Session = session, Intent = Intent.RateMatches, Rating = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture),
+                FeedbackMatchIds = ids, Replies = new[] { P.AskComment() }
+            };
+        }
+
+        // An opinion before a rating ("the jobs are too far") is kept, then the rating is asked again.
+        if (Confident(nlu, "FEEDBACK_PROVIDE"))
+            return new FsmStepResult
+            {
+                Session = session, Intent = Intent.ProvideFeedback, NluConfidence = nlu!.Confidence,
+                FeedbackText = text, FeedbackMatchIds = ids,
+                Replies = new[] { new OutboundMessage("Thank you, noted 🙏"), P.RateMatches() }
+            };
+
+        return Fail(session, catalog, "Please choose a number from 1 to 5.", nlu?.Confidence);
     }
 
     // ---- Active (profile saved) -----------------------------------------------------------
@@ -535,6 +633,8 @@ public static class ConversationFsm
         ConversationState.ElicitExperience => P.AskAvailability(prefix),
         ConversationState.ElicitLocation => P.AskLocation(catalog, prefix),
         ConversationState.ConfirmProfile => P.Summary(session, prefix),
+        ConversationState.Feedback when session.AwaitingComment => P.AskComment(),
+        ConversationState.Feedback => P.RateMatches(),
         _ => P.ActiveMenu()
     };
 

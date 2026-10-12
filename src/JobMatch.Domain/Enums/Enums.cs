@@ -96,6 +96,13 @@ public enum Intent
     ProvideFeedback = 28,
     /// <summary>FR-15 "update my profile".</summary>
     UpdateProfile = 29,
+    // ---- S6/S7 matching (Slice 3) ----
+    /// <summary>S6: matches (or "none yet") delivered.</summary>
+    DeliverMatches = 30,
+    /// <summary>S7: a 1-5 relevance rating (FR-14).</summary>
+    RateMatches = 31,
+    /// <summary>"I'm interested" on a delivered job.</summary>
+    ExpressInterest = 32,
     // Anything the FSM could not map -> triggers a repair prompt (logged).
     Repair = 99
 }

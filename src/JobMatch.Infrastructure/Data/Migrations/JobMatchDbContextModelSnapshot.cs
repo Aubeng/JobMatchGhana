@@ -30,11 +30,19 @@ namespace JobMatch.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Availability")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
                     b.Property<DateTimeOffset>("CreatedUtc")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<byte[]>("Embedding")
                         .HasColumnType("varbinary(max)");
@@ -44,8 +52,34 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<string>("EmployerName")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<DateTimeOffset?>("ExpiresUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsSynthetic")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LocationText")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("PayMax")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("PayMin")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("PayPeriod")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -57,10 +91,16 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("TradeCategoryId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<DateTimeOffset>("UpdatedUtc")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Status", "District");
 
                     b.ToTable("JobPostings");
                 });
@@ -99,13 +139,36 @@ namespace JobMatch.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Channel")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
                     b.Property<DateTimeOffset>("CreatedUtc")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeliveredUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("FeedbackText")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<double>("FinalScore")
                         .HasColumnType("float");
 
+                    b.Property<DateTimeOffset?>("InterestedUtc")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("JobPostingId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Rank")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("RatedUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("Rating")
                         .HasColumnType("int");
 
                     b.Property<string>("ScoreBreakdownJson")

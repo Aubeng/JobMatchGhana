@@ -1,0 +1,10 @@
+{
+  "model": "sentence-transformers/paraphrase-MiniLM-L6-v2",
+  "profile_text": "Construction & Building: Block laying, Plastering.",
+  "candidates": 4,
+  "matches": [
+    {"id": 1, "rank": 1, "score": 0.688, "best_skill": "Block laying", "best_skill_score": 0.71, "skill_overlap": ["Block laying"]},
+    {"id": 2, "rank": 2, "score": 0.619, "best_skill": "Plastering", "best_skill_score": 0.66, "skill_overlap": ["Plastering"]}
+  ],
+  "latency_ms": 11.7
+}

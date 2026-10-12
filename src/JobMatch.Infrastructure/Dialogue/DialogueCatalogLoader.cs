@@ -5,7 +5,8 @@ namespace JobMatch.Infrastructure.Dialogue;
 
 /// <summary>
 /// Builds the <see cref="DialogueCatalog"/> from the same files the NLU service resolves
-/// against (<c>nlp/data</c>: taxonomy_v1.json, localities_v1.json, ghana_districts.json), so the
+/// against (<c>nlp/data</c>: taxonomy_v1.json, localities_v1.json, ghana_districts.json,
+/// district_adjacency_v1.json), so the
 /// dialogue's menus and the models can never disagree about trades, skills or places.
 /// The API project copies the files into its output under <c>Data/</c>.
 /// </summary>
@@ -14,12 +15,14 @@ public static class DialogueCatalogLoader
     public const string TaxonomyFile = "taxonomy_v1.json";
     public const string LocalitiesFile = "localities_v1.json";
     public const string DistrictsFile = "ghana_districts.json";
+    public const string AdjacencyFile = "district_adjacency_v1.json";
 
     public static DialogueCatalog Load(string dataDirectory)
     {
         using var taxonomy = Read(dataDirectory, TaxonomyFile);
         using var localities = Read(dataDirectory, LocalitiesFile);
         using var districts = Read(dataDirectory, DistrictsFile);
+        using var adjacency = Read(dataDirectory, AdjacencyFile);
 
         var trades = taxonomy.RootElement.GetProperty("categories").EnumerateArray()
             .Select(c => new TradeInfo(
@@ -46,7 +49,9 @@ public static class DialogueCatalogLoader
             places,
             byRegion,
             Strings(localities.RootElement.GetProperty("location_menu")),
-            taxonomy.RootElement.GetProperty("version").GetString() ?? "unknown");
+            taxonomy.RootElement.GetProperty("version").GetString() ?? "unknown",
+            adjacency.RootElement.GetProperty("adjacency").EnumerateObject()
+                .ToDictionary(d => d.Name, d => Strings(d.Value)));
     }
 
     private static JsonDocument Read(string directory, string file)
