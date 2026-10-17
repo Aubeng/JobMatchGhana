@@ -38,3 +38,6 @@ nlp/data/review/
 
 # Admin SPA build output (built by admin/ `npm run build` and by deploy/Publish.ps1)
 src/JobMatch.Api/wwwroot/admin/
+
+# Office lock files
+~$*
