@@ -129,7 +129,12 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         }
 
         if (result.HandoffRequested)
+        {
             _logger.LogWarning("Human handoff requested: wa={WaId} state={State} (3 failed turns).", message.WaId, stateBefore);
+            // One open case per worker: a person follows up from the admin SPA.
+            if (!await _db.HandoffCases.AnyAsync(h => h.WaId == message.WaId && h.ResolvedUtc == null, ct))
+                _db.HandoffCases.Add(new HandoffCase { WaId = message.WaId, State = stateBefore });
+        }
 
         // 4) Worker + profile (consent-gated; profile only once confirmed).
         var worker = await SyncWorkerAsync(result, message.WaId, ct);
@@ -307,6 +312,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
             _db.Workers.Remove(worker);
         }
         _db.MessageLogs.RemoveRange(await _db.MessageLogs.Where(m => m.WaId == waId).ToListAsync(ct));
+        _db.HandoffCases.RemoveRange(await _db.HandoffCases.Where(h => h.WaId == waId).ToListAsync(ct));
         await _db.SaveChangesAsync(ct);
         await _sessions.DeleteAsync(waId, ct);
         _logger.LogInformation("Deleted all data for a worker on request (FR-16).");

@@ -1,9 +1,17 @@
 using JobMatch.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobMatch.Infrastructure.Data;
 
-public class JobMatchDbContext : DbContext
+/// <summary>A BOOST administrator who signs in to the admin SPA (ASP.NET Core Identity).</summary>
+public class AdminUser : IdentityUser
+{
+    public string? DisplayName { get; set; }
+}
+
+public class JobMatchDbContext : IdentityDbContext<AdminUser>
 {
     public JobMatchDbContext(DbContextOptions<JobMatchDbContext> options) : base(options) { }
 
@@ -14,9 +22,20 @@ public class JobMatchDbContext : DbContext
     public DbSet<JobPostingSkill> JobPostingSkills => Set<JobPostingSkill>();
     public DbSet<Match> Matches => Set<Match>();
     public DbSet<MessageLog> MessageLogs => Set<MessageLog>();
+    public DbSet<HandoffCase> HandoffCases => Set<HandoffCase>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
+        base.OnModelCreating(b);   // Identity tables
+
+        b.Entity<HandoffCase>(e =>
+        {
+            e.Property(h => h.WaId).HasMaxLength(32).IsRequired();
+            e.Property(h => h.ResolvedBy).HasMaxLength(256);
+            e.Property(h => h.Note).HasMaxLength(1000);
+            e.HasIndex(h => new { h.WaId, h.ResolvedUtc });
+        });
+
         b.Entity<Worker>(e =>
         {
             e.HasIndex(w => w.WaId).IsUnique();
@@ -95,6 +114,8 @@ public class JobMatchDbContext : DbContext
             e.Property(m => m.WaId).HasMaxLength(32).IsRequired();
             e.Property(m => m.MessageType).HasMaxLength(32);
             e.Property(m => m.NluIntent).HasMaxLength(32);
+            e.Property(m => m.AnnotatedIntent).HasMaxLength(32);
+            e.Property(m => m.AnnotatedBy).HasMaxLength(256);
             e.Property(m => m.NluModelVersion).HasMaxLength(128);
             e.HasIndex(m => m.WaId);
             e.HasIndex(m => m.Timestamp);

@@ -13,6 +13,11 @@ public class WhatsAppOptions
     public string PhoneNumberId { get; set; } = string.Empty;
     /// <summary>Long-lived access token for Graph API calls.</summary>
     public string AccessToken { get; set; } = string.Empty;
+    /// <summary>
+    /// Force the logging (dry-run) client even when an access token is configured: nothing is
+    /// sent to Meta. Use for demos, previews and any environment pointed at test data.
+    /// </summary>
+    public bool DryRun { get; set; }
     public string GraphBaseUrl { get; set; } = "https://graph.facebook.com";
     public string GraphApiVersion { get; set; } = "v21.0";
 }

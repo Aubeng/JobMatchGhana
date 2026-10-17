@@ -2,6 +2,7 @@ using JobMatch.Domain.Abstractions;
 using JobMatch.Infrastructure.Configuration;
 using JobMatch.Domain.Conversation;
 using JobMatch.Infrastructure.Data;
+using JobMatch.Infrastructure.Admin;
 using JobMatch.Infrastructure.Dialogue;
 using JobMatch.Infrastructure.Matching;
 using JobMatch.Domain.Matching;
@@ -43,7 +44,7 @@ public static class DependencyInjection
 
         // --- WhatsApp client: real Graph client when credentials exist, else a logging stub ---
         var whatsapp = config.GetSection(WhatsAppOptions.SectionName).Get<WhatsAppOptions>() ?? new WhatsAppOptions();
-        if (!string.IsNullOrWhiteSpace(whatsapp.AccessToken))
+        if (!whatsapp.DryRun && !string.IsNullOrWhiteSpace(whatsapp.AccessToken))
         {
             services.AddHttpClient<IWhatsAppClient, WhatsAppClient>((sp, http) =>
             {
@@ -106,6 +107,12 @@ public static class DependencyInjection
         services.AddScoped<MatchingService>();
         services.AddScoped<JobAlertService>();
         services.AddScoped<JobSeeder>();
+
+        // --- Admin SPA services (S&D L6) ---
+        services.Configure<ResearchOptions>(config.GetSection(ResearchOptions.SectionName));
+        services.AddScoped<AdminJobService>();
+        services.AddScoped<FollowUpService>();
+        services.AddScoped<ResearchService>();
 
         // --- Orchestrator (scoped: owns a DbContext per message) ---
         services.AddScoped<IConversationOrchestrator, FsmConversationOrchestrator>();

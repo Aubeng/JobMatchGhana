@@ -4,10 +4,13 @@ using JobMatch.Domain.Entities;
 using JobMatch.Domain.Enums;
 using JobMatch.Domain.Matching;
 using JobMatch.Infrastructure.Configuration;
+using JobMatch.Infrastructure;
 using JobMatch.Infrastructure.Data;
 using JobMatch.Infrastructure.Matching;
 using JobMatch.Infrastructure.WhatsApp;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -171,7 +174,7 @@ public class MatchingTests
             wa, Options, NullLogger<JobAlertService>.Instance);
         var tiler = await db.JobPostings.SingleAsync(j => j.Title == "Tiler for bathrooms and kitchens");   // East Legon
 
-        (await alerts.AlertForJobAsync(tiler.Id, default)).Should().Be(1);
+        (await alerts.AlertForJobAsync(tiler.Id, default)).Alerted.Should().Be(1);
         var sent = wa.Templates.Single();
         sent.WaId.Should().Be(near.WaId);
         sent.Name.Should().Be("job_match_alert");
@@ -179,11 +182,11 @@ public class MatchingTests
         sent.Payload.Should().Be("matches");
         (await db.Matches.SingleAsync()).Channel.Should().Be("alert");
 
-        (await alerts.AlertForJobAsync(tiler.Id, default)).Should().Be(0, "never twice for the same job");
+        (await alerts.AlertForJobAsync(tiler.Id, default)).Alerted.Should().Be(0, "never twice for the same job");
         var plasterer = await db.JobPostings.SingleAsync(j => j.Title == "Plasterer and screeder");
         db.WorkerSkills.Add(new WorkerSkill { WorkerId = near.Id, Skill = await db.Skills.SingleAsync(s => s.CanonicalName == "Plastering") });
         await db.SaveChangesAsync();
-        (await alerts.AlertForJobAsync(plasterer.Id, default)).Should().Be(0, "at most one alert per worker per 24h");
+        (await alerts.AlertForJobAsync(plasterer.Id, default)).Alerted.Should().Be(0, "at most one alert per worker per 24h");
         far.Id.Should().NotBe(near.Id);
     }
 
@@ -202,6 +205,55 @@ public class MatchingTests
         cards.Should().Contain(c => c.Title == tiler.Title);
         var rows = await db.Matches.Where(m => m.JobPostingId == tiler.Id).ToListAsync();
         rows.Should().ContainSingle().Which.Channel.Should().Be("conversation");
+    }
+
+    /// <summary>Fails sends to one number, like Meta rejecting a recipient.</summary>
+    private sealed class FailingFor(string waId) : JobMatch.Domain.Abstractions.IWhatsAppClient
+    {
+        public List<string> Sent { get; } = new();
+        public Task<string?> SendAsync(string to, JobMatch.Domain.Conversation.OutboundMessage m, CancellationToken ct) => Task.FromResult<string?>("x");
+        public Task MarkReadAsync(string id, CancellationToken ct) => Task.CompletedTask;
+        public Task<string?> SendTemplateAsync(string to, string name, string lang, IReadOnlyList<string> p, string? payload, CancellationToken ct)
+        {
+            if (to == waId) throw new HttpRequestException("400 (#131030) Recipient phone number not in allowed list");
+            Sent.Add(to);
+            return Task.FromResult<string?>("ok");
+        }
+    }
+
+    [Fact]
+    public async Task One_failed_alert_does_not_stop_the_others_and_leaves_no_phantom_match()
+    {
+        await using var db = await SeededDbAsync();
+        var bad = await WorkerAsync(db, "La Nkwantanang Madina", "Full-time", "Tiling");
+        var good = await WorkerAsync(db, "La Nkwantanang Madina", "Full-time", "Tiling");
+        var wa = new FailingFor(bad.WaId);
+        var alerts = new JobAlertService(db, new OfflineMatchRanker(), Service(db, new OfflineMatchRanker()), TestCatalog.Instance,
+            wa, Options, NullLogger<JobAlertService>.Instance);
+        var tiler = await db.JobPostings.SingleAsync(j => j.Title == "Tiler for bathrooms and kitchens");
+
+        var result = await alerts.AlertForJobAsync(tiler.Id, default);
+
+        result.Should().Be(new AlertResult(1, 1));
+        wa.Sent.Should().Equal(good.WaId);
+        (await db.Matches.Where(m => m.JobPostingId == tiler.Id).Select(m => m.WorkerId).ToListAsync())
+            .Should().Equal(new[] { good.Id }, "the failed send left no delivered match behind");
+    }
+
+    [Fact]
+    public void DryRun_forces_the_logging_client_even_with_an_access_token()
+    {
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["WhatsApp:AccessToken"] = "a-real-looking-token",
+            ["WhatsApp:DryRun"] = "true",
+            ["Dialogue:DataPath"] = Path.Combine(AppContext.BaseDirectory, "Data")
+        }).Build();
+        var services = new ServiceCollection().AddLogging();
+        services.AddJobMatchInfrastructure(config);
+        using var provider = services.BuildServiceProvider();
+        provider.GetRequiredService<JobMatch.Domain.Abstractions.IWhatsAppClient>()
+            .Should().BeOfType<LoggingWhatsAppClient>();
     }
 
     [Fact]

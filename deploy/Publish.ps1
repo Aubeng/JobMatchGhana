@@ -43,6 +43,17 @@ try {
         Invoke-Step 'Run tests' { dotnet test -c Release --nologo }
     }
 
+    # The admin SPA is served by the API from wwwroot/admin, so it is built before publishing.
+    Push-Location (Join-Path $root 'admin')
+    try {
+        Invoke-Step 'Install admin SPA packages' { npm ci --no-audit --no-fund }
+        if (-not $SkipTests) { Invoke-Step 'Test admin SPA' { npm test } }
+        Invoke-Step 'Build admin SPA' { npm run build }
+    }
+    finally {
+        Pop-Location
+    }
+
     Invoke-Step 'Publish API' {
         dotnet publish $api -c Release -o (Join-Path $staging 'app') --nologo
     }

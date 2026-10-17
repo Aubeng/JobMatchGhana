@@ -200,5 +200,31 @@ public class MessageLog
     /// <summary>NLU service inference time in milliseconds.</summary>
     public double? NluLatencyMs { get; set; }
 
+    // ---- Post-hoc annotation (S&D §4.2: intent accuracy by manual coding of a 20% sample) ----
+    /// <summary>The intent a human coder assigned, blind to <see cref="NluIntent"/>.</summary>
+    public string? AnnotatedIntent { get; set; }
+    public DateTimeOffset? AnnotatedUtc { get; set; }
+    public string? AnnotatedBy { get; set; }
+    /// <summary>Of the skills the NLU extracted from this message, how many the coder judged
+    /// correct (S&D metric: Entity Extraction Precision = sum correct / sum extracted).</summary>
+    public int? AnnotatedSkillsCorrect { get; set; }
+    public int? AnnotatedSkillsExtracted { get; set; }
+
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
+}
+
+/// <summary>
+/// A worker the dialogue couldn't help after 3 consecutive failed turns (S&D 3-strike rule): a
+/// BOOST administrator follows up by phone or WhatsApp and resolves the case in the admin SPA.
+/// </summary>
+public class HandoffCase
+{
+    public int Id { get; set; }
+    public string WaId { get; set; } = string.Empty;
+    /// <summary>The dialogue state the worker was stuck in.</summary>
+    public ConversationState State { get; set; }
+    public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset? ResolvedUtc { get; set; }
+    public string? ResolvedBy { get; set; }
+    public string? Note { get; set; }
 }

@@ -237,3 +237,54 @@ skills, distance and experience; per-job ratings.
 - *Data:* 32 **synthetic** jobs (`Seed/jobs_synthetic_v1.json`, loaded by `seed-jobs`, flagged
   `IsSynthetic`) and the adjacency map are drafts for researcher validation. Matches against
   synthetic jobs are never study results.
+
+---
+
+## DL-017 — Admin SPA (Slice 4): same-origin Vue app, Identity cookie, research tooling built in
+**Decision:** S&D layer L6 is a Vue 3 + Vite + TypeScript SPA (`admin/`), built into the API's
+`wwwroot/admin` and served at `/admin` by the same ASP.NET Core app, not by Azure Static Web Apps.
+Admins sign in with ASP.NET Core Identity:
+- a session cookie (HttpOnly, SameSite=Strict, Secure outside development, 8-hour sliding expiry);
+- lockout after 5 failures;
+- 12+ character passphrases, with no composition rules (NIST SP 800-63B);
+- a custom-header CSRF guard on every write;
+- accounts created with `create-admin`.
+
+Pages:
+- job CRUD with publish (which opens the job for matching and sends alerts) and close;
+- follow-ups: "I'm interested" connections and human-handoff cases (new `HandoffCase` table);
+- the S&D §4.2 metrics dashboard;
+- FR-17 skills supply;
+- a blind annotation tool;
+- pseudonymised CSV exports.
+
+Migration `AdminAndResearch`.
+**Alternatives:** A separate static-hosted SPA with token (JWT) auth and CORS; a server-rendered
+admin; computing the metrics offline in Python notebooks.
+**Rationale:**
+- Same-origin hosting allows the strictest cookie policy with no CORS surface, and suits both the
+  VPS and App Service (Azure Static Web Apps remains possible later).
+- Building the metrics into the artefact means the dissertation's numbers come from one
+  definition, with their pre-specified targets beside them.
+- The annotation tool implements the Specification's method (manual coding of a 20% sample) blind
+  to the model's prediction, which removes confirmation bias from the accuracy metric.
+**Privacy decisions:**
+- Phone numbers appear only on Follow-ups, where staff need them to make contact.
+- Analytics are aggregates; supply counts under 3 are suppressed.
+- Exports use HMAC-SHA256 pseudonyms (`Research:PseudonymKey`) and omit message text (NFR-12).
+- Annotation shows the message text to the coder, because coding requires it, but never the phone number.
+**Metric definitions** (all in `ResearchService`):
+- *task completion*: consented workers who received at least one conversation match;
+- *efficiency*: worker messages up to the first profile confirmation;
+- *intent accuracy*: blind-coded model-analysed messages, with "none of these" reported but not scored;
+- *entity precision*: correct over extracted skills, as judged by the coder;
+- *relevance*: ratings of 4 or 5 on real jobs only (synthetic jobs reported separately);
+- *latency*: 95th percentile from an inbound message to the first logged reply.
+**Incident found during verification and fixed:** a preview run meant to be dry-run used the real
+WhatsApp token, because assigning an empty string in PowerShell deletes the variable instead of
+overriding the user-secret. One alert template was sent to an invented test number; Meta rejected
+it (the app is in test mode), so nothing was delivered. Fixes:
+- `WhatsApp:DryRun` forces the logging client whatever token is configured;
+- startup logs whether the WhatsApp client is LIVE or DRY RUN;
+- a failed alert no longer aborts publishing: it is logged, its match row is removed, and the
+  other workers are still alerted.

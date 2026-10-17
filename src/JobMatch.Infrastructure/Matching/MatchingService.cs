@@ -162,6 +162,8 @@ public class MatchingService
     }
 }
 
+public record AlertResult(int Alerted, int Failed);
+
 /// <summary>
 /// New-job alerts: when a job is published, find confirmed workers it suits (the same two
 /// stages, run in reverse: workers whose district neighbours the job's) and send each a
@@ -191,11 +193,11 @@ public class JobAlertService
         _logger = logger;
     }
 
-    /// <summary>Returns how many workers were alerted.</summary>
-    public async Task<int> AlertForJobAsync(int jobId, CancellationToken ct)
+    /// <summary>Returns how many workers were alerted, and how many sends failed.</summary>
+    public async Task<AlertResult> AlertForJobAsync(int jobId, CancellationToken ct)
     {
         var job = await _db.JobPostings.Include(j => j.Skills).ThenInclude(s => s.Skill).SingleAsync(j => j.Id == jobId, ct);
-        if (job.Status != "Open" || job.District is null) return 0;
+        if (job.Status != "Open" || job.District is null) return new AlertResult(0, 0);
 
         var now = DateTimeOffset.UtcNow;
         var districts = _catalog.Neighbourhood(job.District).ToList();
@@ -207,7 +209,7 @@ public class JobAlertService
             .Where(w => AvailabilityRules.Compatible(w.Availability, job.Availability))
             .ToList();
 
-        var alerted = 0;
+        int alerted = 0, failed = 0;
         foreach (var worker in workers)
         {
             var matches = await _db.Matches.Where(m => m.WorkerId == worker.Id).ToListAsync(ct);
@@ -225,11 +227,24 @@ public class JobAlertService
             await _db.SaveChangesAsync(ct);
 
             var area = job.LocationText ?? job.District;
-            await _whatsapp.SendTemplateAsync(worker.WaId, _options.AlertTemplate, _options.AlertTemplateLanguage,
-                new[] { job.Title, area }, quickReplyPayload: "matches", ct);
-            alerted++;
+            try
+            {
+                await _whatsapp.SendTemplateAsync(worker.WaId, _options.AlertTemplate, _options.AlertTemplateLanguage,
+                    new[] { job.Title, area }, quickReplyPayload: "matches", ct);
+                alerted++;
+            }
+            catch (Exception ex) when (!ct.IsCancellationRequested)
+            {
+                // One failed send must not stop the others. The match is removed so it isn't
+                // counted as delivered and a later publish or alert run can try again.
+                _logger.LogError(ex, "Alert for job {JobId} to worker {WorkerId} failed.", job.Id, worker.Id);
+                _db.Matches.Remove(match);
+                await _db.SaveChangesAsync(ct);
+                failed++;
+            }
         }
-        _logger.LogInformation("Job {JobId}: {Alerted} of {Eligible} nearby workers alerted.", job.Id, alerted, workers.Count);
-        return alerted;
+        _logger.LogInformation("Job {JobId}: {Alerted} of {Eligible} nearby workers alerted, {Failed} failed.",
+            job.Id, alerted, workers.Count, failed);
+        return new AlertResult(alerted, failed);
     }
 }

@@ -16,7 +16,7 @@ opportunities through NLP-driven skills elicitation. MSc Computer Science capsto
 | Slice 2b | Dialogue aligned with the S&D HSM: S0–S5, buttons/lists, 3-strike handoff, update/delete ([design](docs/conversation-design.md), DL-015) | ✅ built |
 | Slice 2 | NLU service: fine-tuned XLM-R intents + BERT+CRF entities, taxonomy/district resolution ([nlp/](nlp/README.md), DL-013/014) | ✅ built (data pending researcher validation) |
 | Slice 3 | Matching engine: district filter + MiniLM ranking, S6 delivery, S7 feedback, new-job alerts (DL-016) | ✅ built (synthetic jobs) |
-| Slice 4 | Vue 3 admin SPA | ⏳ pending |
+| Slice 4 | Admin SPA at `/admin`: jobs, follow-ups, metrics dashboard, annotation, skills supply, exports ([admin/](admin/README.md), DL-017) | ✅ built |
 | Staging | Windows/IIS VPS at `jobmatch.intellite.net` ([guide](docs/vps-deployment.md), DL-012) | ⏸️ on hold until slices are done (scripts written) |
 | Slice 5 | Hardening, seed taxonomy, Azure deployment | ⏳ pending |
 
@@ -30,8 +30,9 @@ src/
 tests/
   JobMatch.Tests           Signature, FSM, idempotency, NLU contract, and full webhook-pipeline tests
 nlp/                       Python NLU service (FastAPI): models, D4 taxonomy + D5 training data, pytest
+admin/                     Vue 3 admin SPA (served by the API at /admin)
 docs/
-  decision-log.md               DL-001 … DL-016
+  decision-log.md               DL-001 … DL-017
   whatsapp-cloud-api-setup.md   Meta setup, diagnostics, troubleshooting, daily checklist
   vps-deployment.md             Windows/IIS VPS staging: server setup, releases, rollback
 deploy/
@@ -88,13 +89,18 @@ Connection strings default to `localhost`; override `ConnectionStrings:SqlServer
 
 ```bash
 dotnet build
-dotnet test                                   # 92 tests: signature, FSM, matching, NLU/match contracts, pipeline
+dotnet test                                   # 104 tests: signature, FSM, matching, admin API, contracts, pipeline
 dotnet ef database update \                   # apply migrations to SQL Server
   --project src/JobMatch.Infrastructure --startup-project src/JobMatch.Api
 dotnet run --project src/JobMatch.Api         # webhook on /webhook, health on /health
 dotnet run --project src/JobMatch.Api -- seed-jobs        # load the 32 synthetic demo jobs
 dotnet run --project src/JobMatch.Api -- alert-job 7      # send new-job alerts for job 7
+dotnet run --project src/JobMatch.Api -- create-admin you@example.org   # admin SPA account
 ```
+
+The admin SPA is at `/admin` once built (`cd admin && npm install && npm run build`); see
+[admin/README.md](admin/README.md). Set `WhatsApp:DryRun=true` for demos: nothing is sent to
+WhatsApp, whatever token is configured.
 
 To use the real NLU models instead of the keyword stub, train and start the service
 ([nlp/README.md](nlp/README.md)), then run the gateway with `Nlu:UseStub=false`:
