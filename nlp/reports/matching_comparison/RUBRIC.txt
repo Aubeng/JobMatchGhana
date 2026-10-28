@@ -1,0 +1,12 @@
+Score each row in the 'relevance' column, judging only the worker's trade and skills against the job:
+  2 = relevant: the worker could do this job with the skills listed
+  1 = partly relevant: same or neighbouring trade, but the job mainly needs skills the worker did not list
+  0 = not relevant: different trade, or the skills do not fit
+Ignore location, pay and availability. Do not open the key file until every row is scored.
+A second rater scores about a third of the rows in 'relevance_rater2' without seeing your scores.
+
+Decision rule agreed by rater 1 before scoring (apply it to every row; give it to rater 2 as well):
+  2 = the job's main skill (job_skills) is one the worker listed, or a clear near-synonym of it
+  1 = same or neighbouring trade, but the job's main skill is a different one
+  0 = different work, or the skills do not fit
+Check job_skills against worker_skills on every row; a worker's other listed skills never count against them.

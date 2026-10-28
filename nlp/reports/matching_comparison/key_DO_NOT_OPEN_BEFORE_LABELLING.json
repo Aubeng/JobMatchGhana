@@ -1,0 +1,1590 @@
+{
+  "P01": {
+    "trade": "Construction & Building",
+    "skills": [
+      "Block laying",
+      "Concrete work"
+    ],
+    "case": "exact skills on the board",
+    "board": "5 job(s) need these exact skills; 16 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 1,
+        "rank": 1,
+        "score": 0.6307
+      },
+      {
+        "id": 33,
+        "rank": 2,
+        "score": 0.6268
+      },
+      {
+        "id": 5,
+        "rank": 3,
+        "score": 0.6256
+      }
+    ],
+    "keyword": [
+      {
+        "id": 1,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 5,
+        "rank": 2,
+        "score": 0.5
+      },
+      {
+        "id": 33,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "1": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6307
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "33": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6268
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      },
+      "5": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6256
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P02": {
+    "trade": "Construction & Building",
+    "skills": [
+      "Tiling",
+      "Painting & decorating"
+    ],
+    "case": "two exact skills, two jobs",
+    "board": "5 job(s) need these exact skills; 16 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 6,
+        "rank": 1,
+        "score": 0.6355
+      },
+      {
+        "id": 2,
+        "rank": 2,
+        "score": 0.6305
+      },
+      {
+        "id": 46,
+        "rank": 3,
+        "score": 0.5588
+      }
+    ],
+    "keyword": [
+      {
+        "id": 3,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 6,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 36,
+        "rank": 3,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "6": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6355
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "2": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6305
+        }
+      },
+      "46": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5588
+        }
+      },
+      "3": {
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "36": {
+        "keyword": {
+          "rank": 3,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P03": {
+    "trade": "Construction & Building",
+    "skills": [
+      "Steel bending",
+      "Setting out & plan reading"
+    ],
+    "case": "related skills, no exact job",
+    "board": "3 job(s) need these exact skills; 16 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 39,
+        "rank": 1,
+        "score": 0.6022
+      },
+      {
+        "id": 42,
+        "rank": 2,
+        "score": 0.5727
+      }
+    ],
+    "keyword": [
+      {
+        "id": 39,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 35,
+        "rank": 2,
+        "score": 0.5
+      },
+      {
+        "id": 42,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "39": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6022
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "42": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.5727
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      },
+      "35": {
+        "keyword": {
+          "rank": 2,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P04": {
+    "trade": "Construction & Building",
+    "skills": [
+      "Roofing"
+    ],
+    "case": "related job in another trade (roof carpentry)",
+    "board": "1 job(s) need these exact skills; 16 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 8,
+        "rank": 1,
+        "score": 0.6984
+      },
+      {
+        "id": 44,
+        "rank": 2,
+        "score": 0.6774
+      },
+      {
+        "id": 37,
+        "rank": 3,
+        "score": 0.6514
+      }
+    ],
+    "keyword": [
+      {
+        "id": 37,
+        "rank": 1,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "8": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6984
+        }
+      },
+      "44": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6774
+        }
+      },
+      "37": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6514
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P05": {
+    "trade": "Carpentry & Woodwork",
+    "skills": [
+      "Furniture making",
+      "Upholstery"
+    ],
+    "case": "exact skill",
+    "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 49,
+        "rank": 1,
+        "score": 0.7861
+      },
+      {
+        "id": 43,
+        "rank": 2,
+        "score": 0.7059
+      },
+      {
+        "id": 7,
+        "rank": 3,
+        "score": 0.5965
+      }
+    ],
+    "keyword": [
+      {
+        "id": 43,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 49,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 7,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "49": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7861
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "43": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.7059
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "7": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5965
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P06": {
+    "trade": "Carpentry & Woodwork",
+    "skills": [
+      "Door & window frames",
+      "Formwork (shuttering)"
+    ],
+    "case": "one exact, one cross-trade",
+    "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 46,
+        "rank": 1,
+        "score": 0.6904
+      },
+      {
+        "id": 45,
+        "rank": 2,
+        "score": 0.6596
+      }
+    ],
+    "keyword": [
+      {
+        "id": 45,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 46,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 9,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "46": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6904
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "45": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6596
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "9": {
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P07": {
+    "trade": "Carpentry & Woodwork",
+    "skills": [
+      "Furniture repair"
+    ],
+    "case": "related skill, no exact job",
+    "board": "1 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 51,
+        "rank": 1,
+        "score": 0.6451
+      },
+      {
+        "id": 43,
+        "rank": 2,
+        "score": 0.602
+      },
+      {
+        "id": 48,
+        "rank": 3,
+        "score": 0.5997
+      }
+    ],
+    "keyword": [
+      {
+        "id": 51,
+        "rank": 1,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "51": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6451
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "43": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.602
+        }
+      },
+      "48": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5997
+        }
+      }
+    }
+  },
+  "P08": {
+    "trade": "Electrical & Electronics",
+    "skills": [
+      "House wiring",
+      "Electrical fault finding"
+    ],
+    "case": "exact skill",
+    "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 10,
+        "rank": 1,
+        "score": 0.6657
+      },
+      {
+        "id": 53,
+        "rank": 2,
+        "score": 0.6607
+      },
+      {
+        "id": 55,
+        "rank": 3,
+        "score": 0.5935
+      }
+    ],
+    "keyword": [
+      {
+        "id": 53,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 55,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 10,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "10": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6657
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      },
+      "53": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6607
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "55": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5935
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P09": {
+    "trade": "Electrical & Electronics",
+    "skills": [
+      "Solar installation",
+      "Meter & distribution board installation"
+    ],
+    "case": "exact skill",
+    "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 57,
+        "rank": 1,
+        "score": 0.7187
+      },
+      {
+        "id": 11,
+        "rank": 2,
+        "score": 0.7135
+      },
+      {
+        "id": 56,
+        "rank": 3,
+        "score": 0.6551
+      }
+    ],
+    "keyword": [
+      {
+        "id": 11,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 56,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 57,
+        "rank": 3,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "57": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7187
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 1.0
+        }
+      },
+      "11": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.7135
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "56": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6551
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P10": {
+    "trade": "Electrical & Electronics",
+    "skills": [
+      "Electronics repair (TV, radio)"
+    ],
+    "case": "related repair jobs only",
+    "board": "1 job(s) need these exact skills; 14 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 61,
+        "rank": 1,
+        "score": 0.7918
+      },
+      {
+        "id": 12,
+        "rank": 2,
+        "score": 0.6774
+      },
+      {
+        "id": 60,
+        "rank": 3,
+        "score": 0.6702
+      }
+    ],
+    "keyword": [
+      {
+        "id": 61,
+        "rank": 1,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "61": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7918
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "12": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6774
+        }
+      },
+      "60": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6702
+        }
+      }
+    }
+  },
+  "P11": {
+    "trade": "Agriculture & Agro-processing",
+    "skills": [
+      "Crop farming",
+      "Farm labour"
+    ],
+    "case": "exact skill, distant area",
+    "board": "3 job(s) need these exact skills; 12 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 139,
+        "rank": 1,
+        "score": 0.7339
+      },
+      {
+        "id": 133,
+        "rank": 2,
+        "score": 0.6661
+      },
+      {
+        "id": 29,
+        "rank": 3,
+        "score": 0.664
+      }
+    ],
+    "keyword": [
+      {
+        "id": 133,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 139,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 29,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "139": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7339
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "133": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6661
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "29": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.664
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P12": {
+    "trade": "Plumbing & Metalwork",
+    "skills": [
+      "Pipe fitting",
+      "Water tank & pump installation"
+    ],
+    "case": "no job in this trade",
+    "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 63,
+        "rank": 1,
+        "score": 0.7097
+      },
+      {
+        "id": 65,
+        "rank": 2,
+        "score": 0.6561
+      }
+    ],
+    "keyword": [
+      {
+        "id": 63,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 65,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "63": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7097
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "65": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6561
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P13": {
+    "trade": "Plumbing & Metalwork",
+    "skills": [
+      "Arc welding",
+      "Gates & burglar-proof fabrication"
+    ],
+    "case": "no job in this trade",
+    "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 69,
+        "rank": 1,
+        "score": 0.7081
+      },
+      {
+        "id": 67,
+        "rank": 2,
+        "score": 0.7054
+      },
+      {
+        "id": 68,
+        "rank": 3,
+        "score": 0.5537
+      }
+    ],
+    "keyword": [
+      {
+        "id": 69,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 67,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "69": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7081
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "67": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.7054
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "68": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5537
+        }
+      }
+    }
+  },
+  "P14": {
+    "trade": "Vehicle Repair",
+    "skills": [
+      "Engine repair",
+      "Car servicing"
+    ],
+    "case": "no job in this trade",
+    "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 73,
+        "rank": 1,
+        "score": 0.746
+      },
+      {
+        "id": 74,
+        "rank": 2,
+        "score": 0.6861
+      },
+      {
+        "id": 59,
+        "rank": 3,
+        "score": 0.6386
+      }
+    ],
+    "keyword": [
+      {
+        "id": 73,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 74,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "73": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.746
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "74": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6861
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "59": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6386
+        }
+      }
+    }
+  },
+  "P15": {
+    "trade": "Driving & Transport",
+    "skills": [
+      "Motorbike riding (okada)"
+    ],
+    "case": "exact skill",
+    "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 87,
+        "rank": 1,
+        "score": 0.7198
+      }
+    ],
+    "keyword": [
+      {
+        "id": 87,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 31,
+        "rank": 2,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "87": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7198
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "31": {
+        "keyword": {
+          "rank": 2,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P16": {
+    "trade": "Driving & Transport",
+    "skills": [
+      "Taxi & ride-hailing driving"
+    ],
+    "case": "related job (company driver)",
+    "board": "1 job(s) need these exact skills; 12 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 83,
+        "rank": 1,
+        "score": 0.7418
+      }
+    ],
+    "keyword": [
+      {
+        "id": 83,
+        "rank": 1,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "83": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7418
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P17": {
+    "trade": "Textile & Fashion",
+    "skills": [
+      "Dressmaking"
+    ],
+    "case": "exact skill",
+    "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 93,
+        "rank": 1,
+        "score": 0.7979
+      },
+      {
+        "id": 14,
+        "rank": 2,
+        "score": 0.5632
+      },
+      {
+        "id": 100,
+        "rank": 3,
+        "score": 0.5572
+      }
+    ],
+    "keyword": [
+      {
+        "id": 93,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 14,
+        "rank": 2,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "93": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7979
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "14": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.5632
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 0.5
+        }
+      },
+      "100": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.5572
+        }
+      }
+    }
+  },
+  "P18": {
+    "trade": "Textile & Fashion",
+    "skills": [
+      "Alterations & mending",
+      "Embroidery"
+    ],
+    "case": "related job (tailor)",
+    "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 96,
+        "rank": 1,
+        "score": 0.6885
+      },
+      {
+        "id": 94,
+        "rank": 2,
+        "score": 0.6303
+      },
+      {
+        "id": 93,
+        "rank": 3,
+        "score": 0.6252
+      }
+    ],
+    "keyword": [
+      {
+        "id": 96,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 98,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "96": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6885
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "94": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6303
+        }
+      },
+      "93": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6252
+        }
+      },
+      "98": {
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P19": {
+    "trade": "Hair & Beauty",
+    "skills": [
+      "Braiding",
+      "Wig making & installation"
+    ],
+    "case": "exact skill",
+    "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 106,
+        "rank": 1,
+        "score": 0.7621
+      },
+      {
+        "id": 26,
+        "rank": 2,
+        "score": 0.6805
+      },
+      {
+        "id": 104,
+        "rank": 3,
+        "score": 0.6439
+      }
+    ],
+    "keyword": [
+      {
+        "id": 104,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 106,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 26,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "106": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7621
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "26": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6805
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      },
+      "104": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6439
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P20": {
+    "trade": "Hair & Beauty",
+    "skills": [
+      "Make-up",
+      "Lashes & brows"
+    ],
+    "case": "same trade, other skills",
+    "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 110,
+        "rank": 1,
+        "score": 0.5675
+      },
+      {
+        "id": 103,
+        "rank": 2,
+        "score": 0.5668
+      }
+    ],
+    "keyword": [
+      {
+        "id": 109,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 110,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "110": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.5675
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "103": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.5668
+        }
+      },
+      "109": {
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P21": {
+    "trade": "Food & Catering",
+    "skills": [
+      "Pastries & cakes"
+    ],
+    "case": "exact skill",
+    "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 116,
+        "rank": 1,
+        "score": 0.7382
+      },
+      {
+        "id": 114,
+        "rank": 2,
+        "score": 0.6529
+      },
+      {
+        "id": 24,
+        "rank": 3,
+        "score": 0.6422
+      }
+    ],
+    "keyword": [
+      {
+        "id": 116,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 25,
+        "rank": 2,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "116": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7382
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "114": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6529
+        }
+      },
+      "24": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6422
+        }
+      },
+      "25": {
+        "keyword": {
+          "rank": 2,
+          "score": 0.5
+        }
+      }
+    }
+  },
+  "P22": {
+    "trade": "Food & Catering",
+    "skills": [
+      "Grilling (kebab, tilapia)",
+      "Juice & local drinks"
+    ],
+    "case": "same trade, other skills",
+    "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 122,
+        "rank": 1,
+        "score": 0.7108
+      }
+    ],
+    "keyword": [
+      {
+        "id": 121,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 122,
+        "rank": 2,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "122": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7108
+        },
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "121": {
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P23": {
+    "trade": "Domestic, Cleaning & Security",
+    "skills": [
+      "Elderly & home care"
+    ],
+    "case": "related job (nanny)",
+    "board": "1 job(s) need these exact skills; 14 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 123,
+        "rank": 1,
+        "score": 0.6191
+      },
+      {
+        "id": 126,
+        "rank": 2,
+        "score": 0.6035
+      }
+    ],
+    "keyword": [
+      {
+        "id": 126,
+        "rank": 1,
+        "score": 1.0
+      }
+    ],
+    "pooled": {
+      "123": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6191
+        }
+      },
+      "126": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6035
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P24": {
+    "trade": "Domestic, Cleaning & Security",
+    "skills": [
+      "Cooking for a household",
+      "Laundry & ironing"
+    ],
+    "case": "one exact, one cross-trade",
+    "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 123,
+        "rank": 1,
+        "score": 0.6576
+      },
+      {
+        "id": 124,
+        "rank": 2,
+        "score": 0.6518
+      },
+      {
+        "id": 19,
+        "rank": 3,
+        "score": 0.6089
+      }
+    ],
+    "keyword": [
+      {
+        "id": 124,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 127,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 19,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "123": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.6576
+        }
+      },
+      "124": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.6518
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "19": {
+        "semantic": {
+          "rank": 3,
+          "score": 0.6089
+        },
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      },
+      "127": {
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      }
+    }
+  },
+  "P25": {
+    "trade": "Trading & Sales",
+    "skills": [
+      "Phone & accessories sales",
+      "Customer service"
+    ],
+    "case": "one exact, one related",
+    "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+    "semantic": [
+      {
+        "id": 149,
+        "rank": 1,
+        "score": 0.7798
+      },
+      {
+        "id": 150,
+        "rank": 2,
+        "score": 0.5536
+      }
+    ],
+    "keyword": [
+      {
+        "id": 149,
+        "rank": 1,
+        "score": 1.0
+      },
+      {
+        "id": 151,
+        "rank": 2,
+        "score": 1.0
+      },
+      {
+        "id": 16,
+        "rank": 3,
+        "score": 0.5
+      }
+    ],
+    "pooled": {
+      "149": {
+        "semantic": {
+          "rank": 1,
+          "score": 0.7798
+        },
+        "keyword": {
+          "rank": 1,
+          "score": 1.0
+        }
+      },
+      "150": {
+        "semantic": {
+          "rank": 2,
+          "score": 0.5536
+        }
+      },
+      "151": {
+        "keyword": {
+          "rank": 2,
+          "score": 1.0
+        }
+      },
+      "16": {
+        "keyword": {
+          "rank": 3,
+          "score": 0.5
+        }
+      }
+    }
+  }
+}

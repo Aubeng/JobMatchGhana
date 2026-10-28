@@ -1,0 +1,822 @@
+{
+  "summary": {
+    "semantic": {
+      "profiles": 25,
+      "profiles_with_a_result": 25,
+      "jobs_returned": 63,
+      "relevant_returned": 43,
+      "precision_of_returned": 0.683,
+      "mean_p_at_3": 0.573,
+      "mean_ndcg_at_3": 0.875
+    },
+    "keyword": {
+      "profiles": 25,
+      "profiles_with_a_result": 25,
+      "jobs_returned": 56,
+      "relevant_returned": 52,
+      "precision_of_returned": 0.929,
+      "mean_p_at_3": 0.693,
+      "mean_ndcg_at_3": 0.935
+    }
+  },
+  "wilcoxon_ndcg_semantic_minus_keyword": {
+    "n_nonzero": 17,
+    "W_plus": 49.5,
+    "z": -1.28,
+    "p_approx": 0.2004
+  },
+  "wilcoxon_p3_semantic_minus_keyword": {
+    "n_nonzero": 7,
+    "W_plus": 0,
+    "z": -2.46,
+    "p_approx": 0.0139
+  },
+  "inter_rater": {
+    "pairs_double_rated": 25,
+    "cohen_kappa": 0.198,
+    "weighted_kappa_quadratic": 0.063
+  },
+  "per_profile": [
+    {
+      "profile": "P01",
+      "case": "exact skills on the board",
+      "board": "5 job(s) need these exact skills; 16 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P02",
+      "case": "two exact skills, two jobs",
+      "board": "5 job(s) need these exact skills; 16 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.646
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P03",
+      "case": "related skills, no exact job",
+      "board": "3 job(s) need these exact skills; 16 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.951
+      }
+    },
+    {
+      "profile": "P04",
+      "case": "related job in another trade (roof carpentry)",
+      "board": "1 job(s) need these exact skills; 16 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          1,
+          1,
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.758
+      },
+      "keyword": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.726
+      }
+    },
+    {
+      "profile": "P05",
+      "case": "exact skill",
+      "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P06",
+      "case": "one exact, one cross-trade",
+      "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          1
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P07",
+      "case": "related skill, no exact job",
+      "board": "1 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.726
+      }
+    },
+    {
+      "profile": "P08",
+      "case": "exact skill",
+      "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P09",
+      "case": "exact skill",
+      "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P10",
+      "case": "related repair jobs only",
+      "board": "1 job(s) need these exact skills; 14 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.726
+      }
+    },
+    {
+      "profile": "P11",
+      "case": "exact skill, distant area",
+      "board": "3 job(s) need these exact skills; 12 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P12",
+      "case": "no job in this trade",
+      "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P13",
+      "case": "no job in this trade",
+      "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          1
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      }
+    },
+    {
+      "profile": "P14",
+      "case": "no job in this trade",
+      "board": "2 job(s) need these exact skills; 10 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          1
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      }
+    },
+    {
+      "profile": "P15",
+      "case": "exact skill",
+      "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.613
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P16",
+      "case": "related job (company driver)",
+      "board": "1 job(s) need these exact skills; 12 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P17",
+      "case": "exact skill",
+      "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          1
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      }
+    },
+    {
+      "profile": "P18",
+      "case": "related job (tailor)",
+      "board": "2 job(s) need these exact skills; 12 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.766
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      }
+    },
+    {
+      "profile": "P19",
+      "case": "exact skill",
+      "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P20",
+      "case": "same trade, other skills",
+      "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          2,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.673
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 0.907
+      }
+    },
+    {
+      "profile": "P21",
+      "case": "exact skill",
+      "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          2,
+          1,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 1.0
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.879
+      }
+    },
+    {
+      "profile": "P22",
+      "case": "same trade, other skills",
+      "board": "2 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.613
+      },
+      "keyword": {
+        "returned": 2,
+        "gains": [
+          2,
+          2
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P23",
+      "case": "related job (nanny)",
+      "board": "1 job(s) need these exact skills; 14 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          1,
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.797
+      },
+      "keyword": {
+        "returned": 1,
+        "gains": [
+          2
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.826
+      }
+    },
+    {
+      "profile": "P24",
+      "case": "one exact, one cross-trade",
+      "board": "3 job(s) need these exact skills; 14 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 3,
+        "gains": [
+          1,
+          2,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.629
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          1
+        ],
+        "p_at_3": 0.667,
+        "ndcg_at_3": 1.0
+      }
+    },
+    {
+      "profile": "P25",
+      "case": "one exact, one related",
+      "board": "3 job(s) need these exact skills; 13 job(s) in the trade",
+      "best_available": 2,
+      "semantic": {
+        "returned": 2,
+        "gains": [
+          2,
+          1
+        ],
+        "p_at_3": 0.333,
+        "ndcg_at_3": 0.568
+      },
+      "keyword": {
+        "returned": 3,
+        "gains": [
+          2,
+          2,
+          2
+        ],
+        "p_at_3": 1.0,
+        "ndcg_at_3": 1.0
+      }
+    }
+  ],
+  "coverage_stage1": [
+    {
+      "profile": "P01",
+      "candidates_after_stage1": 49,
+      "semantic_returned": 2,
+      "keyword_returned": 2
+    },
+    {
+      "profile": "P02",
+      "candidates_after_stage1": 16,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P03",
+      "candidates_after_stage1": 14,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P04",
+      "candidates_after_stage1": 33,
+      "semantic_returned": 1,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P05",
+      "candidates_after_stage1": 43,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P06",
+      "candidates_after_stage1": 23,
+      "semantic_returned": 0,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P07",
+      "candidates_after_stage1": 28,
+      "semantic_returned": 0,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P08",
+      "candidates_after_stage1": 47,
+      "semantic_returned": 2,
+      "keyword_returned": 2
+    },
+    {
+      "profile": "P09",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P10",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 2,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P11",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 0,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P12",
+      "candidates_after_stage1": 49,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P13",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 2,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P14",
+      "candidates_after_stage1": 43,
+      "semantic_returned": 2,
+      "keyword_returned": 2
+    },
+    {
+      "profile": "P15",
+      "candidates_after_stage1": 49,
+      "semantic_returned": 0,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P16",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 0,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P17",
+      "candidates_after_stage1": 49,
+      "semantic_returned": 2,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P18",
+      "candidates_after_stage1": 20,
+      "semantic_returned": 1,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P19",
+      "candidates_after_stage1": 28,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P20",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P21",
+      "candidates_after_stage1": 14,
+      "semantic_returned": 2,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P22",
+      "candidates_after_stage1": 12,
+      "semantic_returned": 0,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P23",
+      "candidates_after_stage1": 47,
+      "semantic_returned": 1,
+      "keyword_returned": 1
+    },
+    {
+      "profile": "P24",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 0,
+      "keyword_returned": 0
+    },
+    {
+      "profile": "P25",
+      "candidates_after_stage1": 30,
+      "semantic_returned": 0,
+      "keyword_returned": 1
+    }
+  ],
+  "settings": {
+    "job_board": [
+      "jobs_synthetic_v1.json",
+      "jobs_synthetic_v2.json"
+    ],
+    "top_k": 3,
+    "min_score_semantic": 0.55,
+    "relevant_means": "score 2",
+    "ndcg_gain": "2^rel - 1, ideal from the pooled judgements"
+  }
+}

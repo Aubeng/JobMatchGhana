@@ -1,0 +1,152 @@
+[
+  {
+    "profile": "P01",
+    "candidates_after_stage1": 49,
+    "semantic_returned": 2,
+    "keyword_returned": 2
+  },
+  {
+    "profile": "P02",
+    "candidates_after_stage1": 16,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P03",
+    "candidates_after_stage1": 14,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P04",
+    "candidates_after_stage1": 33,
+    "semantic_returned": 1,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P05",
+    "candidates_after_stage1": 43,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P06",
+    "candidates_after_stage1": 23,
+    "semantic_returned": 0,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P07",
+    "candidates_after_stage1": 28,
+    "semantic_returned": 0,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P08",
+    "candidates_after_stage1": 47,
+    "semantic_returned": 2,
+    "keyword_returned": 2
+  },
+  {
+    "profile": "P09",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P10",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 2,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P11",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 0,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P12",
+    "candidates_after_stage1": 49,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P13",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 2,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P14",
+    "candidates_after_stage1": 43,
+    "semantic_returned": 2,
+    "keyword_returned": 2
+  },
+  {
+    "profile": "P15",
+    "candidates_after_stage1": 49,
+    "semantic_returned": 0,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P16",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 0,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P17",
+    "candidates_after_stage1": 49,
+    "semantic_returned": 2,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P18",
+    "candidates_after_stage1": 20,
+    "semantic_returned": 1,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P19",
+    "candidates_after_stage1": 28,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P20",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P21",
+    "candidates_after_stage1": 14,
+    "semantic_returned": 2,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P22",
+    "candidates_after_stage1": 12,
+    "semantic_returned": 0,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P23",
+    "candidates_after_stage1": 47,
+    "semantic_returned": 1,
+    "keyword_returned": 1
+  },
+  {
+    "profile": "P24",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 0,
+    "keyword_returned": 0
+  },
+  {
+    "profile": "P25",
+    "candidates_after_stage1": 30,
+    "semantic_returned": 0,
+    "keyword_returned": 1
+  }
+]
