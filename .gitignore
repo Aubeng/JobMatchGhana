@@ -41,3 +41,8 @@ src/JobMatch.Api/wwwroot/admin/
 
 # Office lock files
 ~$*
+
+# Not for the public repository: dissertation drafts, consent forms and other working documents
+Claude outputs/
+# Word exports of the docs (generated; the Markdown files are the source)
+docs/*.docx
