@@ -39,6 +39,60 @@ public class Worker
 
     public ICollection<WorkerSkill> Skills { get; set; } = new List<WorkerSkill>();
     public ICollection<Match> Matches { get; set; } = new List<Match>();
+    /// <summary>Every area the worker can work in, main area (= LocationDistrict) first (DL-018).</summary>
+    public ICollection<WorkerArea> Areas { get; set; } = new List<WorkerArea>();
+}
+
+/// <summary>
+/// A worker's CV details (Slice 6, DL-019), saved when they confirm the CV summary. Collected
+/// under a separate CV consent, used only to build the PDF, and never exported for research.
+/// </summary>
+public class WorkerCv
+{
+    public int Id { get; set; }
+    public int WorkerId { get; set; }
+    public Worker? Worker { get; set; }
+    public string FullName { get; set; } = string.Empty;
+    /// <summary>The number printed on the CV; null = none.</summary>
+    public string? Phone { get; set; }
+    /// <summary>Up to 3 lines, newline-separated.</summary>
+    public string? Training { get; set; }
+    public string? Education { get; set; }
+    /// <summary>Comma-separated.</summary>
+    public string? Languages { get; set; }
+    public string? About { get; set; }
+    public DateTimeOffset ConsentUtc { get; set; }
+    public DateTimeOffset CompletedUtc { get; set; }
+    public DateTimeOffset? LastSentUtc { get; set; }
+    public int TimesSent { get; set; }
+    public ICollection<WorkerCvJob> Jobs { get; set; } = new List<WorkerCvJob>();
+}
+
+/// <summary>A past job on a CV, kept as the worker described it.</summary>
+public class WorkerCvJob
+{
+    public int Id { get; set; }
+    public int WorkerCvId { get; set; }
+    public WorkerCv? WorkerCv { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public string? Period { get; set; }
+    public string SourceUtterance { get; set; } = string.Empty;
+    public int SortOrder { get; set; }
+}
+
+/// <summary>An area (district) a worker can work in. Matching's stage 1 searches all of them.</summary>
+public class WorkerArea
+{
+    public int Id { get; set; }
+    public int WorkerId { get; set; }
+    public Worker? Worker { get; set; }
+    /// <summary>District (MMDA): the geographic filter key.</summary>
+    public string District { get; set; } = string.Empty;
+    public string? Region { get; set; }
+    /// <summary>The area as the worker named it ("Madina").</summary>
+    public string? LocationText { get; set; }
+    /// <summary>0 = the main area.</summary>
+    public int SortOrder { get; set; }
 }
 
 /// <summary>Canonical skill in the taxonomy. Embedding populated by the NLP service.</summary>
@@ -209,6 +263,13 @@ public class MessageLog
     /// correct (S&D metric: Entity Extraction Precision = sum correct / sum extracted).</summary>
     public int? AnnotatedSkillsCorrect { get; set; }
     public int? AnnotatedSkillsExtracted { get; set; }
+
+    // ---- Delivery (outbound only), from Meta's status callbacks ----
+    /// <summary>Latest status Meta reported: sent, delivered, read or failed.</summary>
+    public string? DeliveryStatus { get; set; }
+    /// <summary>For failed: Meta's error code, title and details, e.g. "131026 Message undeliverable".</summary>
+    public string? DeliveryError { get; set; }
+    public DateTimeOffset? DeliveryUpdatedUtc { get; set; }
 
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
 }

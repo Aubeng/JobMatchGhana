@@ -30,6 +30,7 @@
           CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\nlp\tests\fixtures\match_response.json" Link="Fixtures\match_response.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\src\JobMatch.Api\Seed\jobs_synthetic_v1.json" Link="Seed\jobs_synthetic_v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\JobMatch.Api\Seed\jobs_synthetic_v2.json" Link="Seed\jobs_synthetic_v2.json" CopyToOutputDirectory="PreserveNewest" />
     <!-- The dialogue catalog's data, as the API ships it (Data/). -->
     <None Include="..\..\nlp\data\taxonomy_v1.json" Link="Data\taxonomy_v1.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\nlp\data\localities_v1.json" Link="Data\localities_v1.json" CopyToOutputDirectory="PreserveNewest" />

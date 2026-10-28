@@ -3,6 +3,9 @@ using JobMatch.Domain.Conversation;
 
 namespace JobMatch.Api.WhatsApp;
 
+/// <summary>One status callback: our message <see cref="MessageId"/> is now sent/delivered/read/failed.</summary>
+public record DeliveryStatus(string MessageId, string Status, string? RecipientWaId, string? Error);
+
 /// <summary>
 /// Parses a Meta webhook payload into normalised <see cref="InboundMessage"/> values.
 /// Only user-initiated <c>text</c> messages are handled in the pilot; other message
@@ -48,6 +51,46 @@ public static class WhatsAppPayloadParser
             }
         }
 
+        return results;
+    }
+
+    /// <summary>
+    /// Status callbacks for our outbound messages. Meta can accept a send and still fail to
+    /// deliver it; the reason only arrives here (e.g. 131026 "Message undeliverable").
+    /// </summary>
+    public static IReadOnlyList<DeliveryStatus> ParseStatuses(ReadOnlySpan<byte> rawBody)
+    {
+        var results = new List<DeliveryStatus>();
+        using var doc = JsonDocument.Parse(rawBody.ToArray());
+        if (!doc.RootElement.TryGetProperty("entry", out var entries)) return results;
+        foreach (var entry in entries.EnumerateArray())
+        {
+            if (!entry.TryGetProperty("changes", out var changes)) continue;
+            foreach (var change in changes.EnumerateArray())
+            {
+                if (!change.TryGetProperty("value", out var value) || !value.TryGetProperty("statuses", out var statuses)) continue;
+                foreach (var s in statuses.EnumerateArray())
+                {
+                    var id = s.TryGetProperty("id", out var idEl) ? idEl.GetString() : null;
+                    var status = s.TryGetProperty("status", out var st) ? st.GetString() : null;
+                    if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(status)) continue;
+                    string? error = null;
+                    if (s.TryGetProperty("errors", out var errors) && errors.GetArrayLength() > 0)
+                    {
+                        var e = errors[0];
+                        var parts = new[]
+                        {
+                            e.TryGetProperty("code", out var c) ? c.ToString() : null,
+                            e.TryGetProperty("title", out var t) ? t.GetString() : null,
+                            e.TryGetProperty("error_data", out var d) && d.TryGetProperty("details", out var dd) ? dd.GetString() : null
+                        };
+                        error = string.Join(" | ", parts.Where(p => !string.IsNullOrEmpty(p)));
+                    }
+                    var recipient = s.TryGetProperty("recipient_id", out var r) ? r.GetString() : null;
+                    results.Add(new DeliveryStatus(id!, status!, recipient, error));
+                }
+            }
+        }
         return results;
     }
 

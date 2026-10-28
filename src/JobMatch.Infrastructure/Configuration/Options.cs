@@ -57,6 +57,11 @@ public class MatchingOptions
     public int TopK { get; set; } = 3;
     /// <summary>Minimum cosine similarity (MiniLM) for a job to be offered. From the build brief.</summary>
     public double MinScore { get; set; } = 0.55;
+    /// <summary>
+    /// DL-020: when nothing in or near the worker's areas fits, offer fitting jobs from other areas
+    /// (clearly labelled). Set false to restore the strict S&D geographic filter.
+    /// </summary>
+    public bool SearchOtherAreas { get; set; } = true;
     /// <summary>At most one new-job alert per worker in this many hours (cost discipline).</summary>
     public int AlertCooldownHours { get; set; } = 24;
     /// <summary>Approved utility template for new-job alerts: "{{1}} in {{2}}" + quick reply.</summary>

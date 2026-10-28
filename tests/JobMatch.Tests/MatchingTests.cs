@@ -108,6 +108,83 @@ public class MatchingTests
     }
 
     [Fact]
+    public async Task Stage1_searches_every_area_the_worker_named_DL018()
+    {
+        await using var db = await SeededDbAsync();
+        var worker = await WorkerAsync(db, "La Nkwantanang Madina", "Full-time", "Block laying");
+        db.WorkerAreas.AddRange(
+            new WorkerArea { WorkerId = worker.Id, District = "La Nkwantanang Madina", LocationText = "Madina", SortOrder = 0 },
+            new WorkerArea { WorkerId = worker.Id, District = "Tema", LocationText = "Tema", SortOrder = 1 });
+        await db.SaveChangesAsync();
+        var ranker = new RecordingRanker();
+
+        await Service(db, ranker).FindForWorkerAsync(worker, default);
+
+        ranker.Seen.Should().Contain(c => c.Title == "Night security guard", "Tema is now one of the worker's areas");
+        ranker.Seen.Should().Contain(c => c.Title.StartsWith("Block layer"), "Madina is still searched");
+    }
+
+    [Fact]
+    public async Task With_nothing_nearby_similar_jobs_elsewhere_are_offered_and_labelled_DL020()
+    {
+        await using var db = await SeededDbAsync();
+        var worker = await WorkerAsync(db, "Tamale", "Full-time", "Block laying");   // no jobs anywhere near
+
+        var cards = await Service(db, new OfflineMatchRanker()).FindForWorkerAsync(worker, default);
+
+        cards.Should().NotBeEmpty();
+        cards.Should().OnlyContain(c => c.OutsideAreas && c.Why.Contains("outside your areas"));
+        cards.Should().Contain(c => c.Title.StartsWith("Block layer"));
+        var breakdown = JsonDocument.Parse((await db.Matches.FirstAsync()).ScoreBreakdownJson!).RootElement;
+        breakdown.GetProperty("location").GetString().Should().Be("outside worker's areas (fallback)");
+    }
+
+    [Fact]
+    public async Task The_other_areas_fallback_can_be_switched_off()
+    {
+        await using var db = await SeededDbAsync();
+        var worker = await WorkerAsync(db, "Tamale", "Full-time", "Block laying");
+        var strict = new MatchingService(db, new OfflineMatchRanker(), TestCatalog.Instance,
+            Microsoft.Extensions.Options.Options.Create(new MatchingOptions { SearchOtherAreas = false }),
+            NullLogger<MatchingService>.Instance);
+
+        (await strict.FindForWorkerAsync(worker, default)).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Seed_v2_adds_a_job_for_every_skill_and_every_trade_in_every_menu_area()
+    {
+        await using var db = await SeededDbAsync();
+        var v2 = Path.Combine(AppContext.BaseDirectory, "Seed", "jobs_synthetic_v2.json");
+        (await new JobSeeder(db, TestCatalog.Instance).SeedAsync(v2, default)).Added.Should().Be(120);
+
+        var jobs = await db.JobPostings.Include(j => j.Skills).ThenInclude(s => s.Skill).ToListAsync();
+        jobs.Should().OnlyContain(j => j.IsSynthetic);
+        var offered = jobs.SelectMany(j => j.Skills.Select(s => s.Skill!.CanonicalName)).ToHashSet();
+        TestCatalog.Instance.Trades.SelectMany(t => t.Skills).Should().OnlyContain(s => offered.Contains(s.Name));
+        foreach (var area in TestCatalog.Instance.LocationMenu)
+            jobs.Where(j => j.District == area.District).Select(j => j.TradeCategoryId).Distinct()
+                .Should().HaveCount(TestCatalog.Instance.Trades.Count, $"{area.Label} has a job in every trade");
+    }
+
+    [Fact]
+    public async Task Alerts_reach_workers_through_any_of_their_areas()
+    {
+        await using var db = await SeededDbAsync();
+        var worker = await WorkerAsync(db, "Ayawaso West", "Full-time", "Security guarding");
+        db.WorkerAreas.AddRange(
+            new WorkerArea { WorkerId = worker.Id, District = "Ayawaso West", SortOrder = 0 },
+            new WorkerArea { WorkerId = worker.Id, District = "Tema", SortOrder = 1 });
+        await db.SaveChangesAsync();
+        var guard = await db.JobPostings.SingleAsync(j => j.Title == "Night security guard");
+        var whatsapp = new FakeWhatsAppClient();
+        var alerts = new JobAlertService(db, new RecordingRanker(), Service(db, new RecordingRanker()), TestCatalog.Instance,
+            whatsapp, Options, NullLogger<JobAlertService>.Instance);
+
+        (await alerts.AlertForJobAsync(guard.Id, default)).Alerted.Should().Be(1);
+    }
+
+    [Fact]
     public async Task Stage1_respects_availability()
     {
         await using var db = await SeededDbAsync();
@@ -213,6 +290,7 @@ public class MatchingTests
         public List<string> Sent { get; } = new();
         public Task<string?> SendAsync(string to, JobMatch.Domain.Conversation.OutboundMessage m, CancellationToken ct) => Task.FromResult<string?>("x");
         public Task MarkReadAsync(string id, CancellationToken ct) => Task.CompletedTask;
+        public Task<string?> SendDocumentAsync(string to, byte[] c, string f, string m, string? cap, CancellationToken ct) => Task.FromResult<string?>("d");
         public Task<string?> SendTemplateAsync(string to, string name, string lang, IReadOnlyList<string> p, string? payload, CancellationToken ct)
         {
             if (to == waId) throw new HttpRequestException("400 (#131030) Recipient phone number not in allowed list");

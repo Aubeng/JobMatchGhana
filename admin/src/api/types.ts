@@ -16,6 +16,7 @@ export interface Funnel {
   rated: number
   interested: number
   connected: number
+  cvsMade: number
 }
 
 export interface Analytics {

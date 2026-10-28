@@ -147,6 +147,51 @@ public class WhatsAppClient : IWhatsAppClient
 
     private static string Cut(string s, int max) => s.Length <= max ? s : s[..(max - 1)] + "…";
 
+    public async Task<string?> SendDocumentAsync(string waId, byte[] content, string fileName, string mimeType,
+        string? caption, CancellationToken ct)
+    {
+        // 1) Upload the file to WhatsApp's media store (kept by Meta for 30 days).
+        using var form = new MultipartFormDataContent();
+        form.Add(new StringContent("whatsapp"), "messaging_product");
+        form.Add(new StringContent(mimeType), "type");
+        var file = new ByteArrayContent(content);
+        file.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(mimeType);
+        form.Add(file, "file", fileName);
+        using var upload = await _http.PostAsync($"/{_options.GraphApiVersion}/{_options.PhoneNumberId}/media", form, ct);
+        var uploaded = await upload.Content.ReadAsStringAsync(ct);
+        if (!upload.IsSuccessStatusCode)
+        {
+            _logger.LogError("WhatsApp media upload failed ({Status}): {Body}", (int)upload.StatusCode, uploaded);
+            upload.EnsureSuccessStatusCode();
+        }
+        string? mediaId;
+        using (var up = JsonDocument.Parse(uploaded))
+            mediaId = up.RootElement.GetProperty("id").GetString();
+
+        // 2) Send it as a document message.
+        using var resp = await _http.PostAsJsonAsync(MessagesPath, BuildDocumentPayload(waId, mediaId!, fileName, caption), ct);
+        var body = await resp.Content.ReadAsStringAsync(ct);
+        if (!resp.IsSuccessStatusCode)
+        {
+            _logger.LogError("WhatsApp document send failed ({Status}): {Body}", (int)resp.StatusCode, body);
+            resp.EnsureSuccessStatusCode();
+        }
+        using var doc = JsonDocument.Parse(body);
+        return doc.RootElement.TryGetProperty("messages", out var msgs) && msgs.GetArrayLength() > 0
+            ? msgs[0].GetProperty("id").GetString() : null;
+    }
+
+    public static object BuildDocumentPayload(string waId, string mediaId, string fileName, string? caption) => new
+    {
+        messaging_product = "whatsapp",
+        recipient_type = "individual",
+        to = waId,
+        type = "document",
+        document = caption is null
+            ? (object)new { id = mediaId, filename = fileName }
+            : new { id = mediaId, filename = fileName, caption }
+    };
+
     public async Task MarkReadAsync(string waMessageId, CancellationToken ct)
     {
         var payload = new
@@ -192,5 +237,13 @@ public class LoggingWhatsAppClient : IWhatsAppClient
     {
         _logger.LogInformation("[WhatsApp:DRYRUN] mark-read {MessageId}", waMessageId);
         return Task.CompletedTask;
+    }
+
+    public Task<string?> SendDocumentAsync(string waId, byte[] content, string fileName, string mimeType, string? caption,
+        CancellationToken ct)
+    {
+        var id = $"local-out-{Interlocked.Increment(ref _counter)}";
+        _logger.LogInformation("[WhatsApp:DRYRUN] -> {WaId}: document {FileName} ({Bytes} bytes)", waId, fileName, content.Length);
+        return Task.FromResult<string?>(id);
     }
 }

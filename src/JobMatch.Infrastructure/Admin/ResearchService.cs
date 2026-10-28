@@ -31,7 +31,8 @@ public record Metric(double? Value, double Target, bool HigherIsBetter, int N, s
     public bool? MeetsTarget => Value is null ? null : HigherIsBetter ? Value >= Target : Value <= Target;
 }
 
-public record Funnel(int Consented, int ProfilesConfirmed, int Matched, int Rated, int Interested, int Connected);
+/// <summary>Worker journey counts; <see cref="CvsMade"/> is the optional CV builder (Slice 6), reported separately.</summary>
+public record Funnel(int Consented, int ProfilesConfirmed, int Matched, int Rated, int Interested, int Connected, int CvsMade);
 
 public record Analytics(
     DateTimeOffset GeneratedUtc,
@@ -120,7 +121,8 @@ public class ResearchService
             workers.Count(w => matchedWorkers.Contains(w.Id)),
             matches.Where(m => m.Rating != null).Select(m => m.WorkerId).Distinct().Count(),
             matches.Count(m => m.InterestedUtc != null),
-            matches.Count(m => m.Status == MatchStatus.Connected));
+            matches.Count(m => m.Status == MatchStatus.Connected),
+            await _db.WorkerCvs.CountAsync(ct));
 
         // Conversation efficiency: worker messages up to and including the first profile confirmation.
         var turns = logs.Where(l => l.Direction == MessageDirection.Inbound)

@@ -261,6 +261,17 @@ namespace JobMatch.Infrastructure.Data.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DeliveryError")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("DeliveryStatus")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<DateTimeOffset?>("DeliveryUpdatedUtc")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("Direction")
                         .HasColumnType("int");
 
@@ -429,6 +440,134 @@ namespace JobMatch.Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Workers");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerArea", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("LocationText")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("District");
+
+                    b.HasIndex("WorkerId", "District")
+                        .IsUnique();
+
+                    b.ToTable("WorkerAreas");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerCv", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("About")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTimeOffset>("CompletedUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("ConsentUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Education")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Languages")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTimeOffset?>("LastSentUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("TimesSent")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Training")
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkerId")
+                        .IsUnique();
+
+                    b.ToTable("WorkerCvs");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerCvJob", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("Period")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceUtterance")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("WorkerCvId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkerCvId");
+
+                    b.ToTable("WorkerCvJobs");
                 });
 
             modelBuilder.Entity("JobMatch.Domain.Entities.WorkerSkill", b =>
@@ -707,6 +846,39 @@ namespace JobMatch.Infrastructure.Data.Migrations
                     b.Navigation("Worker");
                 });
 
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerArea", b =>
+                {
+                    b.HasOne("JobMatch.Domain.Entities.Worker", "Worker")
+                        .WithMany("Areas")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerCv", b =>
+                {
+                    b.HasOne("JobMatch.Domain.Entities.Worker", "Worker")
+                        .WithOne()
+                        .HasForeignKey("JobMatch.Domain.Entities.WorkerCv", "WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerCvJob", b =>
+                {
+                    b.HasOne("JobMatch.Domain.Entities.WorkerCv", "WorkerCv")
+                        .WithMany("Jobs")
+                        .HasForeignKey("WorkerCvId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkerCv");
+                });
+
             modelBuilder.Entity("JobMatch.Domain.Entities.WorkerSkill", b =>
                 {
                     b.HasOne("JobMatch.Domain.Entities.Skill", "Skill")
@@ -793,9 +965,16 @@ namespace JobMatch.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("JobMatch.Domain.Entities.Worker", b =>
                 {
+                    b.Navigation("Areas");
+
                     b.Navigation("Matches");
 
                     b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("JobMatch.Domain.Entities.WorkerCv", b =>
+                {
+                    b.Navigation("Jobs");
                 });
 #pragma warning restore 612, 618
         }

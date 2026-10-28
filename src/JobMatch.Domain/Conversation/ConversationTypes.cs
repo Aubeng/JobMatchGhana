@@ -46,7 +46,7 @@ public class CapturedSkill
 
 /// <summary>One job as delivered in S6 (FR-12: type, location, pay, how to proceed; FR-13: why).</summary>
 public record MatchCard(int MatchId, int Rank, string Title, string Area, string? Pay, string? Availability,
-    string Why, string? Employer = null);
+    string Why, string? Employer = null, bool OutsideAreas = false);
 
 /// <summary>A match shown to the worker, kept on the session so S7 answers refer to it.</summary>
 public class DeliveredMatch
@@ -63,7 +63,9 @@ public enum PendingKind
     ConfirmLocation = 2,   // low-confidence area: "Do you mean X?"
     ConfirmExit = 3,       // NLU EXIT intent: "Do you want to stop?" (a pause shouldn't unsubscribe)
     ConfirmDelete = 4,     // FR-16 "delete my data"
-    ChooseEdit = 5         // S5 "Change something": which slot?
+    ChooseEdit = 5,        // S5 "Change something": which slot?
+    OfferCv = 6,           // "Would you like a free CV?" (Slice 6)
+    ChooseCvEdit = 7       // C8 "Change something": which part of the CV?
 }
 
 /// <summary>A question the next reply answers; cleared once answered.</summary>
@@ -95,9 +97,17 @@ public class ConversationSession
     public double? ExperienceYears { get; set; }
     public string? ExperienceText { get; set; }
     public string? Availability { get; set; }
+    /// <summary>
+    /// S4: every area the worker can work in, main area first, at most
+    /// <see cref="ConversationFsm.MaxAreas"/> (DL-018). Matching searches all of them.
+    /// </summary>
+    public List<AreaChoice> Areas { get; set; } = new();
+    /// <summary>S4: the worker said "done" adding areas (or reached the maximum).</summary>
+    public bool AreasDone { get; set; }
+    /// <summary>The main area's district (= Areas[0]); kept in step with <see cref="Areas"/>.</summary>
     public string? LocationDistrict { get; set; }
     public string? LocationRegion { get; set; }
-    /// <summary>The area as the worker named it ("Madina"); the district is what matching uses.</summary>
+    /// <summary>The main area as the worker named it ("Madina"); the district is what matching uses.</summary>
     public string? LocationText { get; set; }
 
     /// <summary>
@@ -121,6 +131,12 @@ public class ConversationSession
     public List<DeliveredMatch> DeliveredMatches { get; set; } = new();
     /// <summary>S7: rated; now waiting for an optional comment.</summary>
     public bool AwaitingComment { get; set; }
+    // ---- Optional CV builder (Slice 6, DL-019) ----
+    /// <summary>The CV being built or last made; null until the worker first asks for one.</summary>
+    public CvDraft? Cv { get; set; }
+    /// <summary>The CV offer was shown once; it is not repeated automatically ("cv" still works).</summary>
+    public bool CvOffered { get; set; }
+
     /// <summary>Consecutive failed turns in the current state; the 3rd triggers human handoff.</summary>
     public int Strikes { get; set; }
 
@@ -131,6 +147,53 @@ public class ConversationSession
     // ---- Retired Slice 1 fields: still on the model so older Redis sessions deserialise. ----
     public string? DisplayName { get; set; }
     public string? PreferredLanguage { get; set; } = "en";
+}
+
+/// <summary>An area the worker can work in: the district matching uses, and the name they gave.</summary>
+public class AreaChoice
+{
+    public string District { get; set; } = string.Empty;
+    public string? Region { get; set; }
+    /// <summary>The area as named or picked ("Madina").</summary>
+    public string Label { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// The CV builder's answers (C1-C7). Held in the session while the worker answers, saved to the
+/// database when they confirm the C8 summary, and reloaded from there when they type "cv" later.
+/// </summary>
+public class CvDraft
+{
+    public DateTimeOffset? ConsentUtc { get; set; }
+    public string? FullName { get; set; }
+    /// <summary>C2 answered. <see cref="Phone"/> null afterwards means "no number on the CV".</summary>
+    public bool PhoneAnswered { get; set; }
+    public string? Phone { get; set; }
+    /// <summary>C2: "another number" chosen; the next message should be that number.</summary>
+    public bool AwaitingPhone { get; set; }
+    public List<CvJob> Jobs { get; set; } = new();
+    public bool JobsDone { get; set; }
+    public List<string> Training { get; set; } = new();
+    public bool TrainingDone { get; set; }
+    public string? Education { get; set; }
+    public List<string> Languages { get; set; } = new();
+    public bool LanguagesDone { get; set; }
+    public string? About { get; set; }
+    /// <summary>C7: "write my own" chosen; the next message is the line.</summary>
+    public bool AwaitingAbout { get; set; }
+    /// <summary>The worker has confirmed C8 at least once (a CV exists).</summary>
+    public bool Completed { get; set; }
+}
+
+/// <summary>A past job as the worker described it; <see cref="Period"/> is pulled out for layout.</summary>
+public class CvJob
+{
+    /// <summary>"Mason for Asante Builders at Madina".</summary>
+    public string Description { get; set; } = string.Empty;
+    /// <summary>"2019 – 2023", "since 2020", or null.</summary>
+    public string? Period { get; set; }
+    /// <summary>Exactly what was typed (research data, as for skills).</summary>
+    public string SourceUtterance { get; set; } = string.Empty;
 }
 
 /// <summary>A skill extracted from an utterance, held pending confirm/refine.</summary>

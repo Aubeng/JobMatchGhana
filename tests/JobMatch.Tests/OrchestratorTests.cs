@@ -34,7 +34,7 @@ public class OrchestratorTests
             var matching = new MatchingService(db, new OfflineMatchRanker(), TestCatalog.Instance,
                 Microsoft.Extensions.Options.Options.Create(new MatchingOptions()), NullLogger<MatchingService>.Instance);
             var orch = new FsmConversationOrchestrator(db, Sessions, WhatsApp, Nlu, TestCatalog.Instance, matching,
-                NullLogger<FsmConversationOrchestrator>.Instance);
+                new JobMatch.Infrastructure.Cv.CvPdfRenderer(), NullLogger<FsmConversationOrchestrator>.Instance);
             await orch.HandleAsync(new InboundMessage(waId, messageId ?? $"wamid.{waId}.{++_seq}", text, type, null,
                 DateTimeOffset.UtcNow), CancellationToken.None);
         }
@@ -59,6 +59,7 @@ public class OrchestratorTests
             await TapAsync(wa, "exp_1to5");
             await TapAsync(wa, "1");
             await TapAsync(wa, "2");
+            await TapAsync(wa, "done");
         }
     }
 
@@ -113,6 +114,8 @@ public class OrchestratorTests
         worker.Availability.Should().Be("Full-time");
         worker.LocationDistrict.Should().Be("La Nkwantanang Madina");
         worker.LocationText.Should().Be("Madina");
+        (await db.WorkerAreas.Where(a => a.WorkerId == worker.Id).Select(a => a.District).ToListAsync())
+            .Should().Equal("La Nkwantanang Madina");
         worker.ProfileConfirmedUtc.Should().NotBeNull();
         worker.Skills.Select(s => s.Skill!.CanonicalName).Should().BeEquivalentTo("Block laying", "Tiling");
         worker.Skills.Should().OnlyContain(s => s.SourceUtterance == "i can lay blocks and do tiling", "research data preserved");
@@ -152,7 +155,8 @@ public class OrchestratorTests
         const string wa = "233240000011";
         await h.ToSummaryAsync(wa);
         await h.TapAsync(wa, "1");
-        h.WhatsApp.Sends.Last().Text.Should().Contain("no jobs");
+        h.WhatsApp.Sends.Select(x => x.Text).Should().Contain(t => t.Contains("no jobs"));
+        h.WhatsApp.Sends.Last().Text.Should().Contain("free CV");
     }
 
     [Fact]
@@ -263,5 +267,73 @@ public class OrchestratorTests
         var outbound = await db.MessageLogs.Where(m => m.Direction == MessageDirection.Outbound).ToListAsync();
         outbound.Should().Contain(m => m.MessageType == "interactive" && m.Body!.Contains("[list:"));
         outbound.Should().OnlyContain(m => m.Body!.Length > 0);
+    }
+
+    /// <summary>Profile confirmed (no jobs, so the CV offer follows), then every CV question answered.</summary>
+    private static async Task ToCvAsync(Harness h, string wa)
+    {
+        await h.ToSummaryAsync(wa);
+        await h.TapAsync(wa, "1");                 // profile confirmed: no jobs, CV offered
+        await h.TapAsync(wa, "1");                 // yes to the offer
+        await h.TapAsync(wa, "1");                 // CV consent
+        await h.SendAsync(wa, "Kwame Asante");
+        await h.TapAsync(wa, "1");                 // WhatsApp number on the CV
+        await h.SendAsync(wa, "mason for asante builders 2019 to 2023");
+        await h.TapAsync(wa, "done");
+        await h.TapAsync(wa, "skip");
+        await h.TapAsync(wa, "edu_shs");
+        await h.TapAsync(wa, "twi");
+        await h.TapAsync(wa, "done");
+        await h.TapAsync(wa, "1");                 // keep the about line
+        await h.TapAsync(wa, "1");                 // C8: make my CV
+    }
+
+    [Fact]
+    public async Task Confirming_the_cv_saves_it_and_sends_a_pdf_document()
+    {
+        var h = new Harness();
+        const string wa = "233240000020";
+        await ToCvAsync(h, wa);
+
+        var doc = h.WhatsApp.Documents.Single();
+        doc.FileName.Should().Be("CV - Kwame Asante.pdf");
+        doc.MimeType.Should().Be("application/pdf");
+        System.Text.Encoding.ASCII.GetString(doc.Content, 0, 5).Should().Be("%PDF-");
+        h.WhatsApp.Sends.Last().Text.Should().Contain("Here is your CV");
+
+        await using var db = h.NewContext();
+        var cv = await db.WorkerCvs.Include(c => c.Jobs).SingleAsync();
+        cv.FullName.Should().Be("Kwame Asante");
+        cv.Phone.Should().Be("024 000 0020");
+        cv.Education.Should().Be("Senior High School (SHS)");
+        cv.Languages.Should().Be("Twi");
+        cv.TimesSent.Should().Be(1);
+        cv.Jobs.Single().Period.Should().Be("2019 – 2023");
+        (await db.MessageLogs.AnyAsync(m => m.MessageType == "document")).Should().BeTrue();
+        (await db.MessageLogs.Where(m => m.Direction == MessageDirection.Inbound && m.Body == "Kwame Asante")
+            .Select(m => m.NluIntent).SingleAsync()).Should().BeNull("CV answers are not sent to the NLU");
+    }
+
+    [Fact]
+    public async Task A_saved_cv_is_found_again_after_the_session_expires_and_delete_removes_it()
+    {
+        var h = new Harness();
+        const string wa = "233240000021";
+        await ToCvAsync(h, wa);
+
+        // The 72-hour session expires, but the profile and CV are in the database.
+        var session = await h.Sessions.GetAsync(wa, default);
+        session!.Cv = null;
+        await h.Sessions.SaveAsync(session, default);
+        await h.SendAsync(wa, "cv");
+        h.WhatsApp.Sends.Last().Text.Should().Contain("Kwame Asante").And.Contain("Mason for asante builders");
+        await h.TapAsync(wa, "1");
+        h.WhatsApp.Documents.Should().HaveCount(2, "confirming again re-sends the CV");
+
+        await h.SendAsync(wa, "delete");
+        await h.TapAsync(wa, "1");
+        await using var db = h.NewContext();
+        (await db.WorkerCvs.AnyAsync()).Should().BeFalse();
+        (await db.WorkerCvJobs.AnyAsync()).Should().BeFalse();
     }
 }

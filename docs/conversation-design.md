@@ -15,11 +15,12 @@ stateDiagram-v2
     S1_ElicitTrade --> S2_ElicitSkills: trade (list, or NLU conf >= 0.75)
     S2_ElicitSkills --> S3_ElicitExperience: skills + "done"
     S3_ElicitExperience --> S4_ElicitLocation: years + availability
-    S4_ElicitLocation --> S5_ConfirmProfile: district
+    S4_ElicitLocation --> S4_ElicitLocation: area added (another? up to 3, DL-018)
+    S4_ElicitLocation --> S5_ConfirmProfile: "done" or 3 areas
     S5_ConfirmProfile --> S1_ElicitTrade: change work
     S5_ConfirmProfile --> S2_ElicitSkills: change skills
     S5_ConfirmProfile --> S3_ElicitExperience: change experience / availability
-    S5_ConfirmProfile --> S4_ElicitLocation: change area
+    S5_ConfirmProfile --> S4_ElicitLocation: change areas
     S5_ConfirmProfile --> S6_DeliverMatch: confirmed (profile saved, FR-10)
     Active --> S6_DeliverMatch: "matches" / new-job alert reply
     S6_DeliverMatch --> S7_Feedback: results dispatched
@@ -34,7 +35,7 @@ stateDiagram-v2
 | S1 ELICIT_TRADE | `ElicitTrade` | "What kind of work do you do?" + **list** of 10 trades | list row, trade name, free text via NLU |
 | S2 ELICIT_SKILLS | `ElicitSkills` | That trade's 10 skills as a **list**; after a pick, "Done" + remaining skills | row, numbers "1,3", skill name, free text |
 | S3 ELICIT_EXPERIENCE | `ElicitExperience` | Years (3 **buttons**: <1, 1–5, >5), then availability (3 buttons) | buttons, a number ("7"), "since 2018", "mornings only" |
-| S4 ELICIT_LOCATION | `ElicitLocation` | **List** of 10 common areas | row, place name or alias, free text, resolved to a **district** |
+| S4 ELICIT_LOCATION | `ElicitLocation` | **List** of 10 common areas; after the first, the same list minus chosen areas with **Done** on top | row(s), place name or alias, free text (several places at once), each resolved to a **district**; 1–3 areas, the first is the main one (DL-018) |
 | S5 CONFIRM_PROFILE | `ConfirmProfile` | Summary of every slot; **Yes / Change something** | yes; change menu (5 slots); a correction with the new value |
 | S6 DELIVER_MATCH | (transient) | Up to 3 jobs, one message each: title, area, pay, availability, *why* (FR-12/13), **I'm interested** button | taps |
 | S7 FEEDBACK | `Feedback` | "How helpful are these jobs?" **list** 5–1, then optional comment (**Skip** button) | rating tap or "4", "4/5"; comment; "I'm interested" any time |
@@ -62,7 +63,8 @@ NLU service resolves against, so the menus and the models always agree.
   skills: dropped skills get `RemovedUtc` and are never hard-deleted.
 - **Corrections (Figure 3 correction path).** "Change something" offers the 5 slots; the chosen
   slot is cleared and re-asked, and the flow returns to S5 because every other slot is still
-  filled. A correction that carries its value ("no, my area is Tema") is applied directly.
+  filled. A correction that carries its value ("no, my area is Tema") is applied directly; for
+  areas it replaces them, unless it says "also" ("I can also work in Tema"), which adds one.
 - **Global commands, any state.** `help`, `stop`, `update` (FR-15), `skills`, `matches`,
   `delete` (FR-16, confirmed first; removes the worker, skills, matches, every logged message and
   the session). Matching is on the whole message, so "I can stop leaks" isn't "stop".
@@ -89,7 +91,33 @@ NLU service resolves against, so the menus and the models always agree.
 | S6 "contact mechanism" (FR-12) | An "I'm interested" button; the BOOST team connects people | No employer numbers in chats (safety, unverified data) |
 | S7 "match quality rating" | One 1–5 rating for the delivered set, stored on each match | One tap instead of three for low-literacy users |
 
-## Typical session (9 turns, S&D target ≤ 12)
+## Optional CV builder (Slice 6, DL-019)
+
+Not part of the S&D flow: an extra sub-machine entered from Active with `cv`, or yes to a one-time
+offer after the first rating (or when no jobs are found). It returns to Active when the CV is sent.
+
+```mermaid
+stateDiagram-v2
+    Active --> C0_CvConsent: "cv" / offer accepted
+    C0_CvConsent --> Active: no (nothing kept)
+    C0_CvConsent --> C1_CvName: yes
+    C1_CvName --> C2_CvPhone
+    C2_CvPhone --> C3_CvWork: yes / other number / none
+    C3_CvWork --> C3_CvWork: job added (up to 3)
+    C3_CvWork --> C4_CvTraining: done / skip / 3 jobs
+    C4_CvTraining --> C5_CvEducation: done / skip / 3 lines
+    C5_CvEducation --> C6_CvLanguages
+    C6_CvLanguages --> C7_CvAbout: done
+    C7_CvAbout --> C8_CvReview: keep / own line
+    C8_CvReview --> C1_CvName: change something (any part; then back to C8)
+    C8_CvReview --> Active: yes (CV saved, PDF sent as a WhatsApp document)
+```
+
+Global commands work throughout. The 3-strike handoff applies. No NLU runs on CV answers. Full
+wording and rationale are in [cv-builder-design.md](cv-builder-design.md); sample output is in
+[cv-sample.pdf](cv-sample.pdf).
+
+## Typical session (10 turns, S&D target ≤ 12)
 
 ```
 USER hello                         BOT welcome + consent             [Yes, I agree | No]
@@ -99,7 +127,8 @@ USER am a mason, i lay blocks and plastring for 6 yrs
 USER i do tiling too               BOT ...Tiling. Anything else?
 USER (tap) Done                    BOT when can you work?            [Full-time | Part-time | Weekends only]
 USER full time                     BOT which area?                   [list: 10 areas]
-USER i stay near lapaz market      BOT summary (Area: Lapaz market (Ablekuma North))  [Yes | Change]
+USER i stay near lapaz market      BOT your area: Lapaz market. Another area?  [Done | 9 areas]
+USER (tap) Done                    BOT summary (Area: Lapaz market (Ablekuma North))  [Yes | Change]
 USER no my area is kaneshie        BOT Updated, summary (Kaneshie (Ablekuma Central))
 USER (tap) Yes                     BOT profile saved
 ```

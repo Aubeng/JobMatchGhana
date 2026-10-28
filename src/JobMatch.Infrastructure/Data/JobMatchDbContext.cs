@@ -18,6 +18,9 @@ public class JobMatchDbContext : IdentityDbContext<AdminUser>
     public DbSet<Worker> Workers => Set<Worker>();
     public DbSet<Skill> Skills => Set<Skill>();
     public DbSet<WorkerSkill> WorkerSkills => Set<WorkerSkill>();
+    public DbSet<WorkerArea> WorkerAreas => Set<WorkerArea>();
+    public DbSet<WorkerCv> WorkerCvs => Set<WorkerCv>();
+    public DbSet<WorkerCvJob> WorkerCvJobs => Set<WorkerCvJob>();
     public DbSet<JobPosting> JobPostings => Set<JobPosting>();
     public DbSet<JobPostingSkill> JobPostingSkills => Set<JobPostingSkill>();
     public DbSet<Match> Matches => Set<Match>();
@@ -49,7 +52,37 @@ public class JobMatchDbContext : IdentityDbContext<AdminUser>
             e.Property(w => w.Availability).HasMaxLength(64);
             e.Property(w => w.LocationDistrict).HasMaxLength(64);
             e.Property(w => w.LocationRegion).HasMaxLength(32);
-            e.HasIndex(w => w.LocationDistrict);   // matching's geographic pre-filter
+            e.HasIndex(w => w.LocationDistrict);
+        });
+
+        b.Entity<WorkerArea>(e =>
+        {
+            e.HasOne(a => a.Worker).WithMany(w => w.Areas).HasForeignKey(a => a.WorkerId).OnDelete(DeleteBehavior.Cascade);
+            e.Property(a => a.District).HasMaxLength(64).IsRequired();
+            e.Property(a => a.Region).HasMaxLength(32);
+            e.Property(a => a.LocationText).HasMaxLength(200);
+            e.HasIndex(a => new { a.WorkerId, a.District }).IsUnique();
+            e.HasIndex(a => a.District);   // new-job alerts: workers in a job's neighbourhood
+        });
+
+        b.Entity<WorkerCv>(e =>
+        {
+            e.HasOne(c => c.Worker).WithOne().HasForeignKey<WorkerCv>(c => c.WorkerId).OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(c => c.WorkerId).IsUnique();
+            e.Property(c => c.FullName).HasMaxLength(60).IsRequired();
+            e.Property(c => c.Phone).HasMaxLength(20);
+            e.Property(c => c.Training).HasMaxLength(320);
+            e.Property(c => c.Education).HasMaxLength(60);
+            e.Property(c => c.Languages).HasMaxLength(200);
+            e.Property(c => c.About).HasMaxLength(300);
+        });
+
+        b.Entity<WorkerCvJob>(e =>
+        {
+            e.HasOne(j => j.WorkerCv).WithMany(c => c.Jobs).HasForeignKey(j => j.WorkerCvId).OnDelete(DeleteBehavior.Cascade);
+            e.Property(j => j.Description).HasMaxLength(160).IsRequired();
+            e.Property(j => j.Period).HasMaxLength(40);
+            e.Property(j => j.SourceUtterance).HasMaxLength(500);
         });
 
         b.Entity<Skill>(e =>
@@ -117,6 +150,8 @@ public class JobMatchDbContext : IdentityDbContext<AdminUser>
             e.Property(m => m.AnnotatedIntent).HasMaxLength(32);
             e.Property(m => m.AnnotatedBy).HasMaxLength(256);
             e.Property(m => m.NluModelVersion).HasMaxLength(128);
+            e.Property(m => m.DeliveryStatus).HasMaxLength(16);
+            e.Property(m => m.DeliveryError).HasMaxLength(400);
             e.HasIndex(m => m.WaId);
             e.HasIndex(m => m.Timestamp);
         });

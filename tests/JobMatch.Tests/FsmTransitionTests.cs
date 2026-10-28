@@ -57,13 +57,15 @@ public class FsmTransitionTests
         Tap("exp_1to5");       // experience button
         Tap("1");              // Full-time
         Tap("2");              // area list: Madina
+        Tap("done");           // no other areas
         var confirm = Step(s, "1");
         states.Add(s.State);
 
         states.Should().Equal(
             ConversationState.Welcome, ConversationState.ElicitTrade, ConversationState.ElicitSkills,
             ConversationState.ElicitSkills, ConversationState.ElicitExperience, ConversationState.ElicitExperience,
-            ConversationState.ElicitLocation, ConversationState.ConfirmProfile, ConversationState.Active);
+            ConversationState.ElicitLocation, ConversationState.ElicitLocation, ConversationState.ConfirmProfile,
+            ConversationState.Active);
         states.Should().HaveCountLessOrEqualTo(12, "S&D target: a complete profile in <= 12 turns");
 
         confirm.ProfileConfirmed.Should().BeTrue();
@@ -82,7 +84,8 @@ public class FsmTransitionTests
     public void S5_summary_shows_every_slot_before_confirmation_FR10()
     {
         var s = At(ConversationState.ElicitLocation);
-        var r = Step(s, "Madina");
+        Step(s, "Madina");
+        var r = Step(s, "done");
 
         s.State.Should().Be(ConversationState.ConfirmProfile);
         var text = r.Replies.Single().Text;
@@ -164,8 +167,11 @@ public class FsmTransitionTests
         s.State.Should().Be(ConversationState.ElicitExperience);
         s.ExperienceYears.Should().Be(5, "experience was already given...");
         var r = Step(s, "2");                     // ...so S3 asks only availability
-        s.State.Should().Be(ConversationState.ConfirmProfile, "location was already given too");
-        r.Replies.Single().Text.Should().Contain("Madina");
+        s.State.Should().Be(ConversationState.ElicitLocation, "the area given early is kept; S4 offers more");
+        s.LocationDistrict.Should().Be("La Nkwantanang Madina");
+        r.Replies.Single().Text.Should().Contain("Your area: Madina");
+        Step(s, "no");
+        s.State.Should().Be(ConversationState.ConfirmProfile);
     }
 
     // ---- S2 --------------------------------------------------------------------------------
@@ -264,6 +270,76 @@ public class FsmTransitionTests
         c.LocationText.Should().Be("Lapaz");
     }
 
+    [Fact]
+    public void S4_several_areas_are_kept_main_area_first_DL018()
+    {
+        var s = At(ConversationState.ElicitLocation);
+        var r = Step(s, "2");                             // Madina
+        s.State.Should().Be(ConversationState.ElicitLocation, "S4 offers another area");
+        var more = r.Replies.Single();
+        more.List![0].Id.Should().Be("done");
+        more.List.Should().NotContain(o => o.Title == "Madina", "a chosen area leaves the list");
+        more.List.Should().HaveCountLessOrEqualTo(10);
+
+        Step(s, "3");                                     // Adenta
+        var summary = Step(s, "done").Replies.Single().Text;
+        s.Areas.Select(a => a.Label).Should().Equal("Madina", "Adenta");
+        s.LocationDistrict.Should().Be("La Nkwantanang Madina", "the first area is the main one");
+        summary.Should().Contain("Areas: Madina (La Nkwantanang Madina), Adenta");
+    }
+
+    [Fact]
+    public void S4_several_areas_in_one_message_or_numbers_and_at_most_three()
+    {
+        var a = At(ConversationState.ElicitLocation);
+        Step(a, "i work in madina and adenta");
+        a.Areas.Select(x => x.Label).Should().Equal("Madina", "Adenta");
+        a.State.Should().Be(ConversationState.ElicitLocation);
+
+        var b = At(ConversationState.ElicitLocation);
+        var r = Step(b, "2, 3, 8, 9");                    // four numbers: only three are kept
+        b.Areas.Should().HaveCount(ConversationFsm.MaxAreas);
+        b.State.Should().Be(ConversationState.ConfirmProfile, "the maximum ends S4");
+        r.Replies.Single().Text.Should().StartWith("Got it");
+    }
+
+    [Fact]
+    public void S4_done_needs_an_area_and_a_repeat_area_adds_nothing()
+    {
+        var s = At(ConversationState.ElicitLocation);
+        Step(s, "done").IsRepair.Should().BeTrue("at least one area is needed");
+
+        Step(s, "Madina");
+        var r = Step(s, "madina");
+        s.Areas.Should().HaveCount(1);
+        r.Replies.Single().Text.Should().Contain("already on your list");
+    }
+
+    [Fact]
+    public void S5_also_adds_an_area_while_a_plain_correction_replaces_them()
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        var tema = Nlu("LOCATION_SHARE", 0.94) with
+            { LocationDistrict = "Tema", LocationRegion = "Greater Accra", LocationText = "tema", LocationConfidence = 0.95 };
+
+        Step(s, "i can also work in tema", tema);
+        s.Areas.Select(a => a.District).Should().Equal("La Nkwantanang Madina", "Tema");
+
+        Step(s, "no my area is kasoa", tema with { LocationDistrict = "Awutu Senya East", LocationRegion = "Central", LocationText = "kasoa" });
+        s.Areas.Select(a => a.District).Should().Equal("Awutu Senya East");
+        s.State.Should().Be(ConversationState.ConfirmProfile);
+    }
+
+    [Fact]
+    public void Sessions_saved_before_DL018_keep_their_one_area()
+    {
+        var s = At(ConversationState.ConfirmProfile);     // single-area fields only, as older sessions
+        s.Areas.Should().BeEmpty();
+        Step(s, "1");
+        s.Areas.Select(a => a.Label).Should().Equal("Madina");
+        s.ProfileConfirmed.Should().BeTrue();
+    }
+
     // ---- S5 corrections -------------------------------------------------------------------
 
     [Fact]
@@ -275,7 +351,8 @@ public class FsmTransitionTests
         s.State.Should().Be(ConversationState.ElicitLocation);
         s.LocationDistrict.Should().BeNull();
 
-        var r = Step(s, "Tema");
+        Step(s, "Tema");
+        var r = Step(s, "done");
         s.State.Should().Be(ConversationState.ConfirmProfile);
         r.Replies.Single().Text.Should().Contain("Tema");
         s.Skills.Should().HaveCount(1, "other slots are untouched");
@@ -510,13 +587,29 @@ public class FsmTransitionTests
     }
 
     [Fact]
+    public void S6_jobs_from_other_areas_are_introduced_as_such_DL020()
+    {
+        var s = At(ConversationState.ConfirmProfile);
+        Step(s, "1");
+        var card = new MatchCard(7, 1, "Tiler for new apartments", "Tema", null, "Full-time",
+            "Needs your skill: Tiling; in Tema, outside your areas", OutsideAreas: true);
+        var r = ConversationFsm.DeliverMatches(s, new[] { card });
+        r.Replies[0].Text.Should().Contain("didn't find a job in your areas").And.Contain("1 similar job");
+        r.Replies[1].Text.Should().Contain("outside your areas");
+
+        var mixed = ConversationFsm.DeliverMatches(s, new[] { card, card with { MatchId = 8, Rank = 2, OutsideAreas = false } });
+        mixed.Replies[0].Text.Should().Contain("2 jobs", "any local job means the normal intro");
+    }
+
+    [Fact]
     public void S6_with_no_matches_says_so_and_rests_in_active()
     {
         var s = At(ConversationState.ConfirmProfile);
         Step(s, "1");
         var r = ConversationFsm.DeliverMatches(s, Array.Empty<MatchCard>());
         s.State.Should().Be(ConversationState.Active);
-        r.Replies.Single().Text.Should().Contain("no jobs");
+        r.Replies[0].Text.Should().Contain("no jobs");
+        r.Replies[1].Text.Should().Contain("free CV", "a CV is offered once (Slice 6)");
     }
 
     [Fact]

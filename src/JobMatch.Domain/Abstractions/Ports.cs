@@ -39,6 +39,13 @@ public interface IWhatsAppClient
     Task<string?> SendTemplateAsync(string waId, string templateName, string languageCode,
         IReadOnlyList<string> bodyParameters, string? quickReplyPayload, CancellationToken ct);
     Task MarkReadAsync(string waMessageId, CancellationToken ct);
+
+    /// <summary>
+    /// Uploads a file and sends it as a WhatsApp document (the CV PDF, Slice 6). A reply inside
+    /// the 24-hour customer-service window, so no template is needed. Returns Meta's message id.
+    /// </summary>
+    Task<string?> SendDocumentAsync(string waId, byte[] content, string fileName, string mimeType, string? caption,
+        CancellationToken ct);
 }
 
 /// <summary>

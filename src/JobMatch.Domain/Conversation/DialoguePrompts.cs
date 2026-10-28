@@ -7,7 +7,7 @@ namespace JobMatch.Domain.Conversation;
 /// be reviewed for the CEFR A2–B1 reading level (NFR-06) without touching the state machine.
 /// Each prompt keeps its options readable in plain text as well as in buttons or a list (NFR-07).
 /// </summary>
-public static class DialoguePrompts
+public static partial class DialoguePrompts
 {
     // WhatsApp list row titles hold 24 chars (descriptions 72; button titles 20, all kept short here).
     private const int RowTitleMax = 24;
@@ -33,7 +33,7 @@ public static class DialoguePrompts
 
     public static readonly (string Id, string Title)[] EditOptions =
     {
-        ("1", "My work"), ("2", "My skills"), ("3", "Experience"), ("4", "When I can work"), ("5", "My area")
+        ("1", "My work"), ("2", "My skills"), ("3", "Experience"), ("4", "When I can work"), ("5", "My areas")
     };
 
     public static OutboundMessage Welcome() => new(
@@ -107,20 +107,38 @@ public static class DialoguePrompts
         List = catalog.LocationMenu.Select((l, i) => Row((i + 1).ToString(CultureInfo.InvariantCulture), l.Label, l.District)).ToList()
     };
 
+    /// <summary>S4 after the first area (DL-018): another one, or done. Chosen areas leave the list.</summary>
+    public static OutboundMessage AskMoreAreas(DialogueCatalog catalog, IReadOnlyList<AreaChoice> areas, string prefix = "")
+    {
+        var chosen = areas.Select(a => a.District).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var rows = new List<ReplyOption> { new(Done, "Done, that's all") };
+        rows.AddRange(catalog.LocationMenu
+            .Select((l, i) => (Place: l, Number: i + 1))
+            .Where(x => !chosen.Contains(x.Place.District))
+            .Select(x => Row(x.Number.ToString(CultureInfo.InvariantCulture), x.Place.Label, x.Place.District))
+            .Take(9));
+        return new OutboundMessage(prefix +
+            $"Your {(areas.Count == 1 ? "area" : "areas")}: {string.Join(", ", areas.Select(a => a.Label))}.\n\n" +
+            "Can you also work in another area? Choose one, type it, or reply *done*.")
+        { ListButton = "More areas or done", List = rows };
+    }
+
     public static OutboundMessage ConfirmLocation(string label, string district) => new(
         $"Do you mean *{label}* ({district})?\n1. Yes\n2. No") { Buttons = YesNo };
 
     public static OutboundMessage Summary(ConversationSession s, string prefix = "")
     {
-        var area = s.LocationText is { } t && !string.Equals(t, s.LocationDistrict, StringComparison.OrdinalIgnoreCase)
-            ? $"{t} ({s.LocationDistrict})" : s.LocationDistrict;
+        var listed = s.Areas.Count > 0 || s.LocationDistrict is null ? s.Areas
+            : new List<AreaChoice> { new() { District = s.LocationDistrict, Label = s.LocationText ?? s.LocationDistrict } };
+        var areas = listed.Select(a => !string.Equals(a.Label, a.District, StringComparison.OrdinalIgnoreCase)
+            ? $"{a.Label} ({a.District})" : a.District).ToList();
         return new OutboundMessage(prefix +
             "Please check your profile:\n" +
             $"• Work: {s.TradeName}\n" +
             $"• Skills: {string.Join(", ", s.Skills.Select(k => k.CanonicalName))}\n" +
             $"• Experience: {s.ExperienceText}\n" +
             $"• When: {s.Availability}\n" +
-            $"• Area: {area}\n\n" +
+            $"• {(areas.Count > 1 ? "Areas" : "Area")}: {string.Join(", ", areas)}\n\n" +
             "Is this correct?\n1. Yes, that's right\n2. Change something")
         {
             Buttons = new[] { new ReplyOption("1", "Yes, that's right"), new ReplyOption("2", "Change something") }
@@ -141,6 +159,14 @@ public static class DialoguePrompts
     public static OutboundMessage MatchesIntro(int count) => new(count == 1
         ? "I found *1 job* that fits you 👇"
         : $"I found *{count} jobs* that fit you 👇");
+
+    /// <summary>DL-020: nothing fitted in the worker's areas, but similar jobs exist elsewhere.</summary>
+    public static OutboundMessage MatchesElsewhereIntro(int count) => new(
+        "I didn't find a job in your areas yet 🙏 " +
+        (count == 1
+            ? "But here is *1 similar job* in another area 👇"
+            : $"But here are *{count} similar jobs* in other areas 👇") +
+        "\n(Type *update* to add more areas you can work in.)");
 
     /// <summary>One job (FR-12: type, area, pay, availability; FR-13: why it matches).</summary>
     public static OutboundMessage MatchCard(MatchCard m)
@@ -188,14 +214,15 @@ public static class DialoguePrompts
         "Thank you for your feedback 🙏 Type *matches* any time to see new jobs.");
 
     public static OutboundMessage ActiveMenu() => new(
-        "Your profile is saved ✅\nType *matches* to see your matches, *update* to change your " +
-        "profile, *delete* to delete your data or *help* for help.");
+        "Your profile is saved ✅\nType *matches* to see your matches, *cv* for a free CV, *update* to " +
+        "change your profile, *delete* to delete your data or *help* for help.");
 
     public static OutboundMessage Help() => new(
         "*JobMatch Ghana: Help*\nI match you to jobs that fit your skills.\n\n" +
         "Any time you can type:\n" +
         "• *update* to change your profile\n" +
         "• *matches* to see your job matches\n" +
+        "• *cv* to get your free CV\n" +
         "• *delete* to delete your data\n" +
         "• *stop* to stop messages");
 

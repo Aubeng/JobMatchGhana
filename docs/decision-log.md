@@ -288,3 +288,111 @@ it (the app is in test mode), so nothing was delivered. Fixes:
 - startup logs whether the WhatsApp client is LIVE or DRY RUN;
 - a failed alert no longer aborts publishing: it is logged, its match row is removed, and the
   other workers are still alerted.
+
+---
+
+## DL-018 — Several work areas per worker (S4 becomes multi-valued)
+**Decision:** A worker can name up to **3 areas** in S4. After the first area the bot asks
+"Can you also work in another area?" with the area list (chosen areas removed) and **Done** on
+top. Several areas can come in one message ("madina and adenta", or "2, 3"). Reaching 3 ends the
+step. The first area is the main one: it stays in `Worker.LocationDistrict` and is what the
+supply view and follow-ups show. All areas are stored in a new `WorkerArea` table (migration
+`WorkerAreas`, which copies each existing worker's area in as their main area).
+**Matching:** stage 1 searches the union of every area's neighbourhood (each district plus its
+adjacent districts). A job counts as "in your area" when its district is any of the worker's
+areas. New-job alerts reach a worker through any of their areas. The score breakdown now also
+records `workerDistricts`.
+**Corrections:** "no, my area is Tema" from S5 replaces the areas. "I can also work in Tema" adds
+one. "Change something → My areas" clears them and asks again.
+**Alternatives:** keep one area and rely on adjacency alone; allow unlimited areas; ask for a
+travel radius instead of areas.
+**Rationale:** informal workers often take jobs in more than one part of the city (home area,
+a market, a junction where they wait for work). One district plus its neighbours missed real
+options. A cap of 3 keeps matching local, keeps the list within WhatsApp's 10 rows (Done + 9),
+and limits the extra length of the chat.
+**Accepted cost:** S4 takes one more turn for everyone (the "Done" tap), which slightly raises
+the turns-to-profile efficiency metric compared with sessions before this change. WhatsApp lists
+allow only one choice per tap, so multiple choice is a loop, as for skills in S2.
+**Research data:** sessions saved before this change keep their single area (upgraded on the
+next message). `Intent.FinishAreas` is logged for the "done" turn.
+
+---
+
+## DL-019 — Optional CV builder (Slice 6): a WhatsApp sub-flow that sends a PDF CV
+**Decision:** After the profile is confirmed, a worker can get a free one-page CV. It is offered
+once (after the first rating, or when no jobs are found) and on the `cv` command at any time.
+A sub-machine C0–C8 runs from Active and returns there:
+- C0 separate CV consent;
+- C1 name;
+- C2 phone on the CV (their WhatsApp number, another number, or none);
+- C3 up to 3 past jobs;
+- C4 up to 3 training lines;
+- C5 highest school;
+- C6 languages;
+- C7 "about" line;
+- C8 summary, confirm or change any part.
+
+Trade, skills, experience, availability and areas come from the confirmed profile. On
+confirmation the answers are saved (new tables `WorkerCv`, `WorkerCvJob`, migration
+`WorkerCv`), and a one-page A4 PDF is generated with QuestPDF (Community licence) and sent as a
+WhatsApp **document** (media upload, then a `document` message). This is a reply inside the
+24-hour window, so it needs no template and has no cost. The PDF is generated on demand and never
+stored. A saved CV is reloaded when the worker types `cv` after their session has expired.
+
+**Design choices:**
+- The C7 line is a **template filled from the profile**, not AI-generated text, so the CV states
+  only what the worker said. The worker can write their own instead.
+- Free-text job and training lines keep the worker's words. Only the period is pulled out
+  ("2019 to 2023" → "2019 – 2023"), known places get their proper names, and common
+  abbreviations are upper-cased (NVTI, JHS). The raw utterance is kept as with skills.
+- No photo, date of birth, ID number, marital status or home address: not needed, and a
+  discrimination risk.
+- CV answers are **not sent to the NLU** and are therefore never in the annotation sample. They
+  are names and job histories, not intents.
+
+**Alternatives:** a download link (may not open on basic phones or with little data); an
+AI-written CV (unverifiable claims); asking CV questions during sign-up (lengthens the core flow
+and distorts its metrics).
+
+**Ethics and privacy:** the supervisor confirmed the CV is in scope and no ethics amendment is
+needed. A separate consent is asked before any CV question, and refusing keeps nothing. `delete`
+removes the CV. Research exports never include CV fields. The dashboard funnel shows a "Made a
+CV" count, reported separately from the S&D metrics. The privacy page lists the CV details and
+their use.
+
+**Accepted cost:** the CV offer adds one message after the first rating. Core metrics (task
+completion, turns to profile) are unaffected because the CV comes after the profile.
+
+---
+
+## DL-020 — Other-areas fallback in matching, and a larger synthetic job set
+**Context:** in user testing, workers whose areas had no fitting job got "no jobs right now", even
+when the right kind of job existed elsewhere in Greater Accra. The demo data made it worse: the 32
+jobs in seed v1 covered 10 of 12 trades (none for plumbing/metalwork or vehicle repair), unevenly
+across areas.
+
+**Decision 1, fallback:** when stage 1 and stage 2 together find nothing in or near the worker's
+areas, matching runs the same two stages over **every other area**:
+- availability and the 0.55 similarity threshold still apply, so location is the only rule relaxed;
+- the bot says so plainly: "I didn't find a job in your areas yet. But here are N similar jobs in
+  other areas", with a hint to add areas via *update*;
+- each card's reason reads "…; in Tema, outside your areas";
+- the score breakdown records `location: "outside worker's areas (fallback)"`, so these matches
+  can be separated in analysis;
+- local results always take priority: the fallback runs only when there are none;
+- `Matching:SearchOtherAreas` (default true) switches it off to restore the strict S&D filter.
+
+New-job alerts are unchanged (neighbourhood only), because they are business-initiated messages
+and must stay relevant.
+
+**Decision 2, seed v2:** `Seed/jobs_synthetic_v2.json` adds 120 synthetic jobs, one per taxonomy
+skill, arranged so each of the 10 menu areas has a job in every trade. `seed-jobs` with no path
+now loads every `jobs_synthetic_*.json` (idempotent, as before). All rows are `IsSynthetic`.
+
+**Alternatives:** widen adjacency (blurs what "near" means for everyone); lower the similarity
+threshold (offers worse matches rather than farther ones); ask the worker before searching
+further (an extra turn for an answer that is almost always yes).
+
+**Research note:** fallback matches are a deviation from the S&D stage-1 rule. Report the
+matching-relevance metric with and without them; the breakdown's `location` field identifies
+them. As before, ratings on synthetic jobs are excluded from the relevance metric.

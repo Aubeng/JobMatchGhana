@@ -1,0 +1,1690 @@
+{
+ "version": "2.0.0-synthetic",
+ "status": "SYNTHETIC - invented by Claude 2026-10-23 for development, demos and user testing only. One job per taxonomy skill (120), spread so each of the 10 menu areas has a job in every trade. Employers, pay and locations are illustrative (estimated 2026 GHS rates). Seeded rows carry IsSynthetic = true; replace with real BOOST opportunities before the pilot and never report matches against these as study results.",
+ "jobs": [
+  {
+   "title": "Mason for boundary wall",
+   "trade": "construction",
+   "skills": [
+    "Block laying",
+    "Construction labour"
+   ],
+   "area": "Accra Central",
+   "pay_min": 170,
+   "pay_max": 230,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Private landlord",
+   "description": "Lay sandcrete blocks for a 60-metre boundary wall. About 3 weeks of work."
+  },
+  {
+   "title": "Plasterer for 4-bedroom house",
+   "trade": "construction",
+   "skills": [
+    "Plastering"
+   ],
+   "area": "Madina",
+   "pay_min": 170,
+   "pay_max": 240,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Small building contractor",
+   "description": "Plaster inside and outside walls of a 4-bedroom house before painting."
+  },
+  {
+   "title": "Concrete worker for slab casting",
+   "trade": "construction",
+   "skills": [
+    "Concrete work",
+    "Steel bending"
+   ],
+   "area": "Adenta",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Estate developer",
+   "description": "Mix and pour concrete for a first-floor slab with a team of 8."
+  },
+  {
+   "title": "Tiler for new apartments",
+   "trade": "construction",
+   "skills": [
+    "Tiling"
+   ],
+   "area": "Dome",
+   "pay_min": 200,
+   "pay_max": 300,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Apartment developer",
+   "description": "Lay floor and wall tiles in 6 new apartments. Bring your own tools."
+  },
+  {
+   "title": "Roofer for aluminium roofing",
+   "trade": "construction",
+   "skills": [
+    "Roofing"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Roofing company",
+   "description": "Fix aluminium roofing sheets on a church building. Must be safe at height."
+  },
+  {
+   "title": "House painter for repainting job",
+   "trade": "construction",
+   "skills": [
+    "Painting & decorating"
+   ],
+   "area": "Dansoman",
+   "pay_min": 150,
+   "pay_max": 220,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Property manager",
+   "description": "Repaint the inside and outside of a family house. About 2 weeks."
+  },
+  {
+   "title": "Steel bender for columns and beams",
+   "trade": "construction",
+   "skills": [
+    "Steel bending"
+   ],
+   "area": "Teshie",
+   "pay_min": 180,
+   "pay_max": 250,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Building contractor",
+   "description": "Cut, bend and tie iron rods for columns and beams on a storey building."
+  },
+  {
+   "title": "POP ceiling installer",
+   "trade": "construction",
+   "skills": [
+    "POP ceiling"
+   ],
+   "area": "Tema",
+   "pay_min": 200,
+   "pay_max": 320,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Interior finishing firm",
+   "description": "Install POP ceilings with lighting cut-outs in a new office."
+  },
+  {
+   "title": "Site labourer for building project",
+   "trade": "construction",
+   "skills": [
+    "Construction labour"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 100,
+   "pay_max": 140,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Building contractor",
+   "description": "Carry blocks, mix mortar and help masons on a busy building site."
+  },
+  {
+   "title": "Foreman for setting out foundations",
+   "trade": "construction",
+   "skills": [
+    "Setting out & plan reading",
+    "Block laying"
+   ],
+   "area": "Kasoa",
+   "pay_min": 250,
+   "pay_max": 350,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Estate developer",
+   "description": "Read building plans and set out foundations for 4 houses. Lead a small team."
+  },
+  {
+   "title": "Carpenter for dining sets",
+   "trade": "woodwork",
+   "skills": [
+    "Furniture making"
+   ],
+   "area": "Madina",
+   "pay_min": 2000,
+   "pay_max": 3200,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Furniture workshop",
+   "description": "Make wooden dining tables and chairs to order in a busy workshop."
+  },
+  {
+   "title": "Roof carpenter for trusses",
+   "trade": "woodwork",
+   "skills": [
+    "Roof carpentry"
+   ],
+   "area": "Adenta",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Roofing company",
+   "description": "Build and fix wooden roof trusses on new houses."
+  },
+  {
+   "title": "Carpenter for door and window frames",
+   "trade": "woodwork",
+   "skills": [
+    "Door & window frames"
+   ],
+   "area": "Dome",
+   "pay_min": 170,
+   "pay_max": 240,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Building contractor",
+   "description": "Make and fix door and window frames for a block of flats."
+  },
+  {
+   "title": "Shuttering carpenter",
+   "trade": "woodwork",
+   "skills": [
+    "Formwork (shuttering)"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 170,
+   "pay_max": 240,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Building contractor",
+   "description": "Build formwork for columns, beams and slabs on a storey building."
+  },
+  {
+   "title": "Cabinet maker for kitchens",
+   "trade": "woodwork",
+   "skills": [
+    "Kitchen cabinets"
+   ],
+   "area": "Dansoman",
+   "pay_min": 2500,
+   "pay_max": 3800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Interior design company",
+   "description": "Build and install fitted kitchen cabinets for new homes."
+  },
+  {
+   "title": "Wood polisher for furniture shop",
+   "trade": "woodwork",
+   "skills": [
+    "Wood finishing & polishing"
+   ],
+   "area": "Teshie",
+   "pay_min": 1800,
+   "pay_max": 2600,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Furniture showroom",
+   "description": "Sand, stain and polish finished furniture before delivery."
+  },
+  {
+   "title": "Upholsterer for sofas",
+   "trade": "woodwork",
+   "skills": [
+    "Upholstery"
+   ],
+   "area": "Tema",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Furniture workshop",
+   "description": "Make and re-cover sofas and chairs with foam and fabric."
+  },
+  {
+   "title": "Wood carver for craft shop",
+   "trade": "woodwork",
+   "skills": [
+    "Wood carving"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Craft exporter",
+   "description": "Carve masks, stools and figures for a craft shop."
+  },
+  {
+   "title": "Furniture repairer",
+   "trade": "woodwork",
+   "skills": [
+    "Furniture repair"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1500,
+   "pay_max": 2200,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Hotel",
+   "description": "Repair beds, chairs and wardrobes in a hotel. Tools provided."
+  },
+  {
+   "title": "Woodwork machine operator",
+   "trade": "woodwork",
+   "skills": [
+    "Woodwork machine operation"
+   ],
+   "area": "Accra Central",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Timber workshop",
+   "description": "Operate planers and saws to prepare timber for carpenters."
+  },
+  {
+   "title": "Electrician for house wiring",
+   "trade": "electrical",
+   "skills": [
+    "House wiring"
+   ],
+   "area": "Adenta",
+   "pay_min": 200,
+   "pay_max": 300,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Building contractor",
+   "description": "Wire a new 3-bedroom house: sockets, switches and lights."
+  },
+  {
+   "title": "Electrician for conduit work",
+   "trade": "electrical",
+   "skills": [
+    "Conduit installation"
+   ],
+   "area": "Dome",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Electrical contractor",
+   "description": "Lay conduit pipes in walls and slabs before plastering."
+  },
+  {
+   "title": "Maintenance electrician",
+   "trade": "electrical",
+   "skills": [
+    "Electrical fault finding"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 2500,
+   "pay_max": 3500,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Shopping mall",
+   "description": "Find and fix electrical faults in shops and common areas."
+  },
+  {
+   "title": "Electrician for meter and DB installation",
+   "trade": "electrical",
+   "skills": [
+    "Meter & distribution board installation"
+   ],
+   "area": "Dansoman",
+   "pay_min": 200,
+   "pay_max": 300,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Estate developer",
+   "description": "Install prepaid meters and distribution boards in new homes."
+  },
+  {
+   "title": "Solar installer",
+   "trade": "electrical",
+   "skills": [
+    "Solar installation"
+   ],
+   "area": "Teshie",
+   "pay_min": 2500,
+   "pay_max": 3800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Solar energy company",
+   "description": "Install solar panels, batteries and inverters on homes and shops."
+  },
+  {
+   "title": "Appliance repairer",
+   "trade": "electrical",
+   "skills": [
+    "Appliance repair"
+   ],
+   "area": "Tema",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Electronics shop",
+   "description": "Repair fridges, fans, irons and blenders brought in by customers."
+  },
+  {
+   "title": "Generator mechanic",
+   "trade": "electrical",
+   "skills": [
+    "Generator repair"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Event equipment rental",
+   "description": "Service and repair petrol and diesel generators."
+  },
+  {
+   "title": "Phone repairer",
+   "trade": "electrical",
+   "skills": [
+    "Phone repair"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Phone shop",
+   "description": "Replace screens, batteries and charging ports on smartphones."
+  },
+  {
+   "title": "TV and radio repairer",
+   "trade": "electrical",
+   "skills": [
+    "Electronics repair (TV, radio)"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1500,
+   "pay_max": 2400,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Electronics repair shop",
+   "description": "Repair TVs, radios and decoders. Some soldering needed."
+  },
+  {
+   "title": "CCTV and satellite installer",
+   "trade": "electrical",
+   "skills": [
+    "Satellite & CCTV installation"
+   ],
+   "area": "Madina",
+   "pay_min": 2000,
+   "pay_max": 3200,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Security systems company",
+   "description": "Install CCTV cameras and satellite dishes for homes and shops."
+  },
+  {
+   "title": "Plumber for new house",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Pipe fitting"
+   ],
+   "area": "Dome",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Building contractor",
+   "description": "Fit water pipes for kitchen, bathrooms and outside taps."
+  },
+  {
+   "title": "Plumber for toilet and bathroom fittings",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Toilet & sanitary fitting"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 180,
+   "pay_max": 260,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Apartment developer",
+   "description": "Fix toilets, sinks and showers in new apartments."
+  },
+  {
+   "title": "Plumber for tank and pump installation",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Water tank & pump installation"
+   ],
+   "area": "Dansoman",
+   "pay_min": 200,
+   "pay_max": 280,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Water solutions company",
+   "description": "Install poly tanks, stands and pumps for homes."
+  },
+  {
+   "title": "Drain and septic worker",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Drain & septic work"
+   ],
+   "area": "Teshie",
+   "pay_min": 150,
+   "pay_max": 220,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Sanitation company",
+   "description": "Unblock drains and help build septic tanks."
+  },
+  {
+   "title": "Arc welder",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Arc welding"
+   ],
+   "area": "Tema",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Metal fabrication workshop",
+   "description": "Weld steel frames and gates in a fabrication workshop."
+  },
+  {
+   "title": "Gas welder and cutter",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Gas welding & cutting"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Steel works",
+   "description": "Cut and weld steel with oxy-acetylene in a steel yard."
+  },
+  {
+   "title": "Welder for gates and burglar-proof",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Gates & burglar-proof fabrication",
+    "Arc welding"
+   ],
+   "area": "Kasoa",
+   "pay_min": 180,
+   "pay_max": 250,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Metal fabrication workshop",
+   "description": "Make and fix sliding gates and burglar-proof bars for houses."
+  },
+  {
+   "title": "Aluminium fabricator",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Aluminium windows & doors"
+   ],
+   "area": "Accra Central",
+   "pay_min": 2200,
+   "pay_max": 3200,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Aluminium and glass company",
+   "description": "Make and fit aluminium sliding windows and doors."
+  },
+  {
+   "title": "Sheet metal worker",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Sheet metal work"
+   ],
+   "area": "Madina",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Roofing and gutters company",
+   "description": "Cut and form metal sheets for gutters and ducts."
+  },
+  {
+   "title": "Metal furniture fabricator",
+   "trade": "plumbing_metal",
+   "skills": [
+    "Metal furniture & structures"
+   ],
+   "area": "Adenta",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Furniture workshop",
+   "description": "Make metal chairs, tables and shelves for schools."
+  },
+  {
+   "title": "Auto mechanic for engine work",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Engine repair"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 2000,
+   "pay_max": 3200,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Fitting shop",
+   "description": "Repair and overhaul petrol and diesel engines."
+  },
+  {
+   "title": "Car servicing technician",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Car servicing"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Car service centre",
+   "description": "Change oil, filters and plugs; do routine car checks."
+  },
+  {
+   "title": "Mechanic for brakes and suspension",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Brakes & suspension"
+   ],
+   "area": "Teshie",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Fitting shop",
+   "description": "Fix brakes, shocks and steering on taxis and private cars."
+  },
+  {
+   "title": "Auto electrician",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Auto electrical"
+   ],
+   "area": "Tema",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Auto electrical shop",
+   "description": "Fix car wiring, lights, starters and alternators."
+  },
+  {
+   "title": "Vulcanizer",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Tyre repair (vulcanizing)"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 80,
+   "pay_max": 150,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Roadside tyre shop",
+   "description": "Repair and change tyres at a busy roadside shop."
+  },
+  {
+   "title": "Panel beater",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Panel beating"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Body repair workshop",
+   "description": "Straighten and repair damaged car bodies."
+  },
+  {
+   "title": "Car sprayer",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Car spraying"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Body repair workshop",
+   "description": "Prepare and spray cars after body repairs."
+  },
+  {
+   "title": "Motorbike mechanic",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Motorbike repair"
+   ],
+   "area": "Madina",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Motorbike repair shop",
+   "description": "Service and repair motorbikes for delivery riders."
+  },
+  {
+   "title": "Car air-conditioning technician",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Car air-conditioning"
+   ],
+   "area": "Adenta",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Auto AC workshop",
+   "description": "Regas and repair car air-conditioning systems."
+  },
+  {
+   "title": "Car washer",
+   "trade": "vehicle_repair",
+   "skills": [
+    "Car washing"
+   ],
+   "area": "Dome",
+   "pay_min": 60,
+   "pay_max": 100,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Car wash",
+   "description": "Wash and clean cars inside and out at a busy car wash."
+  },
+  {
+   "title": "Ride-hailing driver",
+   "trade": "transport",
+   "skills": [
+    "Taxi & ride-hailing driving"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Car owner (work and pay)",
+   "description": "Drive a car on ride-hailing apps. Valid licence needed."
+  },
+  {
+   "title": "Trotro driver",
+   "trade": "transport",
+   "skills": [
+    "Trotro & bus driving"
+   ],
+   "area": "Teshie",
+   "pay_min": 120,
+   "pay_max": 200,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Transport owner",
+   "description": "Drive a trotro on a fixed route. Valid licence needed."
+  },
+  {
+   "title": "Truck driver for deliveries",
+   "trade": "transport",
+   "skills": [
+    "Truck driving"
+   ],
+   "area": "Tema",
+   "pay_min": 2500,
+   "pay_max": 3500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Building materials supplier",
+   "description": "Drive a tipper truck delivering sand and blocks."
+  },
+  {
+   "title": "Company driver",
+   "trade": "transport",
+   "skills": [
+    "Private & company driving"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Trading company",
+   "description": "Drive staff and goods for a trading company."
+  },
+  {
+   "title": "Motorbike rider",
+   "trade": "transport",
+   "skills": [
+    "Motorbike riding (okada)"
+   ],
+   "area": "Kasoa",
+   "pay_min": 80,
+   "pay_max": 150,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Bike owner (work and pay)",
+   "description": "Ride a motorbike for passengers. Helmet and licence needed."
+  },
+  {
+   "title": "Delivery rider",
+   "trade": "transport",
+   "skills": [
+    "Delivery riding"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1500,
+   "pay_max": 2300,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Food delivery company",
+   "description": "Deliver food orders by motorbike. Bike provided."
+  },
+  {
+   "title": "Tricycle rider for goods",
+   "trade": "transport",
+   "skills": [
+    "Tricycle riding (pragya, aboboyaa)"
+   ],
+   "area": "Madina",
+   "pay_min": 80,
+   "pay_max": 140,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Market trader",
+   "description": "Carry goods by tricycle from the market to customers."
+  },
+  {
+   "title": "Driver's mate",
+   "trade": "transport",
+   "skills": [
+    "Driver's mate (conductor)"
+   ],
+   "area": "Adenta",
+   "pay_min": 60,
+   "pay_max": 100,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Transport owner",
+   "description": "Collect fares and load passengers on a trotro."
+  },
+  {
+   "title": "Market porter",
+   "trade": "transport",
+   "skills": [
+    "Head portering (kayayo)"
+   ],
+   "area": "Dome",
+   "pay_min": 50,
+   "pay_max": 90,
+   "pay_period": "day",
+   "availability": "Part-time",
+   "employer": "Market traders",
+   "description": "Carry goods for traders and shoppers at the market."
+  },
+  {
+   "title": "Loader for warehouse",
+   "trade": "transport",
+   "skills": [
+    "Loading & offloading"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 80,
+   "pay_max": 120,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Distribution warehouse",
+   "description": "Load and offload trucks at a warehouse."
+  },
+  {
+   "title": "Dressmaker",
+   "trade": "textile_fashion",
+   "skills": [
+    "Dressmaking"
+   ],
+   "area": "Teshie",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Fashion house",
+   "description": "Sew ladies' dresses and skirts to customers' measurements."
+  },
+  {
+   "title": "Tailor for men's wear",
+   "trade": "textile_fashion",
+   "skills": [
+    "Tailoring (men's wear)"
+   ],
+   "area": "Tema",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Tailoring shop",
+   "description": "Sew shirts, trousers and smocks for men."
+  },
+  {
+   "title": "Seamstress for kaba and slit",
+   "trade": "textile_fashion",
+   "skills": [
+    "Kaba & slit"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 1500,
+   "pay_max": 2400,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Fashion house",
+   "description": "Sew kaba and slit for weddings and church events."
+  },
+  {
+   "title": "Tailor for alterations",
+   "trade": "textile_fashion",
+   "skills": [
+    "Alterations & mending"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1200,
+   "pay_max": 1800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Dry cleaner",
+   "description": "Shorten, take in and mend clothes for customers."
+  },
+  {
+   "title": "Pattern cutter",
+   "trade": "textile_fashion",
+   "skills": [
+    "Pattern cutting"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1800,
+   "pay_max": 2800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Garment factory",
+   "description": "Cut patterns and fabric for uniform orders."
+  },
+  {
+   "title": "Embroidery machine operator",
+   "trade": "textile_fashion",
+   "skills": [
+    "Embroidery"
+   ],
+   "area": "Madina",
+   "pay_min": 1500,
+   "pay_max": 2300,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Uniform company",
+   "description": "Embroider logos on school and company uniforms."
+  },
+  {
+   "title": "Kente weaver",
+   "trade": "textile_fashion",
+   "skills": [
+    "Kente & smock weaving"
+   ],
+   "area": "Adenta",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Kente shop",
+   "description": "Weave kente strips for customers' orders."
+  },
+  {
+   "title": "Batik and tie-dye maker",
+   "trade": "textile_fashion",
+   "skills": [
+    "Batik & tie-dye"
+   ],
+   "area": "Dome",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Textile craft shop",
+   "description": "Make batik and tie-dye fabric for sale."
+  },
+  {
+   "title": "Shoemaker",
+   "trade": "textile_fashion",
+   "skills": [
+    "Shoe making & repair"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Shoe workshop",
+   "description": "Make leather sandals and repair shoes."
+  },
+  {
+   "title": "Bead maker",
+   "trade": "textile_fashion",
+   "skills": [
+    "Bead making & jewellery"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1000,
+   "pay_max": 1800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Craft shop",
+   "description": "Make bead necklaces, bracelets and waist beads."
+  },
+  {
+   "title": "Hairdresser",
+   "trade": "hair_beauty",
+   "skills": [
+    "Hairdressing & styling"
+   ],
+   "area": "Tema",
+   "pay_min": 1200,
+   "pay_max": 2200,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Beauty salon",
+   "description": "Wash, relax and style hair in a busy salon."
+  },
+  {
+   "title": "Braider",
+   "trade": "hair_beauty",
+   "skills": [
+    "Braiding"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 1200,
+   "pay_max": 2200,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Beauty salon",
+   "description": "Do braids, cornrows and twists for customers."
+  },
+  {
+   "title": "Barber",
+   "trade": "hair_beauty",
+   "skills": [
+    "Barbering"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Barbering shop",
+   "description": "Cut and shave men's and boys' hair."
+  },
+  {
+   "title": "Wig maker",
+   "trade": "hair_beauty",
+   "skills": [
+    "Wig making & installation"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Hair and wig shop",
+   "description": "Make and install wigs and frontals."
+  },
+  {
+   "title": "Locs stylist",
+   "trade": "hair_beauty",
+   "skills": [
+    "Locs (dreadlocks)"
+   ],
+   "area": "Madina",
+   "pay_min": 1200,
+   "pay_max": 2200,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Natural hair salon",
+   "description": "Start, retwist and style locs."
+  },
+  {
+   "title": "Nail technician",
+   "trade": "hair_beauty",
+   "skills": [
+    "Manicure, pedicure & nails"
+   ],
+   "area": "Adenta",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Nail studio",
+   "description": "Do manicures, pedicures and acrylic nails."
+  },
+  {
+   "title": "Make-up artist",
+   "trade": "hair_beauty",
+   "skills": [
+    "Make-up"
+   ],
+   "area": "Dome",
+   "pay_min": 150,
+   "pay_max": 300,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Bridal studio",
+   "description": "Do make-up for brides and guests at weekend weddings."
+  },
+  {
+   "title": "Lash and brow technician",
+   "trade": "hair_beauty",
+   "skills": [
+    "Lashes & brows"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Beauty studio",
+   "description": "Fix lashes and shape brows for customers."
+  },
+  {
+   "title": "Spa therapist",
+   "trade": "hair_beauty",
+   "skills": [
+    "Skin care & massage"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Spa",
+   "description": "Give facials and massages in a small spa."
+  },
+  {
+   "title": "Salon assistant",
+   "trade": "hair_beauty",
+   "skills": [
+    "Salon assistant"
+   ],
+   "area": "Teshie",
+   "pay_min": 800,
+   "pay_max": 1300,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Beauty salon",
+   "description": "Wash hair, clean the salon and help the stylists."
+  },
+  {
+   "title": "Cook for local restaurant",
+   "trade": "food_catering",
+   "skills": [
+    "Cooking (local dishes)"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 1500,
+   "pay_max": 2300,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Restaurant",
+   "description": "Cook jollof, waakye, banku and soups in a busy restaurant."
+  },
+  {
+   "title": "Caterer for events",
+   "trade": "food_catering",
+   "skills": [
+    "Event catering"
+   ],
+   "area": "Kasoa",
+   "pay_min": 150,
+   "pay_max": 250,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Catering company",
+   "description": "Cook and serve food at weddings and funerals."
+  },
+  {
+   "title": "Bread baker",
+   "trade": "food_catering",
+   "skills": [
+    "Baking (bread)"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1300,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Bakery",
+   "description": "Mix dough and bake tea bread and sugar bread."
+  },
+  {
+   "title": "Pastry and cake baker",
+   "trade": "food_catering",
+   "skills": [
+    "Pastries & cakes"
+   ],
+   "area": "Madina",
+   "pay_min": 1500,
+   "pay_max": 2400,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Cake shop",
+   "description": "Bake meat pies, cakes and cupcakes for orders."
+  },
+  {
+   "title": "Chop bar cook",
+   "trade": "food_catering",
+   "skills": [
+    "Street food & chop bar"
+   ],
+   "area": "Adenta",
+   "pay_min": 1200,
+   "pay_max": 1800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Chop bar",
+   "description": "Prepare fufu, banku and soups at a chop bar."
+  },
+  {
+   "title": "Waiter or waitress",
+   "trade": "food_catering",
+   "skills": [
+    "Waiting & serving"
+   ],
+   "area": "Dome",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Hotel restaurant",
+   "description": "Take orders and serve guests in a hotel restaurant."
+  },
+  {
+   "title": "Bartender",
+   "trade": "food_catering",
+   "skills": [
+    "Bartending"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 1200,
+   "pay_max": 1900,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Lounge and bar",
+   "description": "Mix drinks and serve customers at a busy bar."
+  },
+  {
+   "title": "Kitchen assistant",
+   "trade": "food_catering",
+   "skills": [
+    "Kitchen assistant"
+   ],
+   "area": "Dansoman",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Restaurant",
+   "description": "Wash, peel and chop food and keep the kitchen clean."
+  },
+  {
+   "title": "Juice and sobolo maker",
+   "trade": "food_catering",
+   "skills": [
+    "Juice & local drinks"
+   ],
+   "area": "Teshie",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Drinks business",
+   "description": "Make sobolo, asaana and fresh fruit juice for sale."
+  },
+  {
+   "title": "Grill cook for tilapia and kebab",
+   "trade": "food_catering",
+   "skills": [
+    "Grilling (kebab, tilapia)"
+   ],
+   "area": "Tema",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Grill joint",
+   "description": "Grill tilapia, chicken and kebab in the evenings."
+  },
+  {
+   "title": "House cleaner",
+   "trade": "domestic_services",
+   "skills": [
+    "House cleaning"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1000,
+   "pay_max": 1500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Family home",
+   "description": "Clean a family house: sweep, mop, dust and wash dishes."
+  },
+  {
+   "title": "Laundry and ironing helper",
+   "trade": "domestic_services",
+   "skills": [
+    "Laundry & ironing"
+   ],
+   "area": "Accra Central",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Laundry service",
+   "description": "Wash, dry and iron clothes for laundry customers."
+  },
+  {
+   "title": "Nanny",
+   "trade": "domestic_services",
+   "skills": [
+    "Child care (nanny)"
+   ],
+   "area": "Madina",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Family home",
+   "description": "Care for two young children while the parents work."
+  },
+  {
+   "title": "Home carer for elderly person",
+   "trade": "domestic_services",
+   "skills": [
+    "Elderly & home care"
+   ],
+   "area": "Adenta",
+   "pay_min": 1500,
+   "pay_max": 2300,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Family home",
+   "description": "Help an elderly woman with meals, bathing and medicines."
+  },
+  {
+   "title": "Household cook",
+   "trade": "domestic_services",
+   "skills": [
+    "Cooking for a household"
+   ],
+   "area": "Dome",
+   "pay_min": 1200,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Family home",
+   "description": "Cook daily meals for a family of five."
+  },
+  {
+   "title": "Office cleaner",
+   "trade": "domestic_services",
+   "skills": [
+    "Office & commercial cleaning"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 900,
+   "pay_max": 1300,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Cleaning company",
+   "description": "Clean offices and toilets early in the morning."
+  },
+  {
+   "title": "Gardener",
+   "trade": "domestic_services",
+   "skills": [
+    "Gardening & compound care"
+   ],
+   "area": "Dansoman",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Residential estate",
+   "description": "Cut grass, water plants and keep the compound tidy."
+  },
+  {
+   "title": "Security guard",
+   "trade": "domestic_services",
+   "skills": [
+    "Security guarding"
+   ],
+   "area": "Teshie",
+   "pay_min": 1200,
+   "pay_max": 1800,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Security company",
+   "description": "Guard a residential estate on day or night shifts."
+  },
+  {
+   "title": "Fumigation worker",
+   "trade": "domestic_services",
+   "skills": [
+    "Fumigation & pest control"
+   ],
+   "area": "Tema",
+   "pay_min": 1300,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Pest control company",
+   "description": "Spray homes and offices against insects and rodents."
+  },
+  {
+   "title": "House help",
+   "trade": "domestic_services",
+   "skills": [
+    "Errands & house help"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Family home",
+   "description": "Run errands, shop and help with house work."
+  },
+  {
+   "title": "Farm hand for maize farm",
+   "trade": "agriculture",
+   "skills": [
+    "Crop farming"
+   ],
+   "area": "Accra Central",
+   "pay_min": 60,
+   "pay_max": 100,
+   "pay_period": "day",
+   "availability": "Full-time",
+   "employer": "Commercial farm",
+   "description": "Plant, weed and harvest maize and cassava."
+  },
+  {
+   "title": "Vegetable farmer",
+   "trade": "agriculture",
+   "skills": [
+    "Vegetable farming"
+   ],
+   "area": "Madina",
+   "pay_min": 1200,
+   "pay_max": 1800,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Vegetable farm",
+   "description": "Grow tomatoes, pepper and cabbage with drip irrigation."
+  },
+  {
+   "title": "Farm worker for tree crops",
+   "trade": "agriculture",
+   "skills": [
+    "Cocoa & tree crops"
+   ],
+   "area": "Adenta",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Plantation",
+   "description": "Weed, prune and harvest cashew and mango trees."
+  },
+  {
+   "title": "Poultry attendant",
+   "trade": "agriculture",
+   "skills": [
+    "Poultry keeping"
+   ],
+   "area": "Dome",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Poultry farm",
+   "description": "Feed birds, collect eggs and clean the pens."
+  },
+  {
+   "title": "Livestock keeper",
+   "trade": "agriculture",
+   "skills": [
+    "Livestock rearing"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Livestock farm",
+   "description": "Feed and care for goats, sheep and pigs."
+  },
+  {
+   "title": "Fish farm worker",
+   "trade": "agriculture",
+   "skills": [
+    "Fish farming & fishing"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1100,
+   "pay_max": 1700,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Fish farm",
+   "description": "Feed fish, check ponds and help with harvests."
+  },
+  {
+   "title": "Farm labourer",
+   "trade": "agriculture",
+   "skills": [
+    "Farm labour"
+   ],
+   "area": "Teshie",
+   "pay_min": 60,
+   "pay_max": 100,
+   "pay_period": "day",
+   "availability": "Weekends only",
+   "employer": "Commercial farm",
+   "description": "General farm work: clearing, planting and carrying."
+  },
+  {
+   "title": "Tractor operator",
+   "trade": "agriculture",
+   "skills": [
+    "Tractor & farm machinery"
+   ],
+   "area": "Tema",
+   "pay_min": 2000,
+   "pay_max": 3000,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Farm services company",
+   "description": "Plough and harrow fields with a tractor."
+  },
+  {
+   "title": "Gari processing worker",
+   "trade": "agriculture",
+   "skills": [
+    "Agro-processing (gari, palm oil, shea)"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Agro-processing centre",
+   "description": "Peel, grate and roast cassava into gari."
+  },
+  {
+   "title": "Nursery worker for seedlings",
+   "trade": "agriculture",
+   "skills": [
+    "Nursery & seedlings"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1000,
+   "pay_max": 1500,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Plant nursery",
+   "description": "Raise seedlings and flowers for sale."
+  },
+  {
+   "title": "Market stall assistant",
+   "trade": "trading_sales",
+   "skills": [
+    "Market trading"
+   ],
+   "area": "Madina",
+   "pay_min": 900,
+   "pay_max": 1400,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Market trader",
+   "description": "Sell foodstuffs at a market stall and keep stock."
+  },
+  {
+   "title": "Provisions shop keeper",
+   "trade": "trading_sales",
+   "skills": [
+    "Shop keeping (provisions)"
+   ],
+   "area": "Adenta",
+   "pay_min": 1000,
+   "pay_max": 1500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Provisions shop",
+   "description": "Run a provisions shop: sell, restock and keep records."
+  },
+  {
+   "title": "Hawker for drinks and snacks",
+   "trade": "trading_sales",
+   "skills": [
+    "Street hawking"
+   ],
+   "area": "Dome",
+   "pay_min": 50,
+   "pay_max": 90,
+   "pay_period": "day",
+   "availability": "Flexible",
+   "employer": "Drinks distributor",
+   "description": "Sell chilled drinks and snacks in traffic and stations."
+  },
+  {
+   "title": "Shop sales assistant",
+   "trade": "trading_sales",
+   "skills": [
+    "Shop sales assistant"
+   ],
+   "area": "Kaneshie",
+   "pay_min": 1000,
+   "pay_max": 1600,
+   "pay_period": "month",
+   "availability": "Weekends only",
+   "employer": "Clothing shop",
+   "description": "Help customers, arrange stock and keep the shop clean."
+  },
+  {
+   "title": "Mobile money agent",
+   "trade": "trading_sales",
+   "skills": [
+    "Mobile money agent"
+   ],
+   "area": "Dansoman",
+   "pay_min": 1000,
+   "pay_max": 1500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "MoMo vendor",
+   "description": "Do cash-in, cash-out and keep accurate records."
+  },
+  {
+   "title": "Cashier for supermarket",
+   "trade": "trading_sales",
+   "skills": [
+    "Cashier"
+   ],
+   "area": "Teshie",
+   "pay_min": 1300,
+   "pay_max": 1900,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Supermarket",
+   "description": "Take payments and give change at a supermarket till."
+  },
+  {
+   "title": "Phone accessories seller",
+   "trade": "trading_sales",
+   "skills": [
+    "Phone & accessories sales"
+   ],
+   "area": "Tema",
+   "pay_min": 1100,
+   "pay_max": 1700,
+   "pay_period": "month",
+   "availability": "Part-time",
+   "employer": "Phone shop",
+   "description": "Sell phones, chargers and cases. Commission on sales."
+  },
+  {
+   "title": "Sales representative",
+   "trade": "trading_sales",
+   "skills": [
+    "Sales & marketing"
+   ],
+   "area": "Ashaiman",
+   "pay_min": 1500,
+   "pay_max": 2500,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Distribution company",
+   "description": "Visit shops to take orders for drinks and snacks."
+  },
+  {
+   "title": "Customer service attendant",
+   "trade": "trading_sales",
+   "skills": [
+    "Customer service"
+   ],
+   "area": "Kasoa",
+   "pay_min": 1300,
+   "pay_max": 2000,
+   "pay_period": "month",
+   "availability": "Flexible",
+   "employer": "Service centre",
+   "description": "Welcome customers, answer questions and take complaints."
+  },
+  {
+   "title": "Storekeeper",
+   "trade": "trading_sales",
+   "skills": [
+    "Storekeeping & inventory"
+   ],
+   "area": "Accra Central",
+   "pay_min": 1500,
+   "pay_max": 2200,
+   "pay_period": "month",
+   "availability": "Full-time",
+   "employer": "Building materials shop",
+   "description": "Receive goods, issue stock and keep the store book."
+  }
+ ]
+}

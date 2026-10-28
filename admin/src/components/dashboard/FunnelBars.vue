@@ -13,7 +13,8 @@ const steps = computed(() => {
     { label: 'Received matches', value: f.matched },
     { label: 'Rated matches', value: f.rated },
     { label: 'Interested taps', value: f.interested },
-    { label: 'Connected by staff', value: f.connected }
+    { label: 'Connected by staff', value: f.connected },
+    { label: 'Made a CV (optional)', value: f.cvsMade }
   ].map((s) => ({ ...s, width: `${Math.round((s.value / max) * 100)}%` }))
 })
 </script>

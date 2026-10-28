@@ -38,6 +38,9 @@ public class FsmStepResult
     /// <summary>S7: an optional comment for <see cref="FeedbackMatchIds"/>.</summary>
     public string? FeedbackText { get; init; }
     public IReadOnlyList<int> FeedbackMatchIds { get; init; } = Array.Empty<int>();
+
+    /// <summary>C8 confirmed: save <see cref="ConversationSession.Cv"/> and send it as a PDF (Slice 6).</summary>
+    public bool SendCv { get; init; }
 }
 
 /// <summary>
@@ -53,7 +56,7 @@ public class FsmStepResult
 /// Mixed initiative: the system leads slot by slot, but anything the worker volunteers early
 /// ("I'm a mason in Madina, 5 years") fills its slot and that question is skipped.
 /// </summary>
-public static class ConversationFsm
+public static partial class ConversationFsm
 {
     /// <summary>S&D L4: an NLU value at or above this is acted on directly.</summary>
     public const double ConfidenceThreshold = 0.75;
@@ -61,14 +64,18 @@ public static class ConversationFsm
     public const double MinCandidateConfidence = 0.45;
     /// <summary>S&D: "up to 3 attempts per slot before human handoff".</summary>
     public const int MaxStrikes = 3;
+    /// <summary>S4: areas a worker can name (DL-018). More would make matching vague and the chat long.</summary>
+    public const int MaxAreas = 3;
 
     private static readonly Regex Years = new(@"^\s*(\d{1,2}(?:\.\d)?)\s*(?:\+|years?|yrs?)?\s*$", RegexOptions.IgnoreCase);
-    private static readonly Regex NumberList = new(@"^\s*\d{1,2}(?:\s*(?:,|and|&|\s)\s*\d{1,2})*\s*$", RegexOptions.IgnoreCase);
+    private static readonly Regex Also = new(@"\b(also|too|as well)\b", RegexOptions.IgnoreCase);
+    private static readonly Regex NumberList =new(@"^\s*\d{1,2}(?:\s*(?:,|and|&|\s)\s*\d{1,2})*\s*$", RegexOptions.IgnoreCase);
 
     public static FsmStepResult Step(ConversationSession session, string rawText, NluResult? nlu, DialogueCatalog catalog)
     {
         var text = (rawText ?? string.Empty).Trim();
         session.UpdatedUtc = DateTimeOffset.UtcNow;
+        UpgradeAreas(session);
 
         // FR-01: any first message starts the conversation.
         if (session.State == ConversationState.New)
@@ -110,6 +117,8 @@ public static class ConversationFsm
                 if (!session.ConsentGiven || session.TradeId is null)
                     return Reply(session, Intent.UpdateSkills, P.FinishFirst(), Prompt(session, catalog));
                 return EditSlot(session, catalog, slot: 2, Intent.UpdateSkills);
+            case Intent.CvRequest:
+                return StartCv(session, catalog);
             case Intent.ListMatches:
                 if (!session.ProfileConfirmed)
                     return Reply(session, Intent.ListMatches, P.FinishFirst(), Prompt(session, catalog));
@@ -155,6 +164,7 @@ public static class ConversationFsm
             ConversationState.ElicitLocation => HandleLocation(session, text, nlu, catalog),
             ConversationState.ConfirmProfile => HandleConfirm(session, text, nlu, catalog),
             ConversationState.Feedback => HandleFeedback(session, text, nlu, catalog),
+            >= ConversationState.CvConsent and <= ConversationState.CvReview => HandleCv(session, text, catalog),
             _ => HandleActive(session, nlu, catalog)
         };
     }
@@ -168,6 +178,7 @@ public static class ConversationFsm
     public static bool ShouldAnalyze(ConversationSession session, string rawText, bool isInteractiveReply = false)
         => session.ConsentGiven
            && session.State is not (ConversationState.OptedOut or ConversationState.New)
+           && !IsCvState(session.State)   // CV answers are names and job histories, not intents
            && !isInteractiveReply
            && !string.IsNullOrWhiteSpace(rawText)
            && !NumberList.IsMatch(rawText);
@@ -380,24 +391,33 @@ public static class ConversationFsm
         return Advance(session, catalog, Intent.ProvideAvailability);
     }
 
-    // ---- S4 ELICIT_LOCATION ---------------------------------------------------------------
+    // ---- S4 ELICIT_LOCATION (one to MaxAreas areas, DL-018) -------------------------------
 
     private static FsmStepResult HandleLocation(ConversationSession session, string text, NluResult? nlu, DialogueCatalog catalog)
     {
-        var picked = MenuPick(text, catalog.LocationMenu) ?? catalog.FindLocation(text);
-        if (picked is not null)
+        if (IsDone(text) || (session.Areas.Count > 0 && text.ToLowerInvariant() is "no" or "nope" or "nah" or "none" or "no thanks"))
         {
-            SetLocation(session, picked.District, picked.Region, picked.Label);
-            return Advance(session, catalog, Intent.ProvideLocation);
+            if (session.Areas.Count == 0)
+                return Fail(session, catalog, "Please choose at least one area first.");
+            session.AreasDone = true;
+            return Advance(session, catalog, Intent.FinishAreas);
         }
+
+        // Menu numbers ("2" or "2, 5"), an exact place name, or several places in one sentence.
+        IReadOnlyList<LocationOption> picked = MenuPicks(text, catalog.LocationMenu);
+        if (picked.Count == 0 && catalog.FindLocation(text) is { } exact)
+            picked = new[] { exact };
+        if (picked.Count == 0 && catalog.ScanLocations(text) is { Count: > 1 } several)
+            picked = several;
+        if (picked.Count > 0)
+            return AreaTurn(session, catalog, Intent.ProvideLocation, null, picked);
+
         if (nlu?.LocationDistrict is { } district)
         {
             var label = Capitalise(nlu.LocationText ?? district);
             if (nlu.LocationConfidence >= ConfidenceThreshold)
-            {
-                SetLocation(session, district, nlu.LocationRegion, label);
-                return Advance(session, catalog, Intent.ProvideLocation, nluConfidence: nlu.LocationConfidence);
-            }
+                return AreaTurn(session, catalog, Intent.ProvideLocation, nlu.LocationConfidence,
+                    new[] { new LocationOption(label, district, nlu.LocationRegion ?? "") });
             if (nlu.LocationConfidence >= MinCandidateConfidence)
             {
                 session.Pending = new PendingQuestion
@@ -410,11 +430,33 @@ public static class ConversationFsm
         }
         // Without NLU (service down), still find a known place inside a sentence.
         if (catalog.ScanLocation(text) is { } found)
-        {
-            SetLocation(session, found.District, found.Region, found.Label);
-            return Advance(session, catalog, Intent.ProvideLocation);
-        }
+            return AreaTurn(session, catalog, Intent.ProvideLocation, null, new[] { found });
         return Fail(session, catalog, "Sorry, I couldn't find that area.", nlu?.Confidence);
+    }
+
+    /// <summary>
+    /// Add the areas given, then ask for another or "done". Reaching <see cref="MaxAreas"/>
+    /// ends the step. A place in a district already listed adds nothing: matching works by district.
+    /// </summary>
+    private static FsmStepResult AreaTurn(ConversationSession session, DialogueCatalog catalog, Intent intent,
+        double? confidence, IEnumerable<LocationOption> places)
+    {
+        string? covered = null;
+        foreach (var place in places)
+        {
+            if (session.Areas.Count >= MaxAreas) break;
+            if (AddArea(session, place.District, place.Region, place.Label) is { } existing)
+                covered = existing.Label.Equals(place.Label, StringComparison.OrdinalIgnoreCase)
+                    ? $"*{place.Label}* is already on your list.\n\n"
+                    : $"*{place.Label}* is in the same district as *{existing.Label}*, so it's already covered.\n\n";
+        }
+        session.Strikes = 0;
+        if (session.Areas.Count >= MaxAreas)
+        {
+            session.AreasDone = true;
+            return Advance(session, catalog, intent, "Got it ✅\n\n", confidence);
+        }
+        return Reply(session, intent, confidence, P.AskMoreAreas(catalog, session.Areas, covered ?? ""));
     }
 
     // ---- S5 CONFIRM_PROFILE ---------------------------------------------------------------
@@ -448,9 +490,15 @@ public static class ConversationFsm
     private static FsmStepResult? ApplyCorrection(ConversationSession session, NluResult nlu, string text, DialogueCatalog catalog)
     {
         var changed = false;
-        if (nlu.LocationDistrict is { } d && nlu.LocationConfidence >= ConfidenceThreshold && d != session.LocationDistrict)
+        if (nlu.LocationDistrict is { } d && nlu.LocationConfidence >= ConfidenceThreshold
+            && !session.Areas.Any(a => a.District.Equals(d, StringComparison.OrdinalIgnoreCase)))
         {
-            SetLocation(session, d, nlu.LocationRegion, Capitalise(nlu.LocationText ?? d));
+            // "I can also work in Tema" adds an area; "no, my area is Tema" replaces them.
+            var label = Capitalise(nlu.LocationText ?? d);
+            if (Also.IsMatch(text) && session.Areas.Count < MaxAreas)
+                AddArea(session, d, nlu.LocationRegion, label);
+            else
+                SetOnlyArea(session, d, nlu.LocationRegion, label);
             changed = true;
         }
         if (nlu.ExperienceYears is { } y && y != session.ExperienceYears)
@@ -484,7 +532,7 @@ public static class ConversationFsm
             case 2: session.Skills.Clear(); break;
             case 3: session.ExperienceYears = null; session.ExperienceText = null; break;
             case 4: session.Availability = null; break;
-            case 5: session.LocationDistrict = null; session.LocationRegion = null; session.LocationText = null; break;
+            case 5: session.Areas.Clear(); session.AreasDone = false; SyncMainArea(session); break;
         }
         session.PendingSkill = null;
         session.QueuedSkills.Clear();
@@ -505,13 +553,17 @@ public static class ConversationFsm
         if (cards.Count == 0)
         {
             Move(session, ConversationState.Active);
-            return Reply(session, Intent.DeliverMatches, P.NoMatches());
+            return Reply(session, Intent.DeliverMatches, P.NoMatches(), OfferCvOnce(session));
         }
         session.DeliveredMatches = cards
             .Select(c => new DeliveredMatch { MatchId = c.MatchId, Rank = c.Rank, Title = c.Title })
             .ToList();
         Move(session, ConversationState.Feedback);
-        var replies = new List<OutboundMessage> { P.MatchesIntro(cards.Count) };
+        // DL-020: jobs from outside the worker's areas are introduced as such, never passed off as local.
+        var replies = new List<OutboundMessage>
+        {
+            cards.All(c => c.OutsideAreas) ? P.MatchesElsewhereIntro(cards.Count) : P.MatchesIntro(cards.Count)
+        };
         replies.AddRange(cards.Select(P.MatchCard));
         replies.Add(P.RateMatches());
         return new FsmStepResult { Session = session, Intent = Intent.DeliverMatches, Replies = replies };
@@ -534,7 +586,7 @@ public static class ConversationFsm
                 Session = session, Intent = Intent.ProvideFeedback, NluConfidence = nlu?.Confidence,
                 FeedbackText = skipped ? null : (text.Length <= 1000 ? text : text[..1000]),
                 FeedbackMatchIds = skipped ? Array.Empty<int>() : ids,
-                Replies = new[] { P.FeedbackDone() }
+                Replies = new[] { P.FeedbackDone(), OfferCvOnce(session) }.OfType<OutboundMessage>().ToList()
             };
         }
 
@@ -574,6 +626,8 @@ public static class ConversationFsm
     private static FsmStepResult? HandlePending(ConversationSession session, string text, NluResult? nlu, DialogueCatalog catalog)
     {
         var q = session.Pending!;
+        if (q.Kind == PendingKind.ChooseCvEdit)
+            return HandleCvEditChoice(session, text, catalog);
         if (q.Kind == PendingKind.ChooseEdit)
         {
             var choice = P.EditOptions.FirstOrDefault(o => o.Id == text || o.Title.Equals(text, StringComparison.OrdinalIgnoreCase));
@@ -588,6 +642,10 @@ public static class ConversationFsm
         session.Pending = null;
         switch (q.Kind)
         {
+            case PendingKind.OfferCv when yes:
+                return StartCv(session, catalog);
+            case PendingKind.OfferCv when no:
+                return Reply(session, Intent.CvDeclined, P.CvDeclined());
             case PendingKind.ConfirmExit when yes:
                 return OptOut(session, P.OptedOut(), Intent.Stop);
             case PendingKind.ConfirmExit when no:
@@ -596,8 +654,8 @@ public static class ConversationFsm
                 SetTrade(session, trade);
                 return Advance(session, catalog, Intent.ProvideTrade, nluConfidence: q.Confidence);
             case PendingKind.ConfirmLocation when yes:
-                SetLocation(session, q.Value!, q.Region, q.Label);
-                return Advance(session, catalog, Intent.ProvideLocation, nluConfidence: q.Confidence);
+                return AreaTurn(session, catalog, Intent.ProvideLocation, q.Confidence,
+                    new[] { new LocationOption(q.Label ?? q.Value!, q.Value!, q.Region ?? "") });
             case PendingKind.ConfirmTrade or PendingKind.ConfirmLocation when no && !HasSlotValues(nlu):
                 return Reply(session, Intent.Clarify, Prompt(session, catalog, "OK. "));
         }
@@ -610,7 +668,7 @@ public static class ConversationFsm
         s.TradeId is null ? ConversationState.ElicitTrade
         : s.Skills.Count == 0 ? ConversationState.ElicitSkills
         : s.ExperienceYears is null || s.Availability is null ? ConversationState.ElicitExperience
-        : s.LocationDistrict is null ? ConversationState.ElicitLocation
+        : s.Areas.Count == 0 || !s.AreasDone ? ConversationState.ElicitLocation
         : ConversationState.ConfirmProfile;
 
     /// <summary>Move to the next unfilled slot (or back to the summary) and ask for it.</summary>
@@ -631,10 +689,12 @@ public static class ConversationFsm
         ConversationState.ElicitSkills => P.AskSkills(catalog.TradeById(session.TradeId!)!, Names(session), prefix),
         ConversationState.ElicitExperience when session.ExperienceYears is null => P.AskExperience(prefix),
         ConversationState.ElicitExperience => P.AskAvailability(prefix),
+        ConversationState.ElicitLocation when session.Areas.Count > 0 => P.AskMoreAreas(catalog, session.Areas, prefix),
         ConversationState.ElicitLocation => P.AskLocation(catalog, prefix),
         ConversationState.ConfirmProfile => P.Summary(session, prefix),
         ConversationState.Feedback when session.AwaitingComment => P.AskComment(),
         ConversationState.Feedback => P.RateMatches(),
+        _ when IsCvState(session.State) => CvPrompt(session, prefix),
         _ => P.ActiveMenu()
     };
 
@@ -644,8 +704,9 @@ public static class ConversationFsm
         if (nlu is null) return;
         if (session.ExperienceYears is null && nlu.ExperienceYears is { } y)
             SetExperience(session, y, nlu.ExperienceText ?? $"{y} years");
-        if (session.LocationDistrict is null && nlu.LocationDistrict is { } d && nlu.LocationConfidence >= ConfidenceThreshold)
-            SetLocation(session, d, nlu.LocationRegion, Capitalise(nlu.LocationText ?? d));
+        // An area mentioned early becomes the main one; S4 still offers to add others.
+        if (session.Areas.Count == 0 && nlu.LocationDistrict is { } d && nlu.LocationConfidence >= ConfidenceThreshold)
+            AddArea(session, d, nlu.LocationRegion, Capitalise(nlu.LocationText ?? d));
     }
 
     private static void SetTrade(ConversationSession session, TradeInfo? trade, TradeCandidate? fromNlu = null)
@@ -673,12 +734,46 @@ public static class ConversationFsm
         session.ExperienceText = Years.IsMatch(text) ? $"{years} years" : text;
     }
 
-    private static void SetLocation(ConversationSession session, string district, string? region, string? label)
+    /// <summary>Adds an area; returns the listed area it duplicates (same district) instead, if any.</summary>
+    private static AreaChoice? AddArea(ConversationSession session, string district, string? region, string? label)
     {
-        session.LocationDistrict = district;
-        session.LocationRegion = region;
-        session.LocationText = label ?? district;
+        if (session.Areas.FirstOrDefault(a => a.District.Equals(district, StringComparison.OrdinalIgnoreCase)) is { } existing)
+            return existing;
+        session.Areas.Add(new AreaChoice { District = district, Region = region, Label = label ?? district });
+        SyncMainArea(session);
+        return null;
     }
+
+    private static void SetOnlyArea(ConversationSession session, string district, string? region, string? label)
+    {
+        session.Areas.Clear();
+        AddArea(session, district, region, label);
+        session.AreasDone = true;
+    }
+
+    /// <summary>The single-area fields mirror the main (first) area, for the profile and older readers.</summary>
+    private static void SyncMainArea(ConversationSession session)
+    {
+        var main = session.Areas.FirstOrDefault();
+        session.LocationDistrict = main?.District;
+        session.LocationRegion = main?.Region;
+        session.LocationText = main?.Label;
+    }
+
+    /// <summary>Sessions saved before DL-018 hold one area in the single-area fields only.</summary>
+    private static void UpgradeAreas(ConversationSession session)
+    {
+        if (session.Areas.Count > 0 || session.LocationDistrict is not { } district) return;
+        session.Areas.Add(new AreaChoice { District = district, Region = session.LocationRegion, Label = session.LocationText ?? district });
+        session.AreasDone = true;
+    }
+
+    /// <summary>One or more menu numbers: "3" or "2, 5 and 7".</summary>
+    private static IReadOnlyList<T> MenuPicks<T>(string text, IReadOnlyList<T> menu) where T : class
+        => NumberList.IsMatch(text)
+            ? Regex.Matches(text, @"\d{1,2}").Select(m => int.Parse(m.Value, CultureInfo.InvariantCulture))
+                .Where(n => n >= 1 && n <= menu.Count).Distinct().Select(n => menu[n - 1]).ToList()
+            : Array.Empty<T>();
 
     private static IReadOnlyCollection<string> Names(ConversationSession s) => s.Skills.Select(k => k.CanonicalName).ToList();
 

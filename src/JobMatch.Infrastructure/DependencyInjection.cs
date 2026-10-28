@@ -114,6 +114,9 @@ public static class DependencyInjection
         services.AddScoped<FollowUpService>();
         services.AddScoped<ResearchService>();
 
+        // --- Optional CV builder (Slice 6, DL-019) ---
+        services.AddSingleton<Cv.ICvRenderer, Cv.CvPdfRenderer>();
+
         // --- Orchestrator (scoped: owns a DbContext per message) ---
         services.AddScoped<IConversationOrchestrator, FsmConversationOrchestrator>();
 

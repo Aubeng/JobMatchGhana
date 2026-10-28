@@ -70,6 +70,16 @@ public sealed class FakeWhatsAppClient : IWhatsAppClient
         Reads.Enqueue(waMessageId);
         return Task.CompletedTask;
     }
+
+    public record Document(string WaId, byte[] Content, string FileName, string MimeType, string? Caption);
+    public ConcurrentQueue<Document> Documents { get; } = new();
+
+    public Task<string?> SendDocumentAsync(string waId, byte[] content, string fileName, string mimeType, string? caption,
+        CancellationToken ct)
+    {
+        Documents.Enqueue(new Document(waId, content, fileName, mimeType, caption));
+        return Task.FromResult<string?>($"fake-doc-{Interlocked.Increment(ref _counter)}");
+    }
 }
 
 /// <summary>The real dialogue catalog (nlp/data, copied to the test output's Data/).</summary>

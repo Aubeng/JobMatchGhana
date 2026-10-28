@@ -40,7 +40,27 @@ public enum ConversationState
     /// <summary>S6: top-3 matches delivered (Slice 3).</summary>
     DeliverMatch = 16,
     /// <summary>S7: rating the matches (Slice 3).</summary>
-    Feedback = 17
+    Feedback = 17,
+
+    // ---- Optional CV builder (Slice 6, DL-019): entered from Active, returns to Active. ----
+    /// <summary>C0: consent to the extra CV details.</summary>
+    CvConsent = 20,
+    /// <summary>C1: the name for the CV.</summary>
+    CvName = 21,
+    /// <summary>C2: which phone number, if any, goes on the CV.</summary>
+    CvPhone = 22,
+    /// <summary>C3: past jobs (up to 3).</summary>
+    CvWork = 23,
+    /// <summary>C4: training and certificates (up to 3).</summary>
+    CvTraining = 24,
+    /// <summary>C5: highest school finished.</summary>
+    CvEducation = 25,
+    /// <summary>C6: languages spoken.</summary>
+    CvLanguages = 26,
+    /// <summary>C7: the short "about me" line.</summary>
+    CvAbout = 27,
+    /// <summary>C8: CV summary; confirm (send the PDF) or change a part.</summary>
+    CvReview = 28
 }
 
 /// <summary>Lifecycle of a proposed worker/job match.</summary>
@@ -103,6 +123,19 @@ public enum Intent
     RateMatches = 31,
     /// <summary>"I'm interested" on a delivered job.</summary>
     ExpressInterest = 32,
+    /// <summary>S4: "done" adding areas (DL-018).</summary>
+    FinishAreas = 33,
+    // ---- CV builder (Slice 6, DL-019) ----
+    /// <summary>"cv", or yes to the CV offer.</summary>
+    CvRequest = 34,
+    /// <summary>C0 consent given.</summary>
+    CvConsentYes = 35,
+    /// <summary>C0 consent refused, or "not now" to the offer.</summary>
+    CvDeclined = 36,
+    /// <summary>An answer to a CV question (C1-C7, or a change from C8).</summary>
+    CvAnswer = 37,
+    /// <summary>C8 confirmed: CV saved and sent as a PDF.</summary>
+    CvCompleted = 38,
     // Anything the FSM could not map -> triggers a repair prompt (logged).
     Repair = 99
 }

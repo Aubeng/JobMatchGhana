@@ -21,6 +21,8 @@ public static class GlobalCommands
             "update" or "update profile" or "update my profile" or "edit profile" or "change profile"
                 or "my profile" or "profile" => Intent.UpdateProfile,
             "matches" or "my matches" or "list matches" => Intent.ListMatches,
+            // Slice 6: the optional CV builder.
+            "cv" or "my cv" or "make my cv" or "get my cv" or "resume" or "my resume" => Intent.CvRequest,
             // FR-16: delete my data (always confirmed first).
             "delete" or "delete my data" or "delete my profile" or "delete me" or "remove my data"
                 or "delete my details" => Intent.DeleteData,

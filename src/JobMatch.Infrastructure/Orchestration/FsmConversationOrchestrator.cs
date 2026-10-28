@@ -2,6 +2,7 @@ using JobMatch.Domain.Abstractions;
 using JobMatch.Domain.Conversation;
 using JobMatch.Domain.Entities;
 using JobMatch.Domain.Enums;
+using JobMatch.Infrastructure.Cv;
 using JobMatch.Infrastructure.Data;
 using JobMatch.Infrastructure.Matching;
 using JobMatch.Infrastructure.WhatsApp;
@@ -29,6 +30,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
     private readonly INluClient _nlu;
     private readonly DialogueCatalog _catalog;
     private readonly MatchingService _matching;
+    private readonly ICvRenderer _cvRenderer;
     private readonly ILogger<FsmConversationOrchestrator> _logger;
 
     public FsmConversationOrchestrator(
@@ -38,6 +40,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         INluClient nlu,
         DialogueCatalog catalog,
         MatchingService matching,
+        ICvRenderer cvRenderer,
         ILogger<FsmConversationOrchestrator> logger)
     {
         _db = db;
@@ -46,6 +49,7 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         _nlu = nlu;
         _catalog = catalog;
         _matching = matching;
+        _cvRenderer = cvRenderer;
         _logger = logger;
     }
 
@@ -99,6 +103,8 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         }
         session ??= new ConversationSession { WaId = message.WaId, State = ConversationState.New };
         var stateBefore = session.State;
+        if (session.ProfileConfirmed && session.Cv is null)
+            session.Cv = await LoadCvAsync(message.WaId, ct);   // a CV saved before this session
 
         var isTap = message.MessageType is "interactive" or "button";
         NluResult? nlu = null;
@@ -139,6 +145,8 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         // 4) Worker + profile (consent-gated; profile only once confirmed).
         var worker = await SyncWorkerAsync(result, message.WaId, ct);
         await RecordFeedbackAsync(result, ct);
+        if (result.SendCv && worker is not null)
+            await SaveCvAsync(worker, result.Session.Cv!, ct);
 
         // 5) S6: run the matching engine and let the FSM present the results.
         var replies = result.Replies.ToList();
@@ -151,7 +159,9 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         // 6) Persist the session (Redis, 72h TTL per FR-09).
         await _sessions.SaveAsync(result.Session, ct);
 
-        // 7) Send replies and log each outbound message.
+        // 7) Send the CV (Slice 6) first, then the replies; log each outbound message.
+        if (result.SendCv && worker is not null && !await SendCvAsync(message.WaId, worker, result.Session, ct))
+            replies = new List<OutboundMessage> { DialoguePrompts.CvSendFailed() };
         await SendAsync(message.WaId, replies, result.Session.State, ct);
         await _db.SaveChangesAsync(ct);
     }
@@ -182,6 +192,78 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
                 Timestamp = DateTimeOffset.UtcNow
             });
         }
+    }
+
+    /// <summary>Render the CV from the session and send it as a WhatsApp document.</summary>
+    private async Task<bool> SendCvAsync(string waId, Worker worker, ConversationSession session, CancellationToken ct)
+    {
+        try
+        {
+            var content = CvContent.From(session);
+            var pdf = _cvRenderer.Render(content);
+            var outId = await _whatsapp.SendDocumentAsync(waId, pdf, content.FileName, "application/pdf", "Your CV 📄", ct);
+            _db.MessageLogs.Add(new MessageLog
+            {
+                WaMessageId = outId, WaId = waId, Direction = MessageDirection.Outbound, Body = $"[document] {content.FileName}",
+                MessageType = "document", SessionState = session.State, Timestamp = DateTimeOffset.UtcNow
+            });
+            if (await _db.WorkerCvs.FirstOrDefaultAsync(c => c.WorkerId == worker.Id, ct) is { } saved)
+            {
+                saved.LastSentUtc = DateTimeOffset.UtcNow;
+                saved.TimesSent++;
+            }
+            return true;
+        }
+        catch (Exception ex) when (!ct.IsCancellationRequested)
+        {
+            _logger.LogError(ex, "Sending the CV to worker {WorkerId} failed.", worker.Id);
+            return false;
+        }
+    }
+
+    /// <summary>Save the confirmed CV answers (replacing any earlier CV).</summary>
+    private async Task SaveCvAsync(Worker worker, CvDraft draft, CancellationToken ct)
+    {
+        var cv = await _db.WorkerCvs.Include(c => c.Jobs).FirstOrDefaultAsync(c => c.WorkerId == worker.Id, ct);
+        if (cv is null)
+        {
+            cv = new WorkerCv { WorkerId = worker.Id };
+            _db.WorkerCvs.Add(cv);
+        }
+        cv.FullName = draft.FullName ?? "";
+        cv.Phone = draft.Phone;
+        cv.Training = draft.Training.Count == 0 ? null : string.Join("\n", draft.Training);
+        cv.Education = draft.Education;
+        cv.Languages = draft.Languages.Count == 0 ? null : string.Join(", ", draft.Languages);
+        cv.About = draft.About is { Length: > 300 } about ? about[..300] : draft.About;
+        cv.ConsentUtc = draft.ConsentUtc ?? DateTimeOffset.UtcNow;
+        cv.CompletedUtc = DateTimeOffset.UtcNow;
+        _db.WorkerCvJobs.RemoveRange(cv.Jobs);
+        cv.Jobs = draft.Jobs.Select((j, i) => new WorkerCvJob
+        {
+            Description = j.Description.Length <= 160 ? j.Description : j.Description[..160],
+            Period = j.Period, SourceUtterance = j.SourceUtterance, SortOrder = i
+        }).ToList();
+        await _db.SaveChangesAsync(ct);
+    }
+
+    /// <summary>A saved CV, as a completed draft, so "cv" shows it again after the session has expired.</summary>
+    private async Task<CvDraft?> LoadCvAsync(string waId, CancellationToken ct)
+    {
+        var cv = await _db.WorkerCvs.AsNoTracking().Include(c => c.Jobs)
+            .FirstOrDefaultAsync(c => c.Worker!.WaId == waId, ct);
+        if (cv is null) return null;
+        return new CvDraft
+        {
+            ConsentUtc = cv.ConsentUtc, FullName = cv.FullName, PhoneAnswered = true, Phone = cv.Phone,
+            Jobs = cv.Jobs.OrderBy(j => j.SortOrder)
+                .Select(j => new CvJob { Description = j.Description, Period = j.Period, SourceUtterance = j.SourceUtterance }).ToList(),
+            JobsDone = true,
+            Training = cv.Training?.Split('\n').ToList() ?? new List<string>(), TrainingDone = true,
+            Education = cv.Education,
+            Languages = cv.Languages?.Split(", ").ToList() ?? new List<string>(), LanguagesDone = true,
+            About = cv.About, Completed = true
+        };
     }
 
     private Task<bool> AlreadyProcessedAsync(string waMessageId, CancellationToken ct) =>
@@ -231,8 +313,23 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         await _db.SaveChangesAsync(ct);   // worker.Id is needed for skill links
 
         if (result.ProfileConfirmed)
+        {
             await SyncSkillsAsync(worker, session.Skills, ct);
+            await SyncAreasAsync(worker, session.Areas, ct);
+        }
         return worker;
+    }
+
+    /// <summary>Make the worker's areas equal the confirmed list, main area first (DL-018).</summary>
+    private async Task SyncAreasAsync(Worker worker, IReadOnlyList<AreaChoice> areas, CancellationToken ct)
+    {
+        _db.WorkerAreas.RemoveRange(await _db.WorkerAreas.Where(a => a.WorkerId == worker.Id).ToListAsync(ct));
+        await _db.SaveChangesAsync(ct);   // free the (worker, district) keys before re-adding
+        _db.WorkerAreas.AddRange(areas.Select((a, i) => new WorkerArea
+        {
+            WorkerId = worker.Id, District = a.District, Region = a.Region, LocationText = a.Label, SortOrder = i
+        }));
+        await _db.SaveChangesAsync(ct);
     }
 
     /// <summary>S7 answers onto the delivered match rows (the Matching Relevance metric's data).</summary>
@@ -308,6 +405,10 @@ public class FsmConversationOrchestrator : IConversationOrchestrator
         if (worker is not null)
         {
             _db.WorkerSkills.RemoveRange(await _db.WorkerSkills.Where(ws => ws.WorkerId == worker.Id).ToListAsync(ct));
+            _db.WorkerAreas.RemoveRange(await _db.WorkerAreas.Where(a => a.WorkerId == worker.Id).ToListAsync(ct));
+            var cvs = await _db.WorkerCvs.Include(c => c.Jobs).Where(c => c.WorkerId == worker.Id).ToListAsync(ct);
+            _db.WorkerCvJobs.RemoveRange(cvs.SelectMany(c => c.Jobs));
+            _db.WorkerCvs.RemoveRange(cvs);
             _db.Matches.RemoveRange(await _db.Matches.Where(m => m.WorkerId == worker.Id).ToListAsync(ct));
             _db.Workers.Remove(worker);
         }

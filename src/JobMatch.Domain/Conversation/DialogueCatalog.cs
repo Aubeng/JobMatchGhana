@@ -124,6 +124,9 @@ public class DialogueCatalog
 
     public LocationOption? ScanLocation(string text) => Scan(text, FindLocation).FirstOrDefault();
 
+    /// <summary>Every known place in free text, in order: "madina and adenta" -> Madina, Adenta.</summary>
+    public IReadOnlyList<LocationOption> ScanLocations(string text) => Scan(text, FindLocation).ToList();
+
     private static IEnumerable<T> Scan<T>(string text, Func<string, T?> lookup) where T : class
     {
         var words = Normalise(text).Split(' ', StringSplitOptions.RemoveEmptyEntries);
