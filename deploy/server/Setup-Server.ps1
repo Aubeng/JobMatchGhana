@@ -91,6 +91,19 @@ if (-not (Test-Path "IIS:\Sites\$SiteName")) {
     Write-Host "Site '$SiteName' already exists; left its bindings and path unchanged."
 }
 
+# --- 6. Anonymous access only --------------------------------------------------------------
+# The app does its own sign-in. If the server enables Windows/Basic authentication by default,
+# IIS adds "WWW-Authenticate: Negotiate, NTLM, Basic" to the app's 401s and browsers pop up a
+# Windows login box. This site only: other sites keep their settings.
+$authPath = 'system.webServer/security/authentication'
+Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Location $SiteName -Filter "$authPath/anonymousAuthentication" -Name enabled -Value $true
+foreach ($scheme in 'windowsAuthentication', 'basicAuthentication', 'digestAuthentication') {
+    if (Get-WebConfiguration -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter "$authPath/$scheme" -ErrorAction SilentlyContinue) {
+        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Location $SiteName -Filter "$authPath/$scheme" -Name enabled -Value $false
+    }
+}
+Write-Host "Site '$SiteName': anonymous access on; Windows/Basic/Digest authentication off."
+
 Write-Host ''
 Write-Host 'Server setup done. Next steps (docs/vps-deployment.md):' -ForegroundColor Green
 Write-Host "  1. Create the database:   sqlcmd -S . -E -b -i .\create-database.sql -v DatabaseName=`"JobMatchGhana`" AppPool=`"$AppPool`""

@@ -1,144 +1,117 @@
-# Deploying to the Windows/IIS VPS (staging)
+# Deploying to the VPS and testing end to end
 
-> **On hold (2026-10-11):** deployment resumes once Slices 2–5 are built. Nothing here has been
-> run on the server yet, so review it against the finished app before starting.
-
-JobMatch runs on the shared Intellite VPS at **`https://jobmatch.intellite.net`** before it moves to
-Azure App Service (DL-012). This gives Meta a permanent HTTPS webhook URL, so there's no dev tunnel
-to keep alive.
+This runbook takes JobMatch from your laptop to **`https://jobmatch.intellite.net`** on the shared
+Intellite VPS, connects Meta's **test phone number** to it, and walks through a full end-to-end
+test from your own phone. Do the parts in order; each ends with a check.
 
 | | |
 |---|---|
-| Server | Windows Server 2022 Datacenter, IIS 10 (shared with other sites) |
-| Database | SQL Server 2022 Web Edition on the same box, default instance (`.`) |
+| Server | Windows Server 2022, IIS 10, 24 GB RAM (shared with other sites), public IP <VPS_PUBLIC_IP> |
+| Database | SQL Server 2022 Web, default instance `.`, database `JobMatchGhana` |
 | Sessions | Redis for Windows (tporadowski port), `localhost:6379` |
-| App | ASP.NET Core 8, in-process IIS hosting, own app pool `JobMatch` |
+| Gateway + admin site | ASP.NET Core 8 in IIS, app pool `JobMatch`, site `jobmatch` |
+| NLU + matching | Python service `JobMatchNlu` (NSSM), `127.0.0.1:8000` only |
 | Webhook | `https://jobmatch.intellite.net/webhook` |
-| Health | `https://jobmatch.intellite.net/health` → `{"status":"ok"}` |
+| Admin site | `https://jobmatch.intellite.net/admin` |
 
 ```
- Meta WhatsApp Cloud API
-          │  HTTPS POST /webhook (signed)
-          ▼
- ┌─────────────────── VPS ───────────────────────────────────┐
- │ IIS  :443 jobmatch.intellite.net (Let's Encrypt, win-acme) │
- │  └─ app pool "JobMatch"  →  C:\inetpub\jobmatch\releases\<release>\app
- │        ├─ SQL Server (.)   DB JobMatchGhana, Windows auth as IIS APPPOOL\JobMatch
- │        └─ Redis  localhost:6379   keys jobmatch:session:*
- └────────────────────────────────────────────────────────────┘
+ Your phone ── WhatsApp ── Meta Cloud API (test number)
+                                │ HTTPS POST /webhook
+ ┌──────────────────────────── VPS ───────────────────────────────────┐
+ │ IIS :443 jobmatch.intellite.net ── app pool JobMatch               │
+ │    gateway + /admin  ──► SQL Server (JobMatchGhana)                │
+ │                      ──► Redis localhost:6379                      │
+ │                      ──► JobMatchNlu service 127.0.0.1:8000        │
+ │                              (XLM-R + BERT+CRF + MiniLM, C:\inetpub\jobmatch\nlp) │
+ └────────────────────────────────────────────────────────────────────┘
 ```
 
-Scripts live in [`deploy/`](../deploy). `Publish.ps1` runs on your dev machine; everything in
-`deploy/server/` runs **on the VPS in an elevated PowerShell** and travels inside each release zip.
+Scripts live in `deploy/`. `Publish.ps1` and `Package-NluModels.ps1` run on your laptop; everything
+in `deploy/server/` runs **on the VPS in an elevated PowerShell** and travels inside each release zip.
 
 ---
 
-## 1. One-time server preparation
+## Part A: build the packages (laptop)
 
-Do these once, in order.
+From the repo root, in PowerShell:
 
-### 1.1 DNS
-At whoever hosts DNS for `intellite.net`, add an **A record** `jobmatch` → the VPS's public IP.
-Check from any machine:
 ```powershell
-Resolve-DnsName jobmatch.intellite.net
+.\deploy\Publish.ps1              # tests, admin site, API, migrate.sql, NLU code -> artifacts\jobmatch-<time>.zip
+.\deploy\Package-NluModels.ps1    # trained models (~1.8 GB) -> artifacts\jobmatch-models-<time>.zip
 ```
 
-### 1.2 SQL Server patch level
-The instance reports **RTM (16.0.1000.6)**, meaning no updates since October 2022. The server is shared
-and managed, so patching is the provider's job. Ask them to apply the latest SQL Server 2022
-Cumulative Update, or confirm their patch schedule, before real participants' data goes on it.
+Copy both zips to the VPS (e.g. `C:\Deploy\`). RDP copy-paste works; for the 1.8 GB models zip a
+cloud drive or `scp` is more reliable. Then extract the **release** zip once to `C:\Deploy\first`
+to get its `server\` and `nlp\` folders (Deploy-Release unpacks its own copy later).
 
-### 1.3 .NET 8 Hosting Bundle
-Download **ASP.NET Core Runtime 8.0.x – Windows Hosting Bundle** from
-<https://dotnet.microsoft.com/download/dotnet/8.0> and install it, then restart IIS:
-```powershell
-net stop was /y
-net start w3svc
-```
-(It installs side by side; other sites on other .NET versions are unaffected.)
+**Check:** two zips on the VPS; `C:\Deploy\first\server\` contains `Setup-Server.ps1`.
 
-### 1.4 Redis
-The tporadowski service config is `C:\Program Files\Redis\redis.windows-service.conf`. Check:
+---
 
-- `bind 127.0.0.1`: Redis must not listen on the public interface.
-- Port 6379 is **not** open in Windows Firewall.
+## Part B: Meta, with the test phone number
 
-A password (`requirepass`) is good hygiene, **but this Redis is shared**: if other sites already use
-it without a password, adding one breaks them until their connection strings are updated too.
-Bound to localhost only, it's acceptable to leave it password-less for staging. JobMatch's keys are
-isolated by the `jobmatch:session:` prefix either way. After changing the config:
-`Restart-Service Redis`.
+Full click-paths and screenshots are in [whatsapp-cloud-api-setup.md](whatsapp-cloud-api-setup.md);
+this is what the test number needs.
 
-### 1.5 Get the scripts onto the server
-Build a release on your dev machine (section 2.1), copy the zip to the VPS (RDP copy-paste is
-fine), and extract it once anywhere (e.g. `C:\Deploy\first`) to get the `server\` folder.
+1. **Recipients.** In the Meta developer dashboard → your app → **WhatsApp → API Setup**, add your
+   own phone (and up to four testers) to the **To** list and verify each with the code WhatsApp
+   sends. The test number can only message numbers on this list; anything else is rejected
+   (that is what protected us in the preview incident, DL-017).
+2. **Note the IDs** on the same page: the test **Phone number ID** and the **WhatsApp Business
+   Account ID**.
+3. **Access token.** The token on API Setup expires in 24 hours. For a test today it works; for
+   anything longer create a **permanent System User token**: Business Settings → Users → System
+   users → add (Admin) → assign your app and the WhatsApp account → Generate token with
+   `whatsapp_business_messaging` and `whatsapp_business_management`. An expired token silently
+   stops replies.
+4. **App Secret.** App settings → Basic → App Secret (Show).
+5. **Verify token.** Make up a long random string now; you'll type it twice (Part C step 9 and Part E).
+6. **Alert template (optional for today).** WhatsApp Manager → Message templates → Create:
+   category **Utility**, name `job_match_alert`, language English, body
+   `A new job may suit you: {{1}} in {{2}}. Tap below to see it.`, with a **quick reply** button
+   `See jobs`. Without an approved template, publishing a job still works; the alerts just fail
+   and are logged (the rest of the test is unaffected).
 
-### 1.6 IIS site and app pool
+**Check:** you have the Phone number ID, a token, the App Secret, your verify token, and your
+phone is a verified recipient.
+
+---
+
+## Part C: one-time VPS setup
+
+Run everything in an **elevated** PowerShell on the VPS.
+
+### 1. DNS
+At the DNS host for `intellite.net`, add an **A record**: `jobmatch` → `<VPS_PUBLIC_IP>`.
+Check from anywhere: `Resolve-DnsName jobmatch.intellite.net` → <VPS_PUBLIC_IP>.
+
+### 2. Software
+Install, if not already there:
+
+| What | From | Check |
+|---|---|---|
+| ASP.NET Core 8 **Hosting Bundle** | dotnet.microsoft.com/download/dotnet/8.0 → "Hosting Bundle"; then `net stop was /y` and `net start w3svc` | `dotnet --list-runtimes` shows `Microsoft.AspNetCore.App 8.` |
+| **Python 3.12** (64-bit) | python.org → Windows installer; tick *Install for all users* and *py launcher* | `py -3.12 --version` |
+| **NSSM** 2.24+ | nssm.cc → unzip to `C:\Tools\nssm` | `C:\Tools\nssm\win64\nssm.exe version` |
+| **win-acme** | win-acme.com → x64 pluggable zip → `C:\Tools\win-acme` | `wacs.exe` exists |
+
+### 3. Redis
+Confirm the service runs and listens only locally: `Get-Service Redis*`, and in
+`C:\Program Files\Redis\redis.windows-service.conf` check `bind 127.0.0.1` and whether
+`requirepass` is set (you'll give that password in step 9). Port 6379 must not be open in
+Windows Firewall. Don't add a password if other sites use this Redis without one.
+
+### 4. IIS site and app pool
 ```powershell
 cd C:\Deploy\first\server
 .\Setup-Server.ps1
 ```
-This creates `C:\inetpub\jobmatch\{releases,logs}`, the **`JobMatch` app pool** (No Managed Code,
-ApplicationPoolIdentity), the **`jobmatch` site** bound to `http://jobmatch.intellite.net:80`, and
-grants the pool identity read access. It's idempotent, and it never touches other sites.
-Parameters (`-HostName`, `-Root`, …) are documented at the top of the script.
+Creates `C:\inetpub\jobmatch`, the `JobMatch` app pool and the `jobmatch` site on
+`http://jobmatch.intellite.net`. Touches nothing else.
 
-### 1.7 Database
-As a SQL sysadmin (your Windows admin account if it's sysadmin; otherwise add `-U sa` and drop `-E`):
-```powershell
-sqlcmd -S . -E -b -i .\create-database.sql -v DatabaseName="JobMatchGhana" AppPool="JobMatch"
-```
-This creates `JobMatchGhana` and a Windows login for `IIS APPPOOL\JobMatch` with read/write on that
-database only. There is no SQL password anywhere. Schema changes are applied by
-`Deploy-Release.ps1` under your admin account, so the app itself has no DDL rights.
-
-> `sqlcmd` missing? `winget install sqlcmd`.
-
-### 1.8 Settings and secrets
-```powershell
-.\Set-AppSettings.ps1
-```
-It prompts for the Redis password (blank if none) and the four WhatsApp values (App Secret,
-verify token, phone number ID, access token). Secrets are typed hidden. Values are stored as
-**environment variables on the `JobMatch` app pool** in IIS's `applicationHost.config`:
-admin-readable only, never in the site folder, the repo or a release zip, and they survive
-redeploys. Re-run it any time to change a value (Enter keeps the current one).
-
-With the access token left blank the app runs in **dry-run mode**: replies are logged, not sent.
-That's a safe way to do the first deploy.
-
-> **Use a permanent access token here** (System User token, see `whatsapp-cloud-api-setup.md`).
-> The 24-hour temporary token from the API Setup page will silently stop outbound messages.
-
-### 1.9 HTTPS certificate (win-acme)
-1. Download the x64 "pluggable" zip from <https://www.win-acme.com> and extract it to e.g.
-   `C:\Tools\win-acme`.
-2. Run `wacs.exe` as Administrator → **N** (create certificate, default settings) →
-   **Single binding of an IIS site** → pick `jobmatch.intellite.net` → give a contact email.
-3. win-acme validates over port 80, adds an **SNI** `https :443` binding for that host name only
-   (other sites' certificates are untouched), and installs a scheduled task that renews it.
-
-Check: `https://jobmatch.intellite.net/` shows the "No release deployed yet" holding page.
-
-### 1.10 App pool: keep the queue alive ⚠️ (your reminder)
-
-By default IIS **stops an idle app after 20 minutes and recycles it every 29 hours**. The webhook
-replies 200 to Meta *before* processing (DL-002); queued messages live in memory. A recycle
-drops any that weren't processed yet, so they're **lost from the research dataset**, and
-Meta won't resend them because it already got its 200. An idle shutdown also makes the next
-message wait for a cold start.
-
-Set these on the **`JobMatch` pool only**:
-
-| Setting | Where (IIS Manager) | Value |
-|---|---|---|
-| Start Mode | App Pools → JobMatch → Advanced Settings → General | `AlwaysRunning` |
-| Idle Time-out (minutes) | … → Process Model | `0` |
-| Regular Time Interval (minutes) | … → Recycling | `0` |
-| Preload Enabled | Sites → jobmatch → Advanced Settings → General | `True` |
-
-Preload needs the Application Initialization feature. Or do all of it from PowerShell:
+### 5. Keep the app pool running (your reminder)
+By default IIS stops idle apps after 20 minutes and recycles every 29 hours, which drops
+messages waiting in the in-memory queue. Set it now:
 ```powershell
 Install-WindowsFeature Web-AppInit
 Import-Module WebAdministration
@@ -147,94 +120,140 @@ Set-ItemProperty IIS:\AppPools\JobMatch -Name processModel.idleTimeout -Value ([
 Set-ItemProperty IIS:\AppPools\JobMatch -Name recycling.periodicRestart.time -Value ([TimeSpan]::Zero)
 Set-ItemProperty IIS:\Sites\jobmatch -Name applicationDefaults.preloadEnabled -Value $true
 ```
-A deploy still restarts the app once (by design). Do deploys when nobody is mid-conversation.
+
+### 6. Database
+In **SSMS**, connected to the VPS's SQL Server as an administrator, open
+`server\create-database-ssms.sql` from the release and **Execute**. (Or, where sqlcmd works:
+`sqlcmd -S . -E -b -i .\create-database.sql -v DatabaseName="JobMatchGhana" AppPool="JobMatch"`.)
+Creates `JobMatchGhana` and gives `IIS APPPOOL\JobMatch` read/write on it only. No sqlcmd is needed
+anywhere else: each release applies its own migrations (Part D).
+
+### 7. HTTPS certificate
+Run `C:\Tools\win-acme\wacs.exe` → **N** → *Single binding of an IIS site* → `jobmatch.intellite.net`
+→ your email. It adds an SNI binding on 443 for this host only and a renewal task.
+**Check:** `https://jobmatch.intellite.net/` shows "No release deployed yet".
+
+### 8. NLU + matching service
+```powershell
+.\Install-NluService.ps1 -Nssm C:\Tools\nssm\win64\nssm.exe -ModelsZip C:\Deploy\jobmatch-models-<time>.zip
+```
+Creates the Python environment (downloads ~1 GB of packages), installs the models, registers the
+`JobMatchNlu` Windows service on `127.0.0.1:8000` (low-privilege LocalService account) and waits
+for it. The first start also downloads the MiniLM matching model (~90 MB). Takes 5–15 minutes.
+**Check:** it ends with "Healthy: models intent@…; matching sentence-transformers/…". Memory use
+settles at roughly 2–3 GB (`Get-Process python`).
+
+### 9. Settings and secrets
+```powershell
+.\Set-AppSettings.ps1
+```
+Answer the prompts: Redis password (blank if none), App Secret, verify token, Phone number ID,
+access token, **Dry run: `n`** (this is the live test), and Enter for the pseudonym key (one is
+generated: copy it somewhere safe). It also points the gateway at the NLU service.
 
 ---
 
-## 2. Every release
+## Part D: deploy the release
 
-### 2.1 Build (dev machine)
 ```powershell
-.\deploy\Publish.ps1
+cd C:\Deploy\first
+.\server\Deploy-Release.ps1 -Package C:\Deploy\jobmatch-<time>.zip
 ```
-Runs the tests, publishes the API, generates an **idempotent** `migrate.sql` with the repo-pinned
-`dotnet-ef` 8.0.8, and writes `artifacts\jobmatch-<timestamp>.zip`. `-SkipTests` skips the tests.
+Unpacks the release, applies any new database migrations (the release's own `migrate` command,
+run as you, so your Windows account needs rights on the database), refreshes the NLU service
+code, switches the site to the new release and polls `/health`. If migrations ever fail, the
+site keeps serving the previous release; as a fallback run the release's `migrate.sql` in SSMS
+and re-run with `-SkipMigrations`. **Check:** "Deployed jobmatch-<time>."
 
-### 2.2 Deploy (VPS)
-Copy the zip over, then:
+Then load demo jobs and create your admin account:
 ```powershell
-cd C:\inetpub\jobmatch                # or wherever a server\ folder is
-.\server\Deploy-Release.ps1 -Package C:\Deploy\jobmatch-20261011-140000.zip
+cd C:\inetpub\jobmatch\releases\jobmatch-<time>\server
+.\Invoke-AppCommand.ps1 seed-jobs
+.\Invoke-AppCommand.ps1 create-admin you@example.org     # type a 12+ character password
 ```
-It unpacks into `releases\<name>`, applies `migrate.sql`, re-points the site at the new folder,
-polls `/health`, and keeps the newest 5 releases. Nothing is overwritten in place, so there are
-no locked-file errors. If the migration fails, the site keeps serving the old release.
 
-Use the `server\` scripts from the **newest** zip, since they may have changed.
-
-### 2.3 Roll back
-```powershell
-.\server\Deploy-Release.ps1 -Rollback
-```
-Points the site at the previous release. The database schema is **not** rolled back. Migrations
-are applied before the switch, so keep them additive (add columns/tables; rename or drop in a
-later release).
+**Checks:**
+- `https://jobmatch.intellite.net/health` → `{"status":"ok"}`
+- Event Viewer → Windows Logs → Application has a warning from the app: **"WhatsApp client:
+  LIVE (messages go to real WhatsApp numbers)"**. No such warning means it started in DRY RUN
+  (logged at information level, so not in the Event Log): re-run step 9 and answer `n`.
+- `https://jobmatch.intellite.net/admin` → sign in → **Jobs** lists 152 synthetic jobs (seed v1: 32, v2: 120). Re-running `seed-jobs` after a new release adds only the new ones.
 
 ---
 
-## 3. Connect Meta to the server
+## Part E: connect Meta
 
-In the Meta developer dashboard → **WhatsApp → Configuration → Webhook** (full walkthrough in
-[whatsapp-cloud-api-setup.md](whatsapp-cloud-api-setup.md)):
+Meta dashboard → your app → **WhatsApp → Configuration → Webhook → Edit**:
 
 | Field | Value |
 |---|---|
 | Callback URL | `https://jobmatch.intellite.net/webhook` |
-| Verify token | the same value you gave `Set-AppSettings.ps1` |
-| Webhook fields | subscribe to `messages` |
+| Verify token | the string from Part B step 5 |
 
-Click **Verify and save**. Meta calls `GET /webhook` and the app echoes the challenge. This is a
-one-off: the URL never changes again. Then message the business number from a test phone
-(e.g. "hi") and you should get the consent prompt.
+**Verify and save**, then **Manage** → subscribe to **`messages`**. If nothing arrives later, the
+app may not be subscribed to the WhatsApp account: see "Nothing arrives at all" in
+[whatsapp-cloud-api-setup.md](whatsapp-cloud-api-setup.md) (`POST /<WABA_ID>/subscribed_apps`).
 
 ---
 
-## 4. Troubleshooting
+## Part F: the end-to-end test
 
-First stop for any failure: **Event Viewer → Windows Logs → Application**, sources
-`IIS AspNetCore Module V2` and `.NET Runtime`. ASP.NET Core also logs its own warnings and errors
-there.
+From your **verified** phone, message the test number. Expected replies follow the S&D flow
+([conversation-design.md](conversation-design.md)). Tick each row.
+
+| # | You send | Expect |
+|---|---|---|
+| 1 | `hi` | Welcome + consent question, **Yes, I agree / No** buttons |
+| 2 | tap **Yes, I agree** | "Thank you" + **Choose your work** list |
+| 3 | `am a mason, i lay blocks and plaster for 5 years` | Skills list showing *Block laying, Plastering*; experience already captured |
+| 4 | tap **Done, that's all** | Availability buttons (years are not asked again) |
+| 5 | tap **Full-time** | **Choose your area** list |
+| 6 | `i stay at madina` | Profile summary with *Madina (La Nkwantanang Madina)*, **Yes / Change something** |
+| 7 | `no my area is adenta` | "Updated" + summary with *Adenta (Adentan)* |
+| 8 | tap **Yes, that's right** | "Profile saved", then up to 3 job cards (synthetic jobs near Adenta) and a rating list |
+| 9 | tap **I'm interested** on one job | "The JobMatch team will contact you about …" |
+| 10 | choose **4 – Helpful**, then type a comment | Thanks for the feedback |
+| 11 | `help` | Help text + the current question |
+| 12 | `asdf`, then `qwer`, then `zxcv` | First two: the menu again; third: "someone from the JobMatch team will message you" |
+
+Then in the **admin site**:
+- **Follow-ups** shows your interested job and the handoff case (with your number).
+- **Dashboard**: funnel shows 1 consented, 1 confirmed, 1 matched; the rating is counted under
+  "synthetic jobs (excluded)" because the demo jobs are synthetic.
+- **Jobs → New job** near Adenta → **Publish**: the notice shows "1 alerted" (or "1 could not be
+  sent" if the template isn't approved yet).
+- **Annotate**: your free-text messages appear for blind coding.
+
+Finally, the data controls: send `delete` → **Yes, delete** → "Your data has been deleted"; the
+admin dashboard funnel drops back to 0. (Do this last, or with a second test phone.)
+
+---
+
+## Troubleshooting
+
+First stops: **Event Viewer → Windows Logs → Application** (sources `IIS AspNetCore Module V2`,
+`.NET Runtime`, and the app's own warnings) and `C:\inetpub\jobmatch\nlp\logs\nlu.log`.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| HTTP **500.19** | Hosting Bundle not installed, or installed before IIS | Reinstall it (1.3), restart IIS |
-| HTTP **500.30** / **500.31** | App crashed at startup / .NET 8 runtime missing | Event Viewer; see "stdout logs" below |
-| Event log: `Login failed for user 'IIS APPPOOL\JobMatch'` | DB login missing | Re-run 1.7 |
-| `RedisConnectionException` in logs | Wrong password / Redis service stopped | `Get-Service Redis`; re-run 1.8 |
-| Meta "callback URL couldn't be validated" (`GET /webhook` → 403) | Verify token mismatch, or HTTPS not bound yet | Re-run 1.8; check 1.9 |
-| Webhook POSTs get **403** | Wrong App Secret (signature check fails) | Re-run 1.8 with the App Secret from App settings → Basic |
-| Messages arrive but no replies | Access token blank (dry-run) or expired | Re-run 1.8 with a permanent token |
-| Replies stop after a quiet spell | App pool idled out | Do 1.10 |
+| HTTP 500.19 | Hosting Bundle missing or installed before IIS | Reinstall it (C2), `net stop was /y`, `net start w3svc` |
+| HTTP 500.30 | App crashed at startup (settings, data files) | Event Viewer; stdout logs below |
+| `Login failed for user 'IIS APPPOOL\JobMatch'` | Database step skipped | C6 |
+| Meta: "callback URL couldn't be validated" | Verify token mismatch, or HTTPS not bound | C9, C7 |
+| Webhook POSTs get 403 | Wrong App Secret | C9 |
+| Messages arrive, no replies | Token expired, DRY RUN on, or recipient not verified | Event Viewer (`WhatsApp send failed`), C9, B1 |
+| Replies but skills never recognised beyond exact words | NLU service down → keyword fallback | `Get-Service JobMatchNlu`, `nlu.log`; Admin dashboard "NLU fallback rate" |
+| `RedisConnectionException` | Redis stopped or wrong password | C3, C9 |
+| Replies stop after a quiet spell | App pool idled out | C5 |
+| `/admin` sign-in loops | Cookie needs HTTPS in production | Use `https://` |
 
-**stdout logs** (temporary, for startup crashes): in the live release's `app\web.config` set
-`stdoutLogEnabled="true"` and `stdoutLogFile="C:\inetpub\jobmatch\logs\stdout"` (the pool can only
-write to `logs\`). Turn it off again afterwards, because the files grow unbounded. The next deploy
-resets it anyway.
+**stdout logs** (temporary): in the live release's `app\web.config` set `stdoutLogEnabled="true"`
+and `stdoutLogFile="C:\inetpub\jobmatch\logs\stdout"`; turn it off afterwards.
 
-**Is data being captured?** The research dataset is the `MessageLog` table:
-```sql
-SELECT TOP 20 [Timestamp], WaId, Direction, SessionState, IntentDetected, NluConfidence, IsRepair
-FROM JobMatchGhana.dbo.MessageLogs ORDER BY Id DESC;
+**Roll back** the site and NLU code to the previous release (the database is not rolled back):
+```powershell
+.\server\Deploy-Release.ps1 -Rollback
 ```
 
----
-
-## 5. Later slices on this server
-
-- **Slice 2 (Python NLP service):** run uvicorn as a Windows service (NSSM) bound to
-  `127.0.0.1:8000`, then set `Nlu__UseStub=false` on the app pool. A deploy script for it will
-  come with Slice 2.
-- **Slice 4 (admin SPA):** static files under the same site or a sibling site.
-- **Azure move (Slice 5):** App Service on Windows is IIS underneath, so the app, `web.config` and
-  migration script carry over. App-pool variables become App Service *Application settings*, and
-  `AlwaysRunning` becomes the *Always On* switch.
+**Next release:** `.\deploy\Publish.ps1` on the laptop, copy the zip, run `Deploy-Release.ps1`
+again. New models: `Package-NluModels.ps1`, then `Install-NluService.ps1 -Nssm … -ModelsZip …`.

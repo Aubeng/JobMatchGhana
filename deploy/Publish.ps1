@@ -6,7 +6,8 @@
     Produces artifacts\jobmatch-<timestamp>.zip containing:
       app\          the published API (framework-dependent, .NET 8, in-process IIS hosting)
       migrate.sql   an idempotent EF Core migration script (safe to re-run)
-      server\       the server-side scripts (Setup-Server, Set-AppSettings, Deploy-Release, SQL)
+      server\       the server-side scripts (Setup-Server, Set-AppSettings, Deploy-Release, SQL, NLU service)
+      nlp\          the NLU service's code, data and requirements (models ship separately)
     Copy the zip to the VPS and run server\Deploy-Release.ps1 from it.
     See docs/vps-deployment.md.
 
@@ -24,7 +25,11 @@ $ErrorActionPreference = 'Stop'
 
 function Invoke-Step([string]$Name, [scriptblock]$Command) {
     Write-Host "==> $Name" -ForegroundColor Cyan
-    & $Command
+    # Native tools (npm, dotnet) write warnings to stderr; Windows PowerShell 5.1 would turn
+    # those into terminating errors under 'Stop'. Success is judged by the exit code instead.
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { & $Command } finally { $ErrorActionPreference = $saved }
     if ($LASTEXITCODE -ne 0) { throw "$Name failed (exit code $LASTEXITCODE)." }
 }
 
@@ -65,6 +70,19 @@ try {
     }
 
     Copy-Item (Join-Path $PSScriptRoot 'server') (Join-Path $staging 'server') -Recurse
+
+    # The NLU service's code and data (not its virtualenv or trained models: the models ship once,
+    # separately, via Package-NluModels.ps1; the server builds its own virtualenv).
+    Write-Host '==> Copy NLU service code and data' -ForegroundColor Cyan
+    $nlpSrc = Join-Path $root 'nlp'
+    $nlpDst = Join-Path $staging 'nlp'
+    New-Item -ItemType Directory -Path $nlpDst | Out-Null
+    Copy-Item (Join-Path $nlpSrc 'jobmatch_nlp') $nlpDst -Recurse
+    Copy-Item (Join-Path $nlpSrc 'data') $nlpDst -Recurse
+    Copy-Item (Join-Path $nlpSrc 'requirements.txt'), (Join-Path $nlpSrc 'pyproject.toml') $nlpDst
+    Get-ChildItem $nlpDst -Recurse -Directory -Filter '__pycache__' | Remove-Item -Recurse -Force
+    $review = Join-Path $nlpDst 'data/review'
+    if (Test-Path $review) { Remove-Item $review -Recurse -Force }
 
     Write-Host '==> Zip package' -ForegroundColor Cyan
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $zip

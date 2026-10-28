@@ -19,7 +19,8 @@
 param(
     [string]$AppPool      = 'JobMatch',
     [string]$SqlInstance  = '.',
-    [string]$DatabaseName = 'JobMatchGhana'
+    [string]$DatabaseName = 'JobMatchGhana',
+    [int]$NluPort         = 8000
 )
 
 $ErrorActionPreference = 'Stop'
@@ -91,6 +92,31 @@ foreach ($p in $prompts) {
     if ($value) { $changes[$p.Name] = $value }
 }
 
+Write-Host ''
+$current = Get-PoolVariable 'WhatsApp__DryRun'
+$answer = Read-Host "Dry run: log WhatsApp messages instead of sending them? y/n [now: $(if ($current) { $current } else { 'false' })]"
+if ($answer -match '^(y|yes)$') { $changes['WhatsApp__DryRun'] = 'true' }
+elseif ($answer -match '^(n|no)$') { $changes['WhatsApp__DryRun'] = 'false' }
+
+# The Python NLU + matching service on this machine (Install-NluService.ps1), 127.0.0.1 only.
+$changes['Nlu__UseStub'] = 'false'
+$changes['Nlu__BaseUrl'] = "http://127.0.0.1:$NluPort"
+
+Write-Host ''
+Write-Host 'Research exports: pseudonym key (HMAC secret). Enter keeps the current one; a new one is generated if none is set.'
+$key = Read-Setting 'Research__PseudonymKey' 'Pseudonym key (16+ characters)' -Secret
+if (-not $key -and -not (Get-PoolVariable 'Research__PseudonymKey')) {
+    $bytes = New-Object byte[] 24
+    [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+    $key = [Convert]::ToBase64String($bytes)
+    Write-Host '  generated a new key. Keep a copy somewhere safe: changing it changes every exported participant id.' -ForegroundColor Yellow
+    Write-Host "  key: $key" -ForegroundColor Yellow
+}
+if ($key) {
+    if ($key.Length -lt 16) { throw 'The pseudonym key must be at least 16 characters.' }
+    $changes['Research__PseudonymKey'] = $key
+}
+
 foreach ($name in $changes.Keys) {
     Set-PoolVariable $name $changes[$name]
     Write-Host "  set $name"
@@ -103,4 +129,4 @@ if ((Get-WebAppPoolState -Name $AppPool).Value -eq 'Started') {
 }
 Write-Host ''
 Write-Host "Saved. App pool '$AppPool' recycled so the new settings take effect." -ForegroundColor Green
-Write-Host 'Note: with an empty AccessToken the API stays in dry-run mode (replies are logged, not sent).'
+Write-Host 'The first log lines of the app say whether WhatsApp is LIVE or DRY RUN.'
